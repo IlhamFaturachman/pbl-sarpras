@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->date('tanggal_laporan');
             $table->date('tanggal_update_status')->nullable();
             $table->unsignedBigInteger('teknisi_id')->nullable();
-            $table->string('periode')->nullable();
+            $table->string('periode_id')->nullable();
             $table->timestamps();
 
             $table->foreign('pelapor_id')->references('user_id')->on('m_user');
