@@ -14,6 +14,7 @@
     <title>Login | {{ config('app.name') }}</title>
 
     <meta name="description" content="" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
@@ -122,15 +123,16 @@
               <h4 class="mb-1">Welcome to {{ config('app.name') }}! 👋</h4>
               <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
-              <form id="formAuthentication" class="mb-6" action="index.html">
+              <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
+                @csrf
                 <div class="mb-6">
-                  <label for="email" class="form-label">Email or Username</label>
+                  <label for="email" class="form-label">Email</label>
                   <input
                     type="text"
                     class="form-control"
                     id="email"
-                    name="email-username"
-                    placeholder="Enter your email or username"
+                    name="email"
+                    placeholder="Enter your email"
                     autofocus />
                 </div>
                 <div class="mb-6 form-password-toggle">
@@ -149,10 +151,10 @@
                 <div class="mb-8">
                   <div class="d-flex justify-content-between">
                     <div class="form-check mb-0">
-                      <input class="form-check-input" type="checkbox" id="remember-me" />
+                      <input class="form-check-input" type="checkbox" id="remember-me" name="remember" />
                       <label class="form-check-label" for="remember-me"> Remember Me </label>
                     </div>
-                    <a href="auth-forgot-password-basic.html">
+                    <a href="{{ route('password.request') }}">
                       <span>Forgot Password?</span>
                     </a>
                   </div>
