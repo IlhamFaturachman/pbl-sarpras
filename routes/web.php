@@ -1,7 +1,12 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RuangController;
+use App\Http\Controllers\Admin\GedungController;
+use App\Http\Controllers\Admin\PeriodeController;
+use App\Http\Controllers\Admin\FasilitasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,17 +20,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+return view('welcome');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
-    })->name('admin.dashboard');
+    })->name('dashboard.admin');
     Route::prefix('data')->group(function () {
-        Route::get('/user', function () {
-            return view('admin.user.index');
-        })->name('admin.data.user');
+        Route::get('/user', [UserController::class, 'index'])->name('data.user');
+        Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
+        Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('data.fasilitas');
+        Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
+        Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
     });
 });
 
