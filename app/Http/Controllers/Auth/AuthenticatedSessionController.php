@@ -25,21 +25,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->authenticate();
-        $request->session()->regenerate();
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        $user = auth()->user();
+            $user = auth()->user();
 
-        // Cek role dan arahkan sesuai role
-        if ($user->hasRole('admin')) {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->hasRole('user')) {
-            return redirect()->route('user.dashboard');
+            // Check user role and redirect accordingly
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->hasRole('user')) {
+                return redirect()->route('user.dashboard');
+            }
+
+            // Fallback if no appropriate role exists
+            Auth::logout();
+            return redirect('/login')->withErrors(['email' => 'Your account does not have the appropriate role.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect('/login')->withErrors($e->errors());
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors(['error' => 'An error occurred during login. Please try again.']);
         }
-
-        // Fallback kalau tidak punya role
-        Auth::logout();
-        return redirect('/login')->withErrors(['role' => 'Akun Anda belum memiliki role yang sesuai.']);
     }
 
     /**
@@ -53,6 +59,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login')->with('status', 'You have been successfully logged out!');
     }
 }

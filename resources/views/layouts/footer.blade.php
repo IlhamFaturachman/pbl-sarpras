@@ -6,9 +6,12 @@
         <span class="fw-bold">Kelompok 4 ©</span>
       </div>
       <div>
-        <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"
-          ><i class="icon-base bx bx-log-out-circle icon-sm me-1"></i>Logout</a
-        >
+        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+          @csrf
+          <a class="btn btn-sm btn-outline-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="icon-base bx bx-log-out-circle icon-sm me-1"></i>Logout
+          </a>
+        </form>
       </div>
     </div>
   </footer>
