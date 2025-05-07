@@ -65,9 +65,12 @@ id="layout-navbar">
           <div class="dropdown-divider my-1"></div>
         </li>
         <li>
-          <a class="dropdown-item" href="javascript:void(0);">
-            <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
-          </a>
+          <form action="{{ route('logout') }}" method="POST" id="logout-form">
+            @csrf
+            <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+            </a>
+          </form>
         </li>
       </ul>
     </li>

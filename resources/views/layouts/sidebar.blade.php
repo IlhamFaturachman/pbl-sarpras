@@ -18,10 +18,15 @@
 
     <ul class="menu-inner py-1">
       <!-- Dashboard -->
-      <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+      @role('admin')
+        <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
         <a
-          @role('admin')
             href="{{ route('admin.dashboard') }}"
+          @endrole
+      @role('mahasiswa|dosen|tendik')
+        <li class="menu-item {{ request()->routeIs('users.dashboard') ? 'active' : '' }}">
+        <a
+            href="{{ route('users.dashboard') }}"
           @endrole
           class="menu-link">
           <i class="menu-icon tf-icons bx bx-home-smile"></i>
@@ -29,20 +34,35 @@
         </a>
       </li>
       @role('admin')
-      <li class="menu-item {{ request()->routeIs('admin.data.*') ? 'active open' : '' }}">
+      <li class="menu-item {{ request()->routeIs('data.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons bx bx-home-smile"></i>
           <div class="text-truncate" data-i18n="Dashboards">Data</div>
         </a>
         <ul class="menu-sub">
-          <li class="menu-item {{ request()->routeIs('admin.data.user') ? 'active' : '' }}">
-            <a href="{{ route('admin.data.user') }}" class="menu-link">
+          <li class="menu-item {{ request()->routeIs('data.user') ? 'active' : '' }}">
+            <a href="{{ route('data.user') }}" class="menu-link">
               <div class="text-truncate" data-i18n="Analytics">Data User</div>
             </a>
           </li>
-          <li class="menu-item">
-            <a href="#" class="menu-link">
+          <li class="menu-item {{ request()->routeIs('data.fasilitas') ? 'active' : '' }}">
+            <a href="{{ route('data.fasilitas') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Data Fasilitas</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('data.ruang') ? 'active' : '' }}">
+            <a href="{{ route('data.ruang') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Data Ruang</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('data.gedung') ? 'active' : '' }}">
+            <a href="{{ route('data.gedung') }}" class="menu-link">
               <div class="text-truncate" data-i18n="CRM">Data Gedung</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('data.periode') ? 'active' : '' }}">
+            <a href="{{ route('data.periode') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Data Periode</div>
             </a>
           </li>
         </ul>

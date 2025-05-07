@@ -11,13 +11,16 @@ class UserModel extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    protected $table = 'm_user'; // pastikan ini sesuai dengan migrasi kamu
-    protected $primaryKey = 'user_id'; // karena bukan "id"
+    protected $table = 'm_user'; 
+    protected $primaryKey = 'user_id';
 
     protected $fillable = [
+        'nama_lengkap',
+        'nomor_induk',
         'nama',
         'email',
         'password',
+        'status',
         'foto_profile',
     ];
 
