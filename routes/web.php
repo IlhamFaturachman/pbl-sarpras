@@ -22,6 +22,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
+    Route::prefix('data')->group(function () {
+        Route::get('/user', function () {
+            return view('admin.user.index');
+        })->name('admin.data.user');
+    });
 });
 
 Route::middleware('auth')->group(function () {
