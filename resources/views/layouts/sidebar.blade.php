@@ -18,10 +18,15 @@
 
     <ul class="menu-inner py-1">
       <!-- Dashboard -->
-      <li class="menu-item {{ request()->routeIs('dashboard.admin') ? 'active' : '' }}">
+      @role('admin')
+        <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
         <a
-          @role('admin')
-            href="{{ route('dashboard.admin') }}"
+            href="{{ route('admin.dashboard') }}"
+          @endrole
+      @role('mahasiswa|dosen|tendik')
+        <li class="menu-item {{ request()->routeIs('users.dashboard') ? 'active' : '' }}">
+        <a
+            href="{{ route('users.dashboard') }}"
           @endrole
           class="menu-link">
           <i class="menu-icon tf-icons bx bx-home-smile"></i>

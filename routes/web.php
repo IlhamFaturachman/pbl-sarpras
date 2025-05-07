@@ -20,20 +20,31 @@ use App\Http\Controllers\Admin\FasilitasController;
 */
 
 Route::get('/', function () {
-return view('welcome');
+    return view('welcome');
 });
 
+// admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
-    })->name('dashboard.admin');
+    })->name('admin.dashboard');
     Route::prefix('data')->group(function () {
+        // user
         Route::get('/user', [UserController::class, 'index'])->name('data.user');
+        Route::post('/user', [UserController::class, 'store'])->name('user.store');
+
         Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
         Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('data.fasilitas');
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
     });
+});
+
+// mahasiswa
+Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('users.dashboard');
+    })->name('users.dashboard');
 });
 
 Route::middleware('auth')->group(function () {
