@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function index() {
-        $users = UserModel::get();
+        $users = UserModel::paginate(10); 
         $roles = DB::table('m_role')->select('id', 'name')->get();
         
         // Default empty user for edit (to avoid errors when no user is being edited)
@@ -25,7 +25,7 @@ class UserController extends Controller
             $editUser = UserModel::find(session('editUserId'));
             $userRole = $editUser->roles->first() ? $editUser->roles->first()->id : '';
         }
-
+    
         return view('admin.user.index', [
             'users' => $users,
             'roles' => $roles,

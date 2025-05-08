@@ -33,6 +33,29 @@
         document.getElementById('delete-user-name').textContent = userName;
         document.getElementById('delete-form').action = "{{ url('admin/data/user') }}/" + userId;
         var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        $('#delete-form').off('submit');
+        $('#delete-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    deleteModal.hide();
+                    $('.modal-backdrop').remove();
+                    alert('Data berhasil dihapus');
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
         deleteModal.show();
     }
+
+    $('#deleteModal').on('hidden.bs.modal', function () {
+        $('#delete-form')[0].reset();
+    });
 </script>

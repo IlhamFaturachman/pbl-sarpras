@@ -25,14 +25,14 @@
     </div>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
-            <thead>
+            <thead class="table-primary">
                 <tr>
-                    <th>Nama</th>
-                    <th>Nomor Induk</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="font-weight: bold;">Nama</th>
+                    <th style="font-weight: bold;">Nomor Induk</th>
+                    <th style="font-weight: bold;">Username</th>
+                    <th style="font-weight: bold;">Email</th>
+                    <th style="font-weight: bold;">Status</th>
+                    <th style="font-weight: bold;">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -65,6 +65,12 @@
             </tbody>
         </table>
     </div>
+    <div class="d-flex justify-content-end mt-3 me-3">
+        @if ($users->hasPages())
+            <x-pagination :paginator="$users" />
+        @endif
+    </div>
+    
 </div>
 
 @include('admin.user.create')
