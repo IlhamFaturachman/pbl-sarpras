@@ -32,10 +32,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         // user
         Route::get('/user', [UserController::class, 'index'])->name('data.user');
         Route::post('/user', [UserController::class, 'store'])->name('user.store');
+        Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+        Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
+        // gedung
         Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
+
+        // fasilitas
         Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('data.fasilitas');
+
+        // ruang
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
+
+        // periode
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
     });
 });

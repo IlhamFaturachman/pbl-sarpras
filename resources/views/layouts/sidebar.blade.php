@@ -42,27 +42,27 @@
         <ul class="menu-sub">
           <li class="menu-item {{ request()->routeIs('data.user') ? 'active' : '' }}">
             <a href="{{ route('data.user') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="Analytics">Data User</div>
+              <div class="text-truncate" data-i18n="Analytics">User</div>
             </a>
           </li>
           <li class="menu-item {{ request()->routeIs('data.fasilitas') ? 'active' : '' }}">
             <a href="{{ route('data.fasilitas') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="CRM">Data Fasilitas</div>
+              <div class="text-truncate" data-i18n="CRM">Fasilitas</div>
             </a>
           </li>
           <li class="menu-item {{ request()->routeIs('data.ruang') ? 'active' : '' }}">
             <a href="{{ route('data.ruang') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="CRM">Data Ruang</div>
+              <div class="text-truncate" data-i18n="CRM">Ruang</div>
             </a>
           </li>
           <li class="menu-item {{ request()->routeIs('data.gedung') ? 'active' : '' }}">
             <a href="{{ route('data.gedung') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="CRM">Data Gedung</div>
+              <div class="text-truncate" data-i18n="CRM">Gedung</div>
             </a>
           </li>
           <li class="menu-item {{ request()->routeIs('data.periode') ? 'active' : '' }}">
             <a href="{{ route('data.periode') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="CRM">Data Periode</div>
+              <div class="text-truncate" data-i18n="CRM">Periode</div>
             </a>
           </li>
         </ul>
