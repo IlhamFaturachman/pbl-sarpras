@@ -32,7 +32,7 @@
                     <th style="font-weight: bold;">Username</th>
                     <th style="font-weight: bold;">Email</th>
                     <th style="font-weight: bold;">Status</th>
-                    <th style="font-weight: bold;">Actions</th>
+                    <th style="font-weight: bold;" class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -43,21 +43,10 @@
                         <td>{{ $user->nama }}</td>
                         <td>{{ $user->email }}</td>
                         <td><span class="badge bg-label-{{ $user->status == 'Aktif' ? 'success' : 'danger' }} me-1">{{ $user->status }}</span></td>
-                        <td>
-                            <div class="demo-inline-spacing">
-                                <div class="btn-group">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <i class="icon-base bx bx-dots-vertical-rounded" style="color: white;"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item edit-user" href="javascript:void(0);" data-id="{{ $user->user_id }}">Edit</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="showDeleteModal('{{ $user->user_id }}', '{{ $user->nama_lengkap }}')">Hapus</a></li>
-                                </ul>
-                                </div>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="button" class="btn btn-sm btn-warning edit-user" data-id="{{ $user->user_id }}">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $user->user_id }}', '{{ $user->nama_lengkap }}')">Hapus</button>
                             </div>
                         </td>
                     </tr>
