@@ -45,9 +45,9 @@
               <div class="text-truncate" data-i18n="Analytics">User</div>
             </a>
           </li>
-          <li class="menu-item {{ request()->routeIs('data.fasilitas') ? 'active' : '' }}">
-            <a href="{{ route('data.fasilitas') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="CRM">Fasilitas</div>
+          <li class="menu-item {{ request()->routeIs('data.fasum') ? 'active' : '' }}">
+            <a href="{{ route('data.fasum') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Fasilitas Umum</div>
             </a>
           </li>
           <li class="menu-item {{ request()->routeIs('data.ruang') ? 'active' : '' }}">

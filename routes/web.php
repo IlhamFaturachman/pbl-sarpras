@@ -3,10 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\FasumController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
-use App\Http\Controllers\Admin\FasilitasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
 
         // fasilitas
-        Route::get('/fasilitas', [FasilitasController::class, 'index'])->name('data.fasilitas');
+        Route::get('/fasum', [FasumController::class, 'index'])->name('data.fasum');
 
         // ruang
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
