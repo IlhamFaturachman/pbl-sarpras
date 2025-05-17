@@ -45,6 +45,7 @@
                         <td><span class="badge bg-label-{{ $user->status == 'Aktif' ? 'success' : 'danger' }} me-1">{{ $user->status }}</span></td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
+                                <button type="button" class="btn btn-sm btn-primary detail-user" data-id="{{ $user->user_id }}">Detail</button>
                                 <button type="button" class="btn btn-sm btn-warning edit-user" data-id="{{ $user->user_id }}">Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $user->user_id }}', '{{ $user->nama_lengkap }}')">Hapus</button>
                             </div>
@@ -65,6 +66,7 @@
 @include('admin.user.create')
 @include('admin.user.edit')
 @include('admin.user.delete')
+@include('admin.user.show')
 
 <!-- SweetAlert Script -->
 <script>
@@ -86,7 +88,53 @@
                 icon: "error"
             });
         @endif
+
+        @if(session('adding'))
+            // Buka modal tambah user otomatis setelah validasi gagal
+            var createUserModal = new bootstrap.Modal(document.getElementById('createUser'));
+            createUserModal.show();
+        @endif
+
         
+        // Handle detail button click
+        $('.detail-user').on('click', function () {
+            const userId = $(this).data('id');
+            $.ajax({
+                url: "{{ url('admin/data/user') }}/" + userId + "/show",
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    const user = response.user;
+                    const userRole = response.userRole;
+                    
+                    // Populate modal fields with user data
+                    $('#detail_nama_lengkap').text(user.nama_lengkap);
+                    $('#detail_user_id').text(user.user_id);
+                    $('#detail_nomor_induk').text(user.nomor_induk);
+                    $('#detail_nama').text(user.nama);
+                    $('#detail_email').text(user.email);
+                    $('#detail_role').text(userRole);
+                    $('#detail_status').text(user.status);
+
+                    if (user.foto_profile) {
+                        $('#detail_foto_profile').attr('src', "{{ asset('storage') }}/" + user.foto_profile);
+                    } else {
+                        $('#detail_foto_profile').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
+                    }
+
+                    // Show the modal
+                    $('#detailUser').modal('show');
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Gagal mengambil detail user',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+
         // Handle edit button click
         $('.edit-user').on('click', function() {
             const userId = $(this).data('id');
