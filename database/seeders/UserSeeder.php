@@ -2,26 +2,73 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        UserModel::create([
-            'nama_lengkap' => 'Admin Admin',
-            'nomor_induk' => '1234567890',
-            'nama' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'), 
-            'status' => 'aktif',
-            'foto_profile' => 'default.jpg',
-        ]);
+        $users = [
+            [
+                'nama_lengkap' => 'Admin Admin',
+                'nomor_induk' => '1234567890',
+                'nama' => 'Admin',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('password'),
+                'status' => 'aktif',
+                'foto_profile' => 'default.jpg',
+            ],
+            [
+                'nama_lengkap' => 'Mahasiswa Satu',
+                'nomor_induk' => '2022010001',
+                'nama' => 'Mahasiswa',
+                'email' => 'mahasiswa@example.com',
+                'password' => Hash::make('password'),
+                'status' => 'aktif',
+                'foto_profile' => 'default.jpg',
+            ],
+            [
+                'nama_lengkap' => 'Dosen Utama',
+                'nomor_induk' => '1980112233',
+                'nama' => 'Dosen',
+                'email' => 'dosen@example.com',
+                'password' => Hash::make('password'),
+                'status' => 'aktif',
+                'foto_profile' => 'default.jpg',
+            ],
+            [
+                'nama_lengkap' => 'Tendik Pro',
+                'nomor_induk' => '1975123456',
+                'nama' => 'Tendik',
+                'email' => 'tendik@example.com',
+                'password' => Hash::make('password'),
+                'status' => 'aktif',
+                'foto_profile' => 'default.jpg',
+            ],
+            [
+                'nama_lengkap' => 'Sarpras Admin',
+                'nomor_induk' => '1989011223',
+                'nama' => 'Sarpras',
+                'email' => 'sarpras@example.com',
+                'password' => Hash::make('password'),
+                'status' => 'aktif',
+                'foto_profile' => 'default.jpg',
+            ],
+            [
+                'nama_lengkap' => 'Teknisi Hebat',
+                'nomor_induk' => '1995123456',
+                'nama' => 'Teknisi',
+                'email' => 'teknisi@example.com',
+                'password' => Hash::make('password'),
+                'status' => 'aktif',
+                'foto_profile' => 'default.jpg',
+            ],
+        ];
+
+        foreach ($users as $user) {
+            UserModel::firstOrCreate(['email' => $user['email']], $user);
+        }
     }
 }
