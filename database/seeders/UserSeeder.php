@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Admin',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password'),
-                'status' => 'aktif',
+                'status' => 'Aktif',
                 'foto_profile' => 'default.jpg',
             ],
             [
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Mahasiswa',
                 'email' => 'mahasiswa@example.com',
                 'password' => Hash::make('password'),
-                'status' => 'aktif',
+                'status' => 'Aktif',
                 'foto_profile' => 'default.jpg',
             ],
             [
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Dosen',
                 'email' => 'dosen@example.com',
                 'password' => Hash::make('password'),
-                'status' => 'aktif',
+                'status' => 'Aktif',
                 'foto_profile' => 'default.jpg',
             ],
             [
@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Tendik',
                 'email' => 'tendik@example.com',
                 'password' => Hash::make('password'),
-                'status' => 'aktif',
+                'status' => 'Aktif',
                 'foto_profile' => 'default.jpg',
             ],
             [
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Sarpras',
                 'email' => 'sarpras@example.com',
                 'password' => Hash::make('password'),
-                'status' => 'aktif',
+                'status' => 'Aktif',
                 'foto_profile' => 'default.jpg',
             ],
             [
@@ -62,7 +62,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Teknisi',
                 'email' => 'teknisi@example.com',
                 'password' => Hash::make('password'),
-                'status' => 'aktif',
+                'status' => 'Aktif',
                 'foto_profile' => 'default.jpg',
             ],
         ];
