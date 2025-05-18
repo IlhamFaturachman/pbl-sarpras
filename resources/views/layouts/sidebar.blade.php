@@ -28,6 +28,16 @@
         <a
             href="{{ route('users.dashboard') }}"
           @endrole
+      @role('sarpras')
+        <li class="menu-item {{ request()->routeIs('sarpras.dashboard') ? 'active' : '' }}">
+        <a
+            href="{{ route('sarpras.dashboard') }}"
+          @endrole
+      @role('teknisi')
+        <li class="menu-item {{ request()->routeIs('teknisi.dashboard') ? 'active' : '' }}">
+        <a
+            href="{{ route('teknisi.dashboard') }}"
+          @endrole
           class="menu-link">
           <i class="menu-icon tf-icons bx bx-home-smile"></i>
           <div class="text-truncate" data-i18n="Support">Dashboard</div>
@@ -68,13 +78,35 @@
         </ul>
       </li>      
       @endrole
-      @role('sarpas')
+      @role('mahasiswa|dosen|tendik')
+      {{-- <li class="menu-item {{ request()->routeIs('') ? 'active' : '' }}"> --}}
+      <li class="menu-item">
+        <a
+          {{-- href="{{ route('') }}" --}}
+          href=""
+          class="menu-link">
+          <i class="menu-icon tf-icons bx bx-file"></i>
+          <div class="text-truncate" data-i18n="Support">Laporan Kerusakan</div>
+        </a>
+      </li>
+      @endrole
+      @role('sarpras')
       <li class="menu-item">
         <a
           href="#"
           class="menu-link">
           <i class="menu-icon tf-icons bx bx-file"></i>
-          <div class="text-truncate" data-i18n="Documentation">Laporan</div>
+          <div class="text-truncate" data-i18n="Documentation">Verifikasi Laporan</div>
+        </a>
+      </li>
+      @endrole
+      @role('teknisi')
+      <li class="menu-item">
+        <a
+          href="#"
+          class="menu-link">
+          <i class="menu-icon tf-icons bx bx-file"></i>
+          <div class="text-truncate" data-i18n="Documentation">Laporan Perbaikan</div>
         </a>
       </li>
       @endrole
