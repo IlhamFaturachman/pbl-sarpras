@@ -19,23 +19,30 @@ class UserController extends Controller
         // Default empty user for edit (to avoid errors when no user is being edited)
         $editUser = new UserModel();
         $userRole = '';
+        $detailUser = null;
         
         // Check if we're in edit mode with validation errors
         if (session('editUserId')) {
             $editUser = UserModel::find(session('editUserId'));
             $userRole = $editUser->roles->first() ? $editUser->roles->first()->id : '';
         }
+
+        // Detail User
+        if (session('detailUserId')) {
+            $detailUser = UserModel::with('roles')->find(session('detailUserId'));
+        }
     
         return view('admin.user.index', [
             'users' => $users,
             'roles' => $roles,
             'editUser' => $editUser,
-            'userRole' => $userRole
+            'detailUser' => $detailUser,
+            'userRole' => $userRole,
+            'adding' => session('adding')
         ]);
     }
 
     public function store(Request $request) {
-        // Validasi input
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
             'nomor_induk' => 'required|string|max:255|unique:m_user,nomor_induk',
@@ -43,15 +50,17 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:m_user,email',
             'password' => 'required|min:6',
             'foto_profile' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
-            'role' => 'required|exists:m_role,id' 
+            'role' => 'required|exists:m_role,id'
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
+            // Jika validasi gagal, kirim kembali error ke form
             return redirect()->route('data.user')
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('adding', true);
         }
 
         try {
@@ -65,36 +74,49 @@ class UserController extends Controller
                 'password' => bcrypt($request->password),
                 'status' => $request->status ?? 'Tidak Aktif'
             ];
-    
+
             if ($request->hasFile('foto_profile')) {
                 $file = $request->file('foto_profile');
                 $fileName = time().'_'.$file->getClientOriginalName();
                 $file->storeAs('public/foto_profile', $fileName);
-                $data['foto_profile'] = 'foto_profile/'.$fileName; 
+                $data['foto_profile'] = 'foto_profile/'.$fileName;
             }
-    
-            // Buat user baru
+
+            // Simpan user ke database
             $user = UserModel::create($data);
-            
-            // Ambil role dari request dan assign ke user
             $role = RoleModel::findById($request->role);
             if ($role) {
                 $user->assignRole($role);
             } else {
                 throw new \Exception("Role tidak ditemukan");
             }
-            
+
             DB::commit();
-    
+
+            // Jika menggunakan AJAX atau form biasa
             return redirect()->route('data.user')->with('success', 'Data User berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('data.user')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
+                ->withInput()
+                ->with('adding', true);
         }
     }
     
+    public function show($id) {
+        $user = UserModel::with('roles')->find($id);
+
+        if (!$user) {
+            return redirect()->route('data.user')->with('error', 'User tidak ditemukan');
+        }
+
+        return response()->json([
+            'user' => $user,
+            'userRole' => $user->roles->pluck('name')->first()
+        ]);
+    }
+
     public function edit($id) {
         $user = UserModel::findOrFail($id);
         $roles = DB::table('m_role')->select('id', 'name')->get();

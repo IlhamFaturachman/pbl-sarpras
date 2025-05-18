@@ -88,24 +88,25 @@
 </form>
 
 <script>
-    // Preview image before upload
-    $('#foto_profile').on('change', function() {
+    // Preview image sebelum upload
+    $('#foto_profile').on('change', function () {
         if (this.files && this.files[0]) {
             const reader = new FileReader();
             reader.onload = e => $('#preview-image').attr('src', e.target.result);
             reader.readAsDataURL(this.files[0]);
         }
     });
-    
-    // Reset form when modal is opened
-    $('#createUser').on('show.bs.modal', function() {
+
+    // Reset form saat modal dibuka
+    $('#createUser').on('show.bs.modal', function () {
         $('#form-tambah')[0].reset();
+        $('.text-danger').html('');
         $('#preview-image').attr('src', '{{ asset("assets/img/avatars/default-avatar.png") }}');
     });
-    
-    // Auto-open modal if there are validation errors
+
+    // Auto-open modal jika ada error dari server (misal pada reload pertama)
     @if($errors->any())
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#createUser').modal('show');
         });
     @endif
