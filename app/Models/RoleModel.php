@@ -6,9 +6,9 @@ use Spatie\Permission\Models\Role as SpatieRole;
 
 class RoleModel extends SpatieRole
 {
-    protected $table = 'm_role'; // Tabel custom kamu
+    protected $table = 'm_role'; 
 
-    protected $primaryKey = 'id'; // Pastikan ini sesuai. Biasanya tetap 'id'
+    protected $primaryKey = 'id'; 
 
     protected $fillable = [
         'name',

@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    Ini dashboard admin
+    Ini dashboard userss
 @endsection

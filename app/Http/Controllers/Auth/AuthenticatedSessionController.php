@@ -23,13 +23,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        $request->session()->regenerate();
+            $user = auth()->user();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+            // Check user role and redirect accordingly
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->hasRole('mahasiswa')) {
+                return redirect()->route('users.dashboard');
+            }
+
+            // Fallback if no appropriate role exists
+            Auth::logout();
+            return redirect('/login')->withErrors(['email' => 'Your account does not have the appropriate role.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect('/login')->withErrors($e->errors());
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors(['error' => 'An error occurred during login. Please try again.']);
+        }
     }
 
     /**
@@ -43,6 +59,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login')->with('status', 'You have been successfully logged out!');
     }
 }

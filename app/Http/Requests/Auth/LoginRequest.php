@@ -33,6 +33,20 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Email address is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'password.required' => 'Password is required.',
+        ];
+    }
+
+    /**
      * Attempt to authenticate the request's credentials.
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -78,8 +92,8 @@ class LoginRequest extends FormRequest
     /**
      * Get the rate limiting throttle key for the request.
      */
-    public function throttleKey(): string
+    private function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 }
