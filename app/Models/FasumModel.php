@@ -14,8 +14,6 @@ class FasumModel extends Model
     protected $primaryKey = 'fasum_id'; 
 
     protected $fillable = [
-        'kode',
         'nama',
-        'lokasi',
     ];
 }

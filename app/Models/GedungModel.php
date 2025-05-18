@@ -16,6 +16,5 @@ class GedungModel extends Model
     protected $fillable = [
         'kode',
         'nama',
-        'lokasi',
     ];
 }
