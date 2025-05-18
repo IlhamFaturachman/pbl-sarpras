@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id('user_id');
             $table->string('nama');
             $table->string('password');
+            $table->unsignedBigInteger('role_id');
             $table->string('foto_profile')->nullable();
             $table->timestamps();
+
+            $table->foreign('role_id')->references('role_id')->on('m_role')->onDelete('restrict');
         });
     }
 
