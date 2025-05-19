@@ -36,12 +36,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
         Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
         Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-
+        
         // gedung
         Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
-
-        // fasilitas
+        
+        // fasilitas umum
         Route::get('/fasum', [FasumController::class, 'index'])->name('data.fasum');
+        Route::post('/fasum', [FasumController::class, 'store'])->name('fasum.store');
+        Route::get('/fasum/{id}/edit', [FasumController::class, 'edit'])->name('fasum.edit');
+        Route::put('/fasum/{id}', [FasumController::class, 'update'])->name('fasum.update');
+        Route::delete('/fasum/{id}', [FasumController::class, 'destroy'])->name('fasum.destroy');
 
         // ruang
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
