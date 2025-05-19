@@ -12,18 +12,14 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th style="font-weight: bold;">Kode</th>
                     <th style="font-weight: bold;">Nama Fasilitas Umum</th>
-                    <th style="font-weight: bold;">Lokasi</th>
                     <th style="font-weight: bold;">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
                 @foreach($fasums as $fasum)
                     <tr>
-                        <td>{{ $fasum->kode }}</td>
                         <td>{{ $fasum->nama }}</td>
-                        <td>{{ $fasum->lokasi }}</td>
                         <td>
                             <div class="demo-inline-spacing">
                                 <div class="btn-group">
