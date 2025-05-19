@@ -34,7 +34,6 @@
                 @foreach($fasums as $fasum)
                     <tr>
                         <td>{{ $fasum->nama }}</td>
-<<<<<<< HEAD
                         <td>
                             <div class="demo-inline-spacing">
                                 <div class="btn-group">
