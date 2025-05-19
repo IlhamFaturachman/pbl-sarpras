@@ -29,36 +29,27 @@ id="layout-navbar">
         href="javascript:void(0);"
         data-bs-toggle="dropdown">
         <div class="avatar avatar-online">
-          <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+          <img src="{{ Auth::user()->foto_profile ? asset('storage/' . Auth::user()->foto_profile) : asset('assets/img/avatars/default-avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" />
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
         <li>
-          <a class="dropdown-item" href="#">
+          <a class="dropdown-item" href="/profil">
             <div class="d-flex">
               <div class="flex-shrink-0 me-3">
                 <div class="avatar avatar-online">
-                  <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                  <img src="{{ Auth::user()->foto_profile ? asset('storage/' . Auth::user()->foto_profile) : asset('assets/img/avatars/default-avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                 </div>
               </div>
               <div class="flex-grow-1">
-                <h6 class="mb-0">John Doe</h6>
-                <small class="text-body-secondary">Admin</small>
+                <h6 class="mb-0">
+                  @auth
+                    {{ Auth::user()->nama_lengkap }}
+                  @endauth
+                </h6>
+                <small class="text-body-secondary">{{ Auth::user()->email }}</small>
               </div>
             </div>
-          </a>
-        </li>
-        <li>
-          <div class="dropdown-divider my-1"></div>
-        </li>
-        <li>
-          <a class="dropdown-item" href="#">
-            <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="#">
-            <i class="icon-base bx bx-cog icon-md me-3"></i><span>Settings</span>
           </a>
         </li>
         <li>
