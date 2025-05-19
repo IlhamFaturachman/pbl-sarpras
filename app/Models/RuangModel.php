@@ -17,6 +17,7 @@ class RuangModel extends Model
     protected $fillable = [
         'nama',
         'kode',
+        'gedung_id',
         'lantai',
     ];
 
