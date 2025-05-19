@@ -45,6 +45,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
         // ruang
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
+        Route::post('/ruang', [RuangController::class, 'store'])->name('ruang.store');
+        Route::get('/ruang/{id}/show', [RuangController::class, 'show'])->name('ruang.show');
+        Route::get('/ruang/{id}/edit', [RuangController::class, 'edit'])->name('ruang.edit');
+        Route::put('/ruang/{id}', [RuangController::class, 'update'])->name('ruang.update');
+        Route::delete('/ruang/{id}', [RuangController::class, 'destroy'])->name('ruang.destroy');
 
         // periode
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
