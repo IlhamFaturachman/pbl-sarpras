@@ -3,7 +3,7 @@
       <a href="/" class="app-brand-link">
         <div style="display: flex; align-items: center;">
           <img src="{{ asset('assets/img/logo.png') }}" alt="" style="width: 65px; height: 65px; margin-right: 8px;">
-          <span style="font-size: 1.5rem; font-weight: bold; color: #333;">Sarpras</span>
+          <span style="font-size: 1.5rem; font-weight: bold; color: #333;">SiLaprak</span>
         </div>
       </a>
 
@@ -46,7 +46,7 @@
       @role('admin')
       <li class="menu-item {{ request()->routeIs('data.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <i class="menu-icon tf-icons bx bx-home-smile"></i>
+          <i class="menu-icon tf-icons bx bx-data"></i>
           <div class="text-truncate" data-i18n="Dashboards">Data</div>
         </a>
         <ul class="menu-sub">
@@ -78,7 +78,7 @@
         </ul>
       </li>      
       @endrole
-      @role('mahasiswa|dosen|tendik')
+      @role('mahasiswa|dosen|tendik|admin')
       {{-- <li class="menu-item {{ request()->routeIs('') ? 'active' : '' }}"> --}}
       <li class="menu-item">
         <a
