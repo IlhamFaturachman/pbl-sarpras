@@ -34,21 +34,6 @@
                 @foreach($fasums as $fasum)
                     <tr>
                         <td>{{ $fasum->nama }}</td>
-                        <td>
-                            <div class="demo-inline-spacing">
-                                <div class="btn-group">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <i class="icon-base bx bx-dots-vertical-rounded" style="color: white;"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item edit-fasum" href="javascript:void(0);" data-id="{{ $fasum->fasum_id }}">Edit</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="showDeleteModal('{{ $fasum->fasum_id }}', '{{ $fasum->nama }}')">Hapus</a></li>
-                                </ul>
-                                </div>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" class="btn btn-sm btn-warning edit-fasum" data-id="{{ $fasum->fasum_id }}">Edit</button>
