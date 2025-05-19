@@ -71,7 +71,9 @@
                             <select id="edit_role" name="role" class="form-select" required>
                                 <option value="">-- Pilih Role --</option>
                                 @foreach($roles as $role)
-                                    <option value="{{ $role->id }}" {{ (old('role', $userRole) == $role->id) ? 'selected' : '' }}>{{ $role->name }}</option>
+                                    <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
+                                        {{ ucwords(strtolower($role->name)) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
