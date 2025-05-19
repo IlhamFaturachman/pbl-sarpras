@@ -94,7 +94,12 @@
             var createUserModal = new bootstrap.Modal(document.getElementById('createUser'));
             createUserModal.show();
         @endif
-
+        
+        function toTitleCase(str) {
+            return str.toLowerCase().split(' ').map(function(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
         
         // Handle detail button click
         $('.detail-user').on('click', function () {
@@ -113,7 +118,7 @@
                     $('#detail_nomor_induk').text(user.nomor_induk);
                     $('#detail_nama').text(user.nama);
                     $('#detail_email').text(user.email);
-                    $('#detail_role').text(userRole);
+                    $('#detail_role').text(toTitleCase(userRole));
                     $('#detail_status').text(user.status);
 
                     if (user.foto_profile) {
