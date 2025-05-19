@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
   // Total Revenue Report Chart - Bar Chart
   // --------------------------------------------------------------------
-  const totalRevenueChartEl = document.querySelector('#totalRevenueChart'),
+  const totalRevenueChartEl = document.querySelector('#TotalPerbaikanChart'),
     totalRevenueChartOptions = {
       series: [
         {
