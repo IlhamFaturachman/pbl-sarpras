@@ -39,6 +39,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         
         // gedung
         Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
+        Route::post('/gedung', [GedungController::class, 'store'])->name('gedung.store');
+        Route::get('/gedung/{id}/edit', [GedungController::class, 'edit'])->name('gedung.edit');
+        Route::put('/gedung/{id}', [GedungController::class, 'update'])->name('gedung.update');
+        Route::delete('/gedung/{id}', [GedungController::class, 'destroy'])->name('gedung.destroy');
         
         // fasilitas umum
         Route::get('/fasum', [FasumController::class, 'index'])->name('data.fasum');
