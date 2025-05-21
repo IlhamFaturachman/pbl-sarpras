@@ -22,10 +22,6 @@
 
                 <!-- Informasi User -->
                 <div class="row mb-2">
-                    <div class="col-md-4">Id User</div>
-                    <strong class="col-md-8" id="detail_user_id"></strong>
-                </div>
-                <div class="row mb-2">
                     <div class="col-md-4">Nama Lengkap</div>
                     <strong class="col-md-8" id="detail_nama_lengkap"></strong>
                 </div>

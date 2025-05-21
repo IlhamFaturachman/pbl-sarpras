@@ -18,24 +18,30 @@
 
 <div class="row">
     <!-- Kolom Kanan: Edit Foto Profil -->
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Edit Foto Profil</h5>
+    <div class="col-md-4 d-flex align-items-center">
+        <div class="card w-100 p-3">
+            <div class="card-header text-center border-0 pb-0">
+                <h5 class="mb-3">Edit Foto Profil</h5>
             </div>
-            <div class="card-body text-center">
-                <img src="{{ asset(Auth::user()->foto_profile ? 'storage/' . Auth::user()->foto_profile : 'assets/img/avatars/default-avatar.png') }}" class="rounded-circle mb-3" width="150" height="150" alt="Foto Profil">
-                <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+            <div class="card-body d-flex flex-column align-items-center">
+                <img src="{{ asset(Auth::user()->foto_profile ? 'storage/' . Auth::user()->foto_profile : 'assets/img/avatars/default-avatar.png') }}" 
+                    class="rounded-circle mb-3 shadow-sm" 
+                    width="150" height="150" 
+                    alt="Foto Profil">
+                <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data" class="w-100">
                     @csrf
-                    <div class="form-group">
-                        <label for="foto_profile">Foto Profil</label>
-                        <input type="file" name="foto_profile" id="foto_profile" class="form-control m-3">
+                    <div class="form-group text-center mb-3">
+                        <label for="foto_profile" class="form-label">Foto Profil</label>
+                        <input type="file" name="foto_profile" id="foto_profile" class="form-control mt-1">
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Foto</button>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-4">Update Foto</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+
     <!-- Kolom Kiri: Form -->
     <div class="col-md-8">
         <div class="card">
