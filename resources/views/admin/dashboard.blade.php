@@ -54,7 +54,7 @@
         <small class="text-muted">{{ $progress[$i] }}% Progress Perbaikan {{ $labels[$i] }}</small>
       </div>
     </div>
-  </div>x
+  </div>
   @endfor
 </div>
 
