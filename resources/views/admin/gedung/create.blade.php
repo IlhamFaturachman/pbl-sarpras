@@ -1,6 +1,6 @@
 <form action="{{ route('gedung.store') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
     @csrf
-    <div class="modal fade" id="createFasum" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="createGedung" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

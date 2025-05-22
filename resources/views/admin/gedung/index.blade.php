@@ -40,7 +40,7 @@
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" class="btn btn-sm btn-warning edit-gedung" data-id="{{ $gedung->gedung_id }}">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $gedung->gedung_id }}', '{{ $gedung->nama }}')">Hapus</button>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteGedungModal('{{ $gedung->gedung_id }}', '{{ $gedung->nama }}')">Hapus</button>
                             </div>
                         </td>
                     </tr>

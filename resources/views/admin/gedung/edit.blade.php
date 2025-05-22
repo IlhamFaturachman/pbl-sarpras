@@ -27,6 +27,12 @@
                     <!-- Data Gedung -->
                     <div class="row">
                         <div class="col mb-3">
+                            <label for="edit_kode_gedung" class="form-label">Kode Gedung</label>
+                            <input type="text" id="edit_kode_gedung" kode="kode" class="form-control" placeholder="Masukkan Kode Gedung" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
                             <label for="edit_nama_gedung" class="form-label">Nama Gedung</label>
                             <input type="text" id="edit_nama_gedung" name="nama" class="form-control" placeholder="Masukkan Nama Gedung" required>
                         </div>
@@ -57,6 +63,7 @@
                     const gedung = response.gedung;
 
                     // Populate form fields
+                    $('#edit_kode_gedung').val(gedung.kode);
                     $('#edit_nama_gedung').val(gedung.nama);
 
                     // Update form action
