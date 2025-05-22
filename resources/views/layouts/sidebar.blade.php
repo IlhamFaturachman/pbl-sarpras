@@ -75,6 +75,11 @@
               <div class="text-truncate" data-i18n="CRM">Periode</div>
             </a>
           </li>
+          <li class="menu-item {{ request()->routeIs('data.item') ? 'active' : '' }}">
+            <a href="{{ route('data.item') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Item</div>
+            </a>
+          </li>
         </ul>
       </li>      
       @endrole

@@ -2,11 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\FasumController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
+use App\Http\Controllers\Admin\LaporanAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,7 +52,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/fasum/{id}/edit', [FasumController::class, 'edit'])->name('fasum.edit');
         Route::put('/fasum/{id}', [FasumController::class, 'update'])->name('fasum.update');
         Route::delete('/fasum/{id}', [FasumController::class, 'destroy'])->name('fasum.destroy');
-
+        
         // ruang
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
         Route::post('/ruang', [RuangController::class, 'store'])->name('ruang.store');
@@ -58,10 +60,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/ruang/{id}/edit', [RuangController::class, 'edit'])->name('ruang.edit');
         Route::put('/ruang/{id}', [RuangController::class, 'update'])->name('ruang.update');
         Route::delete('/ruang/{id}', [RuangController::class, 'destroy'])->name('ruang.destroy');
-
+        
         // periode
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
+
+        // item
+        Route::get('/item', [ItemController::class, 'index'])->name('data.item');
+        Route::post('/item', [ItemController::class, 'store'])->name('item.store');
+        Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
+        Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
+        Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
     });
+    Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('laporan');
 });
 
 // mahasiswa
