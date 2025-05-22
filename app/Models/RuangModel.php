@@ -16,8 +16,9 @@ class RuangModel extends Model
 
     protected $fillable = [
         'nama',
+        'kode',
+        'gedung_id',
         'lantai',
-        'lokasi',
     ];
 
     public function gedung(): BelongsTo

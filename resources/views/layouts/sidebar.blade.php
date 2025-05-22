@@ -3,7 +3,7 @@
       <a href="/" class="app-brand-link">
         <div style="display: flex; align-items: center;">
           <img src="{{ asset('assets/img/logo.png') }}" alt="" style="width: 65px; height: 65px; margin-right: 8px;">
-          <span style="font-size: 1.5rem; font-weight: bold; color: #333;">Sarpras</span>
+          <span style="font-size: 1.5rem; font-weight: bold; color: #333;">SiLaprak</span>
         </div>
       </a>
 
@@ -28,6 +28,16 @@
         <a
             href="{{ route('users.dashboard') }}"
           @endrole
+      @role('sarpras')
+        <li class="menu-item {{ request()->routeIs('sarpras.dashboard') ? 'active' : '' }}">
+        <a
+            href="{{ route('sarpras.dashboard') }}"
+          @endrole
+      @role('teknisi')
+        <li class="menu-item {{ request()->routeIs('teknisi.dashboard') ? 'active' : '' }}">
+        <a
+            href="{{ route('teknisi.dashboard') }}"
+          @endrole
           class="menu-link">
           <i class="menu-icon tf-icons bx bx-home-smile"></i>
           <div class="text-truncate" data-i18n="Support">Dashboard</div>
@@ -36,7 +46,7 @@
       @role('admin')
       <li class="menu-item {{ request()->routeIs('data.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-          <i class="menu-icon tf-icons bx bx-home-smile"></i>
+          <i class="menu-icon tf-icons bx bx-data"></i>
           <div class="text-truncate" data-i18n="Dashboards">Data</div>
         </a>
         <ul class="menu-sub">
@@ -68,13 +78,35 @@
         </ul>
       </li>      
       @endrole
-      @role('sarpas')
+      @role('mahasiswa|dosen|tendik|admin')
+      {{-- <li class="menu-item {{ request()->routeIs('') ? 'active' : '' }}"> --}}
+      <li class="menu-item">
+        <a
+          {{-- href="{{ route('') }}" --}}
+          href=""
+          class="menu-link">
+          <i class="menu-icon tf-icons bx bx-file"></i>
+          <div class="text-truncate" data-i18n="Support">Laporan Kerusakan</div>
+        </a>
+      </li>
+      @endrole
+      @role('sarpras')
       <li class="menu-item">
         <a
           href="#"
           class="menu-link">
           <i class="menu-icon tf-icons bx bx-file"></i>
-          <div class="text-truncate" data-i18n="Documentation">Laporan</div>
+          <div class="text-truncate" data-i18n="Documentation">Verifikasi Laporan</div>
+        </a>
+      </li>
+      @endrole
+      @role('teknisi')
+      <li class="menu-item">
+        <a
+          href="#"
+          class="menu-link">
+          <i class="menu-icon tf-icons bx bx-file"></i>
+          <div class="text-truncate" data-i18n="Documentation">Laporan Perbaikan</div>
         </a>
       </li>
       @endrole

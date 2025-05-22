@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->foreign('pelapor_id')->references('user_id')->on('m_user');
             $table->foreign('kerusakan_id')->references('kerusakan_id')->on('m_kerusakan');
             $table->foreign('teknisi_id')->references('user_id')->on('m_user');
-            $table->foreign('periode_id')->references('periode_id')->on('m_periode');
         });
     }
 
