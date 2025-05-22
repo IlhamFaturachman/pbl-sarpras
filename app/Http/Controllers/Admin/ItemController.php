@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\FasumModel;
+use App\Models\ItemModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class FasumController extends Controller
+class ItemController extends Controller
 {
     public function index() {
-        $fasums = FasumModel::paginate(10); 
+        $items = ItemModel::paginate(10); 
     
-        return view('admin.fasum.index', [
-            'fasums' => $fasums,
+        return view('admin.item.index', [
+            'items' => $items,
         ]);
     }
 
@@ -27,7 +26,7 @@ class FasumController extends Controller
 
         if ($validator->fails()) {
             // Jika validasi gagal, kirim kembali error ke form
-            return redirect()->route('data.fasum')
+            return redirect()->route('data.item')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('adding', true);
@@ -38,11 +37,11 @@ class FasumController extends Controller
                 'nama' => $request->nama,
             ];
 
-            FasumModel::create($data);
+            ItemModel::create($data);
 
-            return redirect()->route('data.fasum')->with('success', 'Data Fasum berhasil disimpan');
+            return redirect()->route('data.item')->with('success', 'Data item berhasil disimpan');
         } catch (\Exception $e) {
-            return redirect()->route('data.fasum')
+            return redirect()->route('data.item')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput()
                 ->with('adding', true);
@@ -50,10 +49,10 @@ class FasumController extends Controller
     }
 
     public function edit($id) {
-        $fasum = FasumModel::findOrFail($id);
+        $item = ItemModel::findOrFail($id);
         
         return response()->json([
-            'fasum' => $fasum,
+            'item' => $item,
         ]);
     }
 
@@ -66,21 +65,21 @@ class FasumController extends Controller
 
         if ($validator->fails()) {
             // Jika validasi gagal, kirim kembali error ke form
-            return redirect()->route('data.fasum')
+            return redirect()->route('data.item')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('editing', true);
         }
 
         try {
-            $fasum = FasumModel::findOrFail($id);
+            $item = ItemModel::findOrFail($id);
             
-            $fasum->nama = $request->nama;
-            $fasum->save();
+            $item->nama = $request->nama;
+            $item->save();
 
-            return redirect()->route('data.fasum')->with('success', 'Data Fasum berhasil diperbarui');
+            return redirect()->route('data.item')->with('success', 'Data item berhasil diperbarui');
         } catch (\Exception $e) {
-            return redirect()->route('data.fasum')
+            return redirect()->route('data.item')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput()
                 ->with('editing', true);
@@ -89,12 +88,12 @@ class FasumController extends Controller
 
     public function destroy($id) {
         try {
-            $fasum = fasumModel::findOrFail($id);
-            $fasum->delete();
+            $item = ItemModel::findOrFail($id);
+            $item->delete();
             
-            return redirect()->route('data.fasum')->with('success', 'Data Fasum berhasil dihapus');
+            return redirect()->route('data.item')->with('success', 'Data item berhasil dihapus');
         } catch (\Exception $e) {
-            return redirect()->route('data.fasum')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->route('data.item')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }
