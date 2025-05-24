@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\LaporanAdminController;
+use App\Http\Controllers\PenugasanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +94,13 @@ Route::middleware(['auth', 'role:teknisi'])->prefix('teknisi')->group(function (
     Route::get('/dashboard', function () {
         return view('teknisi.dashboard');
     })->name('teknisi.dashboard');
+
+
+    Route::get('/penugasan', [PenugasanController::class, 'index'])->name('penugasan');
+    Route::get('/penugasan/{id}', [PenugasanController::class, 'kerjakan'])->name('penugasan.kerjakan');
+    Route::get('/penugasan/{id}/report', [PenugasanController::class, 'getPenugasan']);
+    Route::post('/penugasan/{id}/report', [PenugasanController::class, 'report'])->name('penugasan.report');
+    Route::get('/penugasan/{id}/show', [PenugasanController::class, 'show'])->name('penugasan.show');
 });
 
 Route::middleware('auth')->group(function () {
