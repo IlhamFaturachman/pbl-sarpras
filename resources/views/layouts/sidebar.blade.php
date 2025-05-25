@@ -84,12 +84,8 @@
       </li>      
       @endrole
       @role('mahasiswa|dosen|tendik|admin')
-      {{-- <li class="menu-item {{ request()->routeIs('') ? 'active' : '' }}"> --}}
-      <li class="menu-item">
-        <a
-          {{-- href="{{ route('') }}" --}}
-          href=""
-          class="menu-link">
+      <li class="menu-item {{ request()->routeIs('users.kerusakan') ? 'active' : '' }}">
+        <a href="{{ route('users.kerusakan') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-file"></i>
           <div class="text-truncate" data-i18n="Support">Laporan Kerusakan</div>
         </a>
