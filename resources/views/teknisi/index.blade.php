@@ -30,7 +30,7 @@
                     <th><strong>Nama Fasilitas</strong></th>
                     <th><strong>Lokasi Fasilitas</strong></th>
                     <th class="text-center"><strong>Status Perbaikan</strong></th>
-                    <th class="text-center"><strong>Actions</strong></th>
+                    <th><strong>Actions</strong></th>
                 </tr>
             </thead>
             <tbody>
@@ -72,12 +72,12 @@
                             @endif
                         </td>
                         <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <button type="button" class="btn btn-sm btn-primary detail-penugasan" data-id="{{ $penugasan->penugasan_id }}">Detail</button>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-sm btn-primary detail-laporan" data-id="{{ $penugasan->penugasan_id }}">Detail</button>
                                 @if ($penugasan->status_penugasan === null)
-                                    <button type="button" class="btn btn-sm btn-success" style="width: 100px;" onclick="showKerjakanModal('{{ $penugasan->penugasan_id }}')">Kerjakan</button>
+                                    <button type="button" class="btn btn-sm btn-success" style="width: 80px;" onclick="showKerjakanModal('{{ $penugasan->penugasan_id }}')">Kerjakan</button>
                                 @elseif ($penugasan->status_penugasan === 'Progress' || $penugasan->status_penugasan === 'Revisi')
-                                    <button type="button" class="btn btn-sm btn-warning report-penugasan" data-id="{{ $penugasan->penugasan_id }}" style="width: 100px;">Lapor</button>
+                                    <button type="button" class="btn btn-sm btn-warning report-penugasan" data-id="{{ $penugasan->penugasan_id }}" style="width: 80px;">Lapor</button>
                                 @endif
                             </div>
                         </td>
@@ -95,6 +95,7 @@
     </div>
 </div>
 
+@include('teknisi.show')
 @include('teknisi.kerjakan')
 @include('teknisi.report')
 
@@ -118,28 +119,100 @@
             });
         @endif
         
-        // Detail button
-        $('.detail-penugasan').on('click', function () {
-            const penugasanId = $(this).data('id');
+        // Handle detail button on click
+        $('.detail-laporan').on('click', function () {
+            const laporanId = $(this).data('id');
             $.ajax({
-                url: "{{ url('teknisi/penugasan') }}/" + penugasanId + "/show",
+                url: "{{ url('teknisi/penugasan') }}/" + laporanId + "/show",
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    const ruang = response.ruang || {};
-                    const gedung = response.gedung || {};
+                    const laporan = response.laporan || {};
+                    const penugasan = response.penugasan || {};
+                    const kerusakan = laporan.kerusakan || {};
+                    const feedback = laporan.feedback || {};
+                    const teknisi = penugasan.teknisi || {};
 
-                    $('#detail_ruang_id').text(ruang.ruang_id ?? '-');
-                    $('#detail_kode').text(ruang.kode ?? '-');
-                    $('#detail_nama').text(ruang.nama ?? '-');
-                    $('#detail_gedungKode').text(gedung.kode ?? '-');
-                    $('#detail_gedungNama').text(gedung.nama ?? '-');
-                    $('#detail_lantai').text(ruang.lantai ?? '-');
+                    // Set status_laporan dengan badge warna
+                    const status_laporan = laporan.status_laporan ?? '-';
+                    function renderStatusLaporanBadge(status_laporan) {
+                        const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
+                        switch (status_laporan) {
+                            case 'Diajukan':
+                                return `<span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>`;
+                            case 'Disetujui':
+                                return `<span style="background-color: #d0ebff; color: #1c7ed6; ${baseStyle}">Disetujui</span>`;
+                            case 'Dikerjakan':
+                                return `<span style="background-color: #fff3bf; color: #f59f00; ${baseStyle}">Dikerjakan</span>`;
+                            case 'Selesai':
+                                return `<span style="background-color: #d3f9d8; color: #37b24d; ${baseStyle}">Selesai</span>`;
+                            case 'Ditolak':
+                                return `<span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>`;
+                            default:
+                                return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                        }
+                    }
+                    $('#status_laporan').html(renderStatusLaporanBadge(status_laporan));
 
-                    $('#detailRuang').modal('show');
+                    // Lokasi Fasilitas
+                    let lokasi = '-';
+                    if (kerusakan.ruang?.nama && kerusakan.ruang?.gedung?.nama) {
+                        lokasi = `${kerusakan.ruang.nama}, ${kerusakan.ruang.gedung.nama}`;
+                    } else if (kerusakan.fasum?.nama) {
+                        lokasi = kerusakan.fasum.nama;
+                    }
+                    
+                    $('#detail_tanggal_laporan').text(laporan.tanggal_laporan ?? '-');
+                    $('#detail_lokasi_fasilitas').text(lokasi);
+                    $('#detail_item').text(kerusakan.item?.nama ?? '-');
+                    $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
+                    $('#detail_pelapor').text(laporan.pelapor?.nama_lengkap ?? '-');
+
+                    if(laporan.bukti_kerusakan){
+                        $('#detail_bukti_kerusakan').attr('src', '/storage/' + laporan.bukti_kerusakan);
+                    } else {
+                        $('#detail_bukti_kerusakan').attr('src', '');
+                    }
+
+                    // Set status_penugasan dengan badge warna
+                    const status_perbaikan = penugasan.status_penugasan ?? '-';
+
+                    function renderStatusPerbaikanBadge(status_perbaikan) {
+                        const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center;";
+                        switch (status_perbaikan) {
+                            case 'Progress':
+                                return `<span style="color: #007bff; border: 1px solid #007bff; ${baseStyle}">Progress</span>`;
+                            case 'Selesai':
+                                return `<span style="color: #28a745; border: 1px solid #28a745; ${baseStyle}">Selesai</span>`;
+                            case 'Revisi':
+                                return `<span style="color: #dc3545; border: 1px solid #dc3545; ${baseStyle}">Revisi</span>`;
+                            case 'Menunggu':
+                                return `<span style="color: #ffc107; border: 1px solid #ffc107; ${baseStyle}">Menunggu</span>`;
+                            default:
+                                return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                        }
+                    }
+
+                    $('#status_penugasan').html(renderStatusPerbaikanBadge(status_perbaikan));
+
+                    $('#detail_tanggal_mulai').text(penugasan.tanggal_mulai ?? '-');
+                    $('#detail_tanggal_selesai').text(penugasan.tanggal_selesai ?? '-');
+                    $('#detail_teknisi').text(teknisi?.nama_lengkap ?? '-');
+
+                    if(penugasan.bukti_perbaikan){
+                        $('#detail_bukti_perbaikan').attr('src', '/storage/' + penugasan.bukti_perbaikan);
+                    } else {
+                        $('#detail_bukti_perbaikan').attr('src', '');
+                    }
+
+                    $('#detail_komentar').text(feedback.komentar ?? '-');
+                    $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
+
+                    // Tampilkan modal
+                    $('#detailLaporan').modal('show');
                 },
                 error: function () {
-                    Swal.fire('Error', 'Gagal mengambil detail penugasan.', 'error');
+                    Swal.fire('Error', 'Gagal mengambil detail laporan.', 'error');
                 }
             });
         });

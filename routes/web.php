@@ -105,11 +105,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
 
 // teknisi
 Route::middleware(['auth', 'role:teknisi'])->prefix('teknisi')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('teknisi.dashboard');
-    })->name('teknisi.dashboard');
-
-
+    Route::get('/penugasan/dashboard', [PenugasanController::class, 'dashboard'])->name('teknisi.dashboard');
     Route::get('/penugasan', [PenugasanController::class, 'index'])->name('penugasan');
     Route::get('/penugasan/{id}', [PenugasanController::class, 'kerjakan'])->name('penugasan.kerjakan');
     Route::get('/penugasan/{id}/report', [PenugasanController::class, 'getPenugasan']);
