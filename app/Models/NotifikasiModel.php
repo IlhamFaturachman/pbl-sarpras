@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\LaporanModel;
 
-class Notifikasi extends Model
+class NotifikasiModel extends Model
 {
     use HasFactory;
 
