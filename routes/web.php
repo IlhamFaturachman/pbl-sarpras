@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\LaporanAdminController;
+use App\Http\Controllers\User\KerusakanController;
 use App\Http\Controllers\PenugasanController;
 
 /*
@@ -39,21 +40,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
         Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
         Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-        
+
         // gedung
         Route::get('/gedung', [GedungController::class, 'index'])->name('data.gedung');
         Route::post('/gedung', [GedungController::class, 'store'])->name('gedung.store');
         Route::get('/gedung/{id}/edit', [GedungController::class, 'edit'])->name('gedung.edit');
         Route::put('/gedung/{id}', [GedungController::class, 'update'])->name('gedung.update');
         Route::delete('/gedung/{id}', [GedungController::class, 'destroy'])->name('gedung.destroy');
-        
+
         // fasilitas umum
         Route::get('/fasum', [FasumController::class, 'index'])->name('data.fasum');
         Route::post('/fasum', [FasumController::class, 'store'])->name('fasum.store');
         Route::get('/fasum/{id}/edit', [FasumController::class, 'edit'])->name('fasum.edit');
         Route::put('/fasum/{id}', [FasumController::class, 'update'])->name('fasum.update');
         Route::delete('/fasum/{id}', [FasumController::class, 'destroy'])->name('fasum.destroy');
-        
+
         // ruang
         Route::get('/ruang', [RuangController::class, 'index'])->name('data.ruang');
         Route::post('/ruang', [RuangController::class, 'store'])->name('ruang.store');
@@ -61,7 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/ruang/{id}/edit', [RuangController::class, 'edit'])->name('ruang.edit');
         Route::put('/ruang/{id}', [RuangController::class, 'update'])->name('ruang.update');
         Route::delete('/ruang/{id}', [RuangController::class, 'destroy'])->name('ruang.destroy');
-        
+
         // periode
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
 
@@ -75,12 +76,25 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('laporan');
 });
 
-// mahasiswa
 Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->group(function () {
     Route::get('/dashboard', function () {
         return view('users.dashboard');
     })->name('users.dashboard');
+    Route::prefix('users')->group(function () {
+
+
+        // kerusakan
+        Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
+        Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
+        Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+        Route::get('/kerusakan/ruang/{gedungId}', [KerusakanController::class, 'getRuangByGedung'])->name('kerusakan.ruang');
+        Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
+    });
 });
+
+
+
+
 
 // sarpras
 Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function () {
@@ -105,4 +119,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
