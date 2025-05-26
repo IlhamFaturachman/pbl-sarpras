@@ -21,7 +21,6 @@ class LaporanModel extends Model
         'prioritas',
         'tanggal_laporan',
         'tanggal_update',
-        'teknisi_id',
         'periode_id'
     ];
 
@@ -33,11 +32,6 @@ class LaporanModel extends Model
     public function kerusakan(): BelongsTo
     {
         return $this->belongsTo(KerusakanModel::class, 'kerusakan_id', 'kerusakan_id');
-    }
-
-    public function teknisi(): BelongsTo
-    {
-        return $this->belongsTo(UserModel::class, 'teknisi_id', 'user_id');
     }
 
     public function periode(): BelongsTo
@@ -52,6 +46,11 @@ class LaporanModel extends Model
 
     public function penugasan()
     {
-        return $this->hasMany(PenugasanModel::class, 'laporan_id', 'laporan_id');
+        return $this->hasOne(PenugasanModel::class, 'laporan_id', 'laporan_id');
+    }
+    
+    public function feedback()
+    {
+        return $this->hasOne(FeedbackModel::class, 'laporan_id', 'laporan_id');
     }
 }
