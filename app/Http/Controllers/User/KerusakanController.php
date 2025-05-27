@@ -17,10 +17,10 @@ use Illuminate\Support\Carbon;
 
 class KerusakanController extends Controller
 {
-    public function index() 
+    public function index()
     {
         $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->paginate(10);
-        
+
         return view('users.kerusakan.index', [
             'kerusakans' => $kerusakans
         ]);
@@ -31,7 +31,7 @@ class KerusakanController extends Controller
         $items = ItemModel::all();
         $gedungs = GedungModel::all();
         $fasums = FasumModel::all();
-        
+
         return response()->json([
             'items' => $items,
             'gedungs' => $gedungs,
@@ -39,21 +39,24 @@ class KerusakanController extends Controller
         ]);
     }
 
-    public function getRuangByGedung($gedungId)
+    public function getByGedung($gedung_id)
     {
-        $ruangs = RuangModel::where('gedung_id', $gedungId)->get();
-        return response()->json(['ruangs' => $ruangs]);
+        $ruangans = RuangModel::where('gedung_id', $gedung_id)->get();
+
+        return response()->json($ruangans);
     }
+
+
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'item_id' => 'required|exists:m_item,item_id',
             'deskripsi_kerusakan' => 'required|string|max:255',
-            'foto_kerusakan' => 'nullable|string|max:255',
+            'foto_kerusakan' => 'nullable|file|image|max:2048',
             'fasilitas_type' => 'required|in:ruang,fasum',
-            'fasum_id' => 'required_if:fasilitas_type,fasum|exists:m_fasum,fasum_id',
-            'ruang_id' => 'required_if:fasilitas_type,ruang|exists:m_ruang,ruang_id',
+            'fasum_id' => 'required_if:fasilitas_type,fasum|exists:m_fasum, fasum_id',
+            'ruang_id' => 'required_if:fasilitas_type,ruang|exists:m_ruang, ruang_id',
         ]);
 
         if ($validator->fails()) {
@@ -70,7 +73,7 @@ class KerusakanController extends Controller
             $kerusakan->item_id = $request->item_id;
             $kerusakan->deskripsi_kerusakan = $request->deskripsi_kerusakan;
             $kerusakan->foto_kerusakan = $request->foto_kerusakan;
-            
+
             if ($request->fasilitas_type == 'fasum') {
                 $kerusakan->fasum_id = $request->fasum_id;
                 $kerusakan->ruang_id = null;
