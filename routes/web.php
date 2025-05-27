@@ -73,7 +73,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
         Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
     });
-    Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('laporan');
+    Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('admin.data.laporan');
+    Route::get('/laporan/{id}/show', [LaporanAdminController::class, 'show'])->name('admin.laporan.show');
 });
 
 Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->group(function () {

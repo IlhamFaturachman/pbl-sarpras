@@ -390,7 +390,7 @@
                                                     <li>Email</li>
                                                     <li>Password</li>
                                                     <li>Foto Profil</li>
-                                                    <li>Foto Kartu Identitas/li>
+                                                    <li>Foto Kartu Identitas</li>
                                                 </ul>
                                             </li>
                                             <li>Klik tombol "sign up" untuk mengirimkan data</li>
@@ -440,31 +440,44 @@
 
                 <div class="container" data-aos="fade" data-aos-delay="100">
 
-                    <div class="row gy-4 justify-content-center">
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-                            <a href="https://www.google.com/maps?q=politeknik+negeri+malang" target="_blank"><i
-                                    class="bi bi-geo-alt flex-shrink-0"></i></a>
-                            <div>
-                                <h3>Alamat</h3>
-                                <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur 65141</p>
-                            </div>
-                        </div><!-- End Info Item -->
+                    <div class="row gy-4">
+                        <div class="col-lg-6 " style="flex-wrap: wrap; align-content: space-between">
+                            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300" >
+                                <a href="https://wa.me/6288888888888"><i
+                                        class="bi bi-telephone flex-shrink-0"></i></a>
+                                <div>
+                                    <h3>Hubungi Kami</h3>
+                                    <p>+62 888-888-888-888</p>
+                                </div>
+                            </div><!-- End Info Item -->
 
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-                            <a href="https://wa.me/6288888888888"><i class="bi bi-telephone flex-shrink-0"></i></a>
-                            <div>
-                                <h3>Hubungi Kami</h3>
-                                <p>+62 888-888-888-888</p>
-                            </div>
-                        </div><!-- End Info Item -->
+                            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400" >
+                                <i class="bi bi-envelope flex-shrink-0"></i>
+                                <div>
+                                    <h3>Email Kami</h3>
+                                    <p>info@example.com</p>
+                                </div>
+                            </div><!-- End Info Item -->
+                            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200" >
+                                <a href="https://www.google.com/maps?q=politeknik+negeri+malang" target="_blank"><i
+                                        class="bi bi-geo-alt flex-shrink-0"></i></a>
+                                <div>
+                                    <h3>Alamat</h3>
+                                    <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur 65141
+                                    </p>
+                                </div>
+                            </div><!-- End Info Item -->
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="map-container" data-aos="fade-up" data-aos-delay="500">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15806.497797965125!2d112.61442606697996!3d-7.934233362695417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78827687d272e7%3A0x789ce9a636cd3aa2!2sPoliteknik%20Negeri%20Malang!5e0!3m2!1sid!2sid!4v1732764514137!5m2!1sid!2sid"
+                                    style="border-radius: 15px" allowfullscreen="" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade" width="100%"
+                                    height="243,800"></iframe>
 
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-                            <i class="bi bi-envelope flex-shrink-0"></i>
-                            <div>
-                                <h3>Email Kami</h3>
-                                <p>info@example.com</p>
                             </div>
-                        </div><!-- End Info Item -->
+                        </div>
                     </div>
                     <div class="container" data-aos="fade-up" data-aos-delay="500">
                         <a href="#team" class="read-more"
