@@ -71,7 +71,7 @@
                                 <label for="ruang_id" class="form-label">Ruangan <span
                                         class="text-danger">*</span></label>
                                 <select class="form-select" id="ruang_id" name="ruang_id" disabled>
-                                    <option value="">Pilih ruangan terlebih dahulu</option>
+                                    <option value="">Pilih gedung terlebih dahulu</option>
                                 </select>
                             </div>
                         </div>

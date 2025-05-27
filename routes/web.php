@@ -83,12 +83,11 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     })->name('users.dashboard');
     Route::prefix('users')->group(function () {
 
-
         // kerusakan
         Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
         Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
         Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
-        Route::get('/kerusakan/ruang/{gedungId}', [KerusakanController::class, 'getRuangByGedung'])->name('kerusakan.ruang');
+        Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
         Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
     });
 });
