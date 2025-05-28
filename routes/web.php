@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\LaporanAdminController;
 use App\Http\Controllers\User\KerusakanController;
 use App\Http\Controllers\PenugasanController;
+use App\Http\Controllers\LaporanSarprasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +102,22 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
     Route::get('/dashboard', function () {
         return view('sarpras.dashboard');
     })->name('sarpras.dashboard');
+    Route::prefix('laporan')->group(function () {
+        // verifikasi
+        Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');
+
+        // penugasan
+        Route::get('/penugasan', [LaporanSarprasController::class, 'indexPenugasan'])->name('laporan.penugasan');
+        Route::get('/penugasan/{id}/assign', [LaporanSarprasController::class, 'getLaporan']);
+        Route::post('/penugasan/{id}/assign', [LaporanSarprasController::class, 'assign'])->name('penugasan.assign');
+        Route::get('/penugasan/{id}/confirm', [LaporanSarprasController::class, 'getLaporan']);
+        Route::post('/penugasan/{id}/confirm', [LaporanSarprasController::class, 'confirm'])->name('penugasan.confirm');
+        Route::get('/penugasan/{id}/show', [LaporanSarprasController::class, 'showPenugasan'])->name('penugasan.show');
+
+        // riwayat
+        Route::get('/riwayat', [LaporanSarprasController::class, 'index'])->name('laporan.riwayat');
+        Route::get('/riwayat/{id}/show', [LaporanSarprasController::class, 'show'])->name('riwayat.show');
+    });
 });
 
 // teknisi
