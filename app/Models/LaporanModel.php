@@ -14,8 +14,13 @@ class LaporanModel extends Model
 
     protected $primaryKey = 'laporan_id'; 
 
+    public $incrementing = false; 
+    
+    protected $keyType = 'string';
+
     protected $fillable = [
         'pelapor_id',
+        'verifikator_id',
         'kerusakan_id',
         'status_laporan',
         'prioritas',
@@ -27,6 +32,11 @@ class LaporanModel extends Model
     public function pelapor(): BelongsTo
     {
         return $this->belongsTo(UserModel::class, 'pelapor_id', 'user_id');
+    }
+
+    public function verifikator(): BelongsTo
+    {
+        return $this->belongsTo(UserModel::class, 'verifikator_id', 'user_id');
     }
 
     public function kerusakan(): BelongsTo

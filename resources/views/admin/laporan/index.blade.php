@@ -28,10 +28,10 @@
                 <tr>
                     <th style="font-weight: bold;">ID Laporan</th>
                     <th style="font-weight: bold;">Nama Pelapor</th>
+                    <th style="font-weight: bold;">Nama Verifikator</th>
                     <th style="font-weight: bold;">Fasilitas</th>
                     <th style="font-weight: bold;">Item</th>
                     <th style="font-weight: bold;">Tanggal Dilaporkan</th>
-                    <th style="font-weight: bold;">Nama Verifikator</th>
                     <th style="font-weight: bold;"  class="text-center">Status</th>
                     <th class="text-center" style="font-weight: bold;">Actions</th>
                 </tr>
@@ -41,6 +41,7 @@
                     <tr>
                         <td>{{ $laporan->laporan_id }}</td>
                         <td>{{ $laporan->pelapor->nama_lengkap }}</td>
+                        <td>{{ $laporan->verifikator->nama_lengkap }}</td>
                         @if ($laporan->kerusakan->fasum_id == null)
                             <td>{{ Str::limit($laporan->kerusakan->ruang->gedung->nama, 30, '...') }}</td>
                         @else 
@@ -48,7 +49,6 @@
                         @endif
                         <td>{{ $laporan->kerusakan->item->nama }}</td>
                         <td>{{ $laporan->tanggal_laporan }}</td>
-                        <td>{{ $laporan->laporan_id }}</td>
                         <td class="text-center">
                             @if ($laporan->status_laporan == 'Diajukan')
                                 <span style="background-color: #fcefdc; color: #9c6b1a; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
