@@ -92,17 +92,31 @@
       </li>
       @endrole
       @role('sarpras')
-      <li class="menu-item">
-        <a
-          href="#"
-          class="menu-link">
+      <li class="menu-item {{ request()->routeIs('laporan.*') ? 'active open' : '' }}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons bx bx-file"></i>
-          <div class="text-truncate" data-i18n="Documentation">Verifikasi Laporan</div>
+          <div class="text-truncate" data-i18n="Dashboards">Laporan Kerusakan</div>
         </a>
-      </li>
+        <ul class="menu-sub">
+          <li class="menu-item {{ request()->routeIs('laporan.verifikasi') ? 'active' : '' }}">
+            <a href="{{ route('laporan.verifikasi') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="Analytics">Verifikasi Laporan</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('laporan.penugasan') ? 'active' : '' }}">
+            <a href="{{ route('laporan.penugasan') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Penugasan Perbaikan</div>
+            </a>
+          </li>
+          <li class="menu-item {{ request()->routeIs('laporan.riwayat') ? 'active' : '' }}">
+            <a href="{{ route('laporan.riwayat') }}" class="menu-link">
+              <div class="text-truncate" data-i18n="CRM">Riwayat Laporan</div>
+            </a>
+          </li>
+        </ul>
+      </li> 
       @endrole
       @role('teknisi')
-      <li class="menu-item">
       <li class="menu-item {{ request()->routeIs('penugasan') ? 'active' : '' }}">
         <a href="{{ route('penugasan') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-file"></i>
