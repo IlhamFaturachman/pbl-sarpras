@@ -142,7 +142,60 @@ class LaporanSarprasController extends Controller
         ])->find($id);
 
         if (!$laporan) {
-            return redirect()->route('penugasan')->with('error', 'Laporan tidak ditemukan');
+            return redirect()->route('laporan.penugasan')->with('error', 'Laporan tidak ditemukan');
+        }
+
+        return response()->json([
+            'laporan' => $laporan,
+            'penugasan' => $laporan->penugasan,
+        ]);
+    }
+
+    public function indexVerifikasi() {
+        $laporans = LaporanModel::with([
+            'penugasan.teknisi',
+            'kerusakan.item',
+            'kerusakan.ruang.gedung',
+            'kerusakan.fasum',
+            'prioritas',
+            'pelapor'
+        ])
+        ->where(function ($query) {
+            $query->where(function ($q) {
+                $q->where('status_laporan', 'Diajukan');
+            });
+        })->paginate(10);
+
+        $detailLaporan = null;
+
+        // Ambil detail laporan jika ada session 'detailLaporanId'
+        if (session()->has('detailLaporanId')) {
+            $detailLaporan = LaporanModel::with([
+                'kerusakan.item',
+                'kerusakan.ruang.gedung',
+                'kerusakan.fasum',
+                'pelapor',
+                'penugasan'
+            ])->find(session('detailLaporanId'));
+        }
+
+        return view('sarpras.verifikasi.index', [
+            'laporans' => $laporans,
+            'detailLaporan' => $detailLaporan
+        ]);
+    }
+
+    public function showVerifikasi($id) {
+        $laporan = LaporanModel::with([
+            'kerusakan.item',
+            'kerusakan.ruang.gedung',
+            'kerusakan.fasum',
+            'pelapor',
+            'penugasan.teknisi'
+        ])->find($id);
+
+        if (!$laporan) {
+            return redirect()->route('laporan.verifikasi')->with('error', 'Laporan tidak ditemukan');
         }
 
         return response()->json([
