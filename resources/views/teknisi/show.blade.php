@@ -41,7 +41,7 @@
               <!-- Kanan -->
               <div class="col-md-4">
                 <div class="fw-semibold mb-2">Bukti Kerusakan</div>
-                <img id="detail_bukti_kerusakan" class="img-fluid rounded shadow-sm" width="240px" />
+                <img id="detail_foto_kerusakan" class="img-fluid rounded shadow-sm" width="240px" />
               </div>
             </div>
           </div>
@@ -69,6 +69,10 @@
                   <div class="fw-semibold">Nama Teknisi</div>
                   <div class="mt-1" id="detail_teknisi"></div>
                 </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Catatan Perbaikan</div>
+                  <div class="mt-1" id="detail_catatan_perbaikan"></div>
+              </div>
               </div>
 
               <!-- Kanan -->

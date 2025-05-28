@@ -26,17 +26,17 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th><strong>Tanggal</strong></th>
+                    <th><strong>Tanggal Laporan</strong></th>
                     <th><strong>Nama Fasilitas</strong></th>
                     <th><strong>Lokasi Fasilitas</strong></th>
-                    <th class="text-center"><strong>Status Perbaikan</strong></th>
+                    <th class="text-center"><strong>Status Penugasan</strong></th>
                     <th><strong>Actions</strong></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($penugasans as $penugasan)
                     <tr>
-                        <td>{{ $penugasan->laporan->tanggal_laporan }}</td>
+                        <td>{{ \Carbon\Carbon::parse($penugasan->laporan->tanggal_laporan)->format('d-m-y') }}</td>
                         <td>{{ $penugasan->laporan->kerusakan->item->nama }}</td>
                         <td>
                             @php
@@ -73,7 +73,7 @@
                         </td>
                         <td class="text-center">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-sm btn-primary detail-laporan" data-id="{{ $penugasan->penugasan_id }}">Detail</button>
+                                <button type="button" class="btn btn-sm btn-primary detail-laporan" data-id="{{ $penugasan->laporan->laporan_id }}">Detail</button>
                                 @if ($penugasan->status_penugasan === null)
                                     <button type="button" class="btn btn-sm btn-success" style="width: 80px;" onclick="showKerjakanModal('{{ $penugasan->penugasan_id }}')">Kerjakan</button>
                                 @elseif ($penugasan->status_penugasan === 'Progress' || $penugasan->status_penugasan === 'Revisi')
@@ -162,24 +162,30 @@
                         lokasi = kerusakan.fasum.nama;
                     }
                     
-                    $('#detail_tanggal_laporan').text(laporan.tanggal_laporan ?? '-');
+                    function formatTanggalDMY(tanggal) {
+                        if (!tanggal) return '-';
+                        const [year, month, day] = tanggal.split('-');
+                        return `${day}-${month}-${year}`;
+                    }
+
+                    $('#detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
                     $('#detail_lokasi_fasilitas').text(lokasi);
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
                     $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                     $('#detail_pelapor').text(laporan.pelapor?.nama_lengkap ?? '-');
 
-                    if(laporan.bukti_kerusakan){
-                        $('#detail_bukti_kerusakan').attr('src', '/storage/' + laporan.bukti_kerusakan);
+                    if(laporan.kerusakan.foto_kerusakan){
+                        $('#detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);
                     } else {
-                        $('#detail_bukti_kerusakan').attr('src', '');
+                        $('#detail_foto_kerusakan').attr('src', '');
                     }
 
                     // Set status_penugasan dengan badge warna
-                    const status_perbaikan = penugasan.status_penugasan ?? '-';
+                    const status_penugasan = penugasan.status_penugasan ?? '-';
 
-                    function renderStatusPerbaikanBadge(status_perbaikan) {
+                    function renderStatusPenugasanBadge(status_penugasan) {
                         const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center;";
-                        switch (status_perbaikan) {
+                        switch (status_penugasan) {
                             case 'Progress':
                                 return `<span style="color: #007bff; border: 1px solid #007bff; ${baseStyle}">Progress</span>`;
                             case 'Selesai':
@@ -192,12 +198,18 @@
                                 return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
                         }
                     }
+                    $('#status_penugasan').html(renderStatusPenugasanBadge(status_penugasan));
 
-                    $('#status_penugasan').html(renderStatusPerbaikanBadge(status_perbaikan));
+                    function formatTanggalDMY(tanggal) {
+                        if (!tanggal) return '-';
+                        const [year, month, day] = tanggal.split('-');
+                        return `${day}-${month}-${year}`;
+                    }
 
-                    $('#detail_tanggal_mulai').text(penugasan.tanggal_mulai ?? '-');
-                    $('#detail_tanggal_selesai').text(penugasan.tanggal_selesai ?? '-');
+                    $('#detail_tanggal_mulai').text(formatTanggalDMY(penugasan.tanggal_mulai));
+                    $('#detail_tanggal_selesai').text(formatTanggalDMY(penugasan.tanggal_selesai));
                     $('#detail_teknisi').text(teknisi?.nama_lengkap ?? '-');
+                    $('#detail_catatan_perbaikan').text(penugasan.catatan_perbaikan ?? '-');
 
                     if(penugasan.bukti_perbaikan){
                         $('#detail_bukti_perbaikan').attr('src', '/storage/' + penugasan.bukti_perbaikan);
