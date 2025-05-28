@@ -105,6 +105,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
     Route::prefix('laporan')->group(function () {
         // verifikasi
         Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');
+        Route::get('/verifikasi/{id}/show', [LaporanSarprasController::class, 'showVerifikasi'])->name('laporan.show');
 
         // penugasan
         Route::get('/penugasan', [LaporanSarprasController::class, 'indexPenugasan'])->name('laporan.penugasan');
