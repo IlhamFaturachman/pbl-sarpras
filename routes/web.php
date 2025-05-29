@@ -66,6 +66,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
         // periode
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
+        Route::post('/periode', [PeriodeController::class, 'store'])->name('periode.store');
+        Route::get('/periode/{id}/show', [PeriodeController::class, 'show'])->name('periode.show');
+        Route::get('/periode/{id}/edit', [PeriodeController::class, 'edit'])->name('periode.edit');
+        Route::put('/periode/{id}', [PeriodeController::class, 'update'])->name('periode.update');
+        Route::delete('/periode/{id}', [PeriodeController::class, 'destroy'])->name('periode.destroy');
 
         // item
         Route::get('/item', [ItemController::class, 'index'])->name('data.item');
