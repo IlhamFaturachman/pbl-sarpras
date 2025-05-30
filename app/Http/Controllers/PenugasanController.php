@@ -16,13 +16,14 @@ use Illuminate\Support\Carbon;
 
 class PenugasanController extends Controller
 {
-    public function dashboard(Request $request) {
+    public function dashboard(Request $request)
+    {
         $teknisiId = Auth::id();
 
         // Ambil semua penugasan selesai untuk teknisi ini
         $penugasanSelesai = PenugasanModel::with('laporan.periode')
             ->where('teknisi_id', $teknisiId)
-            ->whereNotNull('tanggal_selesai')
+            ->where('status_penugasan', 'Selesai')
             ->get();
 
         // Kelompokkan berdasarkan nama_periode
