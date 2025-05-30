@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 
-
 class KerusakanController extends Controller
 {
     public function index()
@@ -22,7 +21,7 @@ class KerusakanController extends Controller
         $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->paginate(10);
 
         return view('users.kerusakan.index', [
-            'kerusakans' => $kerusakans
+            'kerusakans' => $kerusakans,
         ]);
     }
 
@@ -35,35 +34,36 @@ class KerusakanController extends Controller
         return response()->json([
             'items' => $items,
             'gedungs' => $gedungs,
-            'fasums' => $fasums
+            'fasums' => $fasums,
         ]);
     }
 
     public function getByGedung($gedung_id)
     {
-        $ruangans = RuangModel::where('gedung_id', $gedung_id)->get();
+        $ruangs = RuangModel::where('gedung_id', $gedung_id)->get();
 
-        return response()->json($ruangans);
+        return response()->json(['ruangs' => $ruangs]);
     }
-
-
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'item_id' => 'required|exists:m_item,item_id',
             'deskripsi_kerusakan' => 'required|string|max:255',
-            'foto_kerusakan' => 'nullable|file|image|max:2048',
+            'foto_kerusakan' => 'required|file|image|max:2048',
             'fasilitas_type' => 'required|in:ruang,fasum',
-            'fasum_id' => 'required_if:fasilitas_type,fasum|exists:m_fasum, fasum_id',
-            'ruang_id' => 'required_if:fasilitas_type,ruang|exists:m_ruang, ruang_id',
+            'fasum_id' => 'required_if:fasilitas_type,fasum|exists:m_fasum,fasum_id',
+            'ruang_id' => 'required_if:fasilitas_type,ruang|exists:m_ruang,ruang_id',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+            return response()->json(
+                [
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                ],
+                422,
+            );
         }
 
         try {
@@ -88,15 +88,17 @@ class KerusakanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data kerusakan berhasil ditambahkan'
+                'message' => 'Data kerusakan berhasil ditambahkan',
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage()
-            ], 500);
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage(),
+                ],
+                500,
+            );
         }
     }
 
@@ -108,14 +110,16 @@ class KerusakanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data kerusakan berhasil dihapus'
+                'message' => 'Data kerusakan berhasil dihapus',
             ]);
-
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menghapus data kerusakan: ' . $e->getMessage()
-            ], 500);
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Gagal menghapus data kerusakan: ' . $e->getMessage(),
+                ],
+                500,
+            );
         }
     }
 }

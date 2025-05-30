@@ -252,10 +252,9 @@
         // Gedung change event
         $('#gedung_id').on('change', function () {
             const gedungId = $(this).val();
-
             if (gedungId) {
                 $.ajax({
-                    url: "{{ url('kerusakan/ruang') }}/" + gedungId,
+                    url: "{{ url('users/users/kerusakan/ruang') }}/" + gedungId,
                     type: 'GET',
                     success: function (response) {
                         $('#ruang_id').empty().append('<option value="">Pilih Ruangan</option>');
