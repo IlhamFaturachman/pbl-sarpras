@@ -72,14 +72,22 @@ class KerusakanController extends Controller
             $kerusakan = new KerusakanModel();
             $kerusakan->item_id = $request->item_id;
             $kerusakan->deskripsi_kerusakan = $request->deskripsi_kerusakan;
-            $kerusakan->foto_kerusakan = $request->foto_kerusakan;
 
-            if ($request->fasilitas_type == 'fasum') {
-                $kerusakan->fasum_id = $request->fasum_id;
-                $kerusakan->ruang_id = null;
+            // Simpan file foto kerusakan
+            if ($request->hasFile('foto_kerusakan')) {
+                $file = $request->file('foto_kerusakan');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('kerusakan_foto', $filename, 'public');
+                $kerusakan->foto_kerusakan = $path;
+            }
+
+            // Simpan tempat kerusakan dan fasilitas_id
+            $kerusakan->tempat_kerusakan = $request->fasilitas_type;
+
+            if ($request->fasilitas_type === 'fasum') {
+                $kerusakan->fasilitas_id = $request->fasum_id;
             } else {
-                $kerusakan->ruang_id = $request->ruang_id;
-                $kerusakan->fasum_id = null;
+                $kerusakan->fasilitas_id = $request->ruang_id;
             }
 
             $kerusakan->save();
@@ -91,32 +99,11 @@ class KerusakanController extends Controller
                 'message' => 'Data kerusakan berhasil ditambahkan',
             ]);
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             return response()->json(
                 [
                     'success' => false,
                     'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage(),
-                ],
-                500,
-            );
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            $kerusakan = KerusakanModel::findOrFail($id);
-            $kerusakan->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data kerusakan berhasil dihapus',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => 'Gagal menghapus data kerusakan: ' . $e->getMessage(),
                 ],
                 500,
             );
