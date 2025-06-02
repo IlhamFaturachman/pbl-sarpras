@@ -201,6 +201,8 @@
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Tambahkan sebelum script kerusakan -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
         let currentStep = 1;
@@ -256,7 +258,7 @@
             const gedungId = $(this).val();
             if (gedungId) {
                 $.ajax({
-                    url: "{{ url('users/users/kerusakan/ruang') }}/" + gedungId,
+                    url: "{{ url('users/kerusakan/ruang') }}/" + gedungId,
                     type: 'GET',
                     success: function(response) {
                         $('#ruang_id').empty().append(

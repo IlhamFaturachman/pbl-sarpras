@@ -10,9 +10,12 @@ use App\Models\ItemModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\LaporanModel;
+use App\Models\PeriodeModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class KerusakanController extends Controller
 {
@@ -81,16 +84,37 @@ class KerusakanController extends Controller
                 $kerusakan->foto_kerusakan = $path;
             }
 
-            // Simpan tempat kerusakan dan fasilitas_id
-            $kerusakan->tempat_kerusakan = $request->fasilitas_type;
-
             if ($request->fasilitas_type === 'fasum') {
-                $kerusakan->fasilitas_id = $request->fasum_id;
+                $kerusakan->fasum_id = $request->fasum_id;
             } else {
-                $kerusakan->fasilitas_id = $request->ruang_id;
+                $kerusakan->ruang_id = $request->ruang_id;
             }
 
             $kerusakan->save();
+
+            // Ambil periode berdasarkan tahun sekarang
+            $periode = PeriodeModel::where('nama_periode', now()->year)->first();
+
+            if (!$periode) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Periode untuk tahun ini belum tersedia.',
+                ], 500);
+            }
+
+            DB::table('m_laporan')->insert([
+                'laporan_id' => (string) Str::uuid(),
+                'pelapor_id' => Auth::id(),
+                'kerusakan_id' => $kerusakan->kerusakan_id,
+                'verifikator_id' => null,
+                'status_laporan' => 'Diajukan',
+                'tanggal_laporan' => now(),
+                'tanggal_update_status' => null,
+                'periode_id' => $periode->periode_id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             DB::commit();
 

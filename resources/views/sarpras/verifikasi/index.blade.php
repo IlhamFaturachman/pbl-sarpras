@@ -51,9 +51,9 @@
                         <td>{{ $lokasi }}</td>
                         <td>{{ $laporan->prioritas->skor_fuzzy ?? '-' }}</td>
                         <td class="text-center">
-                            @switch($status)
+                            @switch($statusLaporan)
                                 @case('Progress')
-                                case 'Diajukan':
+                                @case('Diajukan')
                                     <span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>
                                     @break
                                 @default
@@ -170,6 +170,9 @@
                     Swal.fire('Error', 'Gagal mengambil detail laporan.', 'error');
                 }
             });
+        });
+
+        $('.verifikasi-laporan').on('click', function () {
         });
     });
 </script>

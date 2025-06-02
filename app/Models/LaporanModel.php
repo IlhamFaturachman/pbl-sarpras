@@ -23,9 +23,8 @@ class LaporanModel extends Model
         'verifikator_id',
         'kerusakan_id',
         'status_laporan',
-        'prioritas',
         'tanggal_laporan',
-        'tanggal_update',
+        'tanggal_update_status',
         'periode_id'
     ];
 

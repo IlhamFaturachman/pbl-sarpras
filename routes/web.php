@@ -87,20 +87,14 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::get('/dashboard', function () {
         return view('users.dashboard');
     })->name('users.dashboard');
-    Route::prefix('users')->group(function () {
 
-        // kerusakan
-        Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
-        Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
-        Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
-        Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
-        Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
-    });
+    // kerusakan
+    Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
+    Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
+    Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+    Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
+    Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
 });
-
-
-
-
 
 // sarpras
 Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function () {
