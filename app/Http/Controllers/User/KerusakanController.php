@@ -15,7 +15,7 @@ use App\Models\PeriodeModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf; 
 
 class KerusakanController extends Controller
 {
@@ -65,7 +65,7 @@ class KerusakanController extends Controller
                     'success' => false,
                     'errors' => $validator->errors(),
                 ],
-                422,
+                422
             );
         }
 
@@ -129,8 +129,18 @@ class KerusakanController extends Controller
                     'success' => false,
                     'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage(),
                 ],
-                500,
+                500
             );
         }
+    }
+
+    public function exportPdf()
+    {
+        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
+
+        $pdf = Pdf::loadView('users.kerusakan.pdf', compact('kerusakans'))
+                  ->setPaper('a4', 'landscape');
+
+    return $pdf->stream('laporan-kerusakan.pdf');
     }
 }
