@@ -94,6 +94,8 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
     Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
     Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
+    Route::get('/kerusakan/export_pdf', [KerusakanController::class, 'exportPdf'])->name('kerusakan.export_pdf');
+
 });
 
 // sarpras
