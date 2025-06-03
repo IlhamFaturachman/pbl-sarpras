@@ -66,6 +66,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
         // periode
         Route::get('/periode', [PeriodeController::class, 'index'])->name('data.periode');
+        Route::post('/periode', [PeriodeController::class, 'store'])->name('periode.store');
+        Route::get('/periode/{id}/show', [PeriodeController::class, 'show'])->name('periode.show');
+        Route::get('/periode/{id}/edit', [PeriodeController::class, 'edit'])->name('periode.edit');
+        Route::put('/periode/{id}', [PeriodeController::class, 'update'])->name('periode.update');
+        Route::delete('/periode/{id}', [PeriodeController::class, 'destroy'])->name('periode.destroy');
 
         // item
         Route::get('/item', [ItemController::class, 'index'])->name('data.item');
@@ -82,20 +87,16 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::get('/dashboard', function () {
         return view('users.dashboard');
     })->name('users.dashboard');
-    Route::prefix('users')->group(function () {
 
-        // kerusakan
-        Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
-        Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
-        Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
-        Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
-        Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
-    });
+    // kerusakan
+    Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
+    Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
+    Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+    Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
+    Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
+    Route::get('/kerusakan/export_pdf', [KerusakanController::class, 'exportPdf'])->name('kerusakan.export_pdf');
+
 });
-
-
-
-
 
 // sarpras
 Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function () {
@@ -106,6 +107,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
         // verifikasi
         Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');
         Route::get('/verifikasi/{id}/show', [LaporanSarprasController::class, 'showVerifikasi'])->name('laporan.show');
+        Route::post('/verifikasi/{id}/prioritas', [LaporanSarprasController::class, 'simpanPrioritas'])->name('laporan.simpanPrioritas');
 
         // penugasan
         Route::get('/penugasan', [LaporanSarprasController::class, 'indexPenugasan'])->name('laporan.penugasan');

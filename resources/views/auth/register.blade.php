@@ -81,63 +81,124 @@
             <form id="formAuthentication" class="mb-6" action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <div class="row">
-                <!-- Kolom Kiri: Data User -->
-                <div class="col-md-6">
-                  <div class="mb-6">
+                <!-- Baris Pertama: Nama Lengkap, NIM, Nama -->
+                <div class="row">
+                  <div class="col-md-4 mb-3">
                     <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
                     <input
                       type="text"
-                      class="form-control"
+                      class="form-control @error('nama_lengkap') is-invalid @enderror"
                       id="nama_lengkap"
                       name="nama_lengkap"
                       placeholder="Masukkan Nama Lengkap"
-                      autofocus />
+                      value="{{ old('nama_lengkap') }}"
+                      required />
+                    @error('nama_lengkap')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                   </div>
-                  <div class="mb-6">
-                    <label for="nomor_induk" class="form-label">Nomor Induk</label>
+                  <div class="col-md-4 mb-3">
+                    <label for="nomor_induk" class="form-label">NIM</label>
                     <input
                       type="text"
-                      class="form-control"
+                      class="form-control @error('nomor_induk') is-invalid @enderror"
                       id="nomor_induk"
                       name="nomor_induk"
-                      placeholder="Masukkan Nomor Induk" />
+                      placeholder="Masukkan NIM"
+                      value="{{ old('nomor_induk') }}"
+                      required pattern="\d+"
+                      title="NIM harus berupa angka" />
+                    @error('nomor_induk')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                   </div>
-                </div>
-                <!-- Kolom Kanan: Data User -->
-                <div class="col-md-6">
-                  <div class="mb-6">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Masukkan Email" />
-                  </div>
-                  <div class="form-password-toggle">
-                      <label class="form-label" for="password">Password</label>
-                      <div class="input-group input-group-merge">
-                        <input
-                          type="password"
-                          id="password"
-                          class="form-control"
-                          name="password"
-                          placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
-                        <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
-                      </div>
-                    </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="nama" class="form-label">Nama</label>
+                    <input
+                      type="text"
+                      class="form-control @error('nama') is-invalid @enderror"
+                      id="nama"
+                      name="nama"
+                      placeholder="Masukkan Nama"
+                      value="{{ old('nama') }}"
+                      required />
+                    @error('nama')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                   </div>
                 </div>
 
-                <div class="mb-3">
-                  <label for="foto_profil" class="form-label">Foto Profil</label>
-                  <div class="custom-file-upload">
-                    <label for="foto_profil" id="foto_profil_label" class="upload-label">Klik untuk unggah foto</label>
-                    <input type="file" id="foto_profil" name="foto_profil" accept="image/*" onchange="previewImage(this, 'preview_foto_profil')" />
-                    <div class="preview-box" id="preview_foto_profil"></div>
+                <!-- Baris Kedua: Email dan Password -->
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      class="form-control @error('email') is-invalid @enderror"
+                      id="email"
+                      name="email"
+                      placeholder="Masukkan Email"
+                      value="{{ old('email') }}"
+                      required />
+                    @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                  <div class="col-md-6 mb-6 form-password-toggle">
+                  <label class="form-label" for="password">Password</label>
+                  <div class="input-group input-group-merge">
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control @error('password') is-invalid @enderror"
+                      name="password"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="password" />
+                    <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
+                    @error('password')
+                      <div class="invalid-feedback">
+                        {{ $message }}
+                      </div>
+                    @enderror
                   </div>
                 </div>
+                </div>
+
+                <!-- Upload Foto Profil -->
+                <div class="mb-3">
+                  <label for="foto_profile" class="form-label">Foto Profil</label>
+                  <div class="custom-file-upload">
+                    <label for="foto_profile" id="foto_profile_label" class="upload-label">Klik untuk unggah foto</label>
+                    <input
+                      type="file"
+                      id="foto_profile"
+                      name="foto_profile"
+                      accept="image/*"
+                      onchange="previewImage(this, 'preview_foto_profile')"
+                      required />
+                    <div class="preview-box" id="preview_foto_profile"></div>
+                    @error('foto_profile')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+
+                <!-- Upload Identitas -->
                 <div class="mb-3">
                   <label for="identitas" class="form-label">Foto Kartu Identitas</label>
                   <div class="custom-file-upload">
                     <label for="identitas" id="identitas_label" class="upload-label">Klik untuk unggah identitas</label>
-                    <input type="file" id="identitas" name="identitas" accept="image/*" onchange="previewImage(this, 'preview_identitas')" />
+                    <input
+                      type="file"
+                      id="identitas"
+                      name="identitas"
+                      accept="image/*"
+                      onchange="previewImage(this, 'preview_identitas')"
+                      required />
                     <div class="preview-box" id="preview_identitas"></div>
+                    @error('identitas')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                   </div>
                 </div>
               </div>
@@ -158,26 +219,26 @@
   </div>
 
   <script>
-  function previewImage(input, previewId, labelId) {
-    const file = input.files[0];
-    const preview = document.getElementById(previewId);
-    const label = document.getElementById(labelId);
-    preview.innerHTML = ''; // Clear sebelumnya
+    function previewImage(input, previewId, labelId) {
+      const file = input.files[0];
+      const preview = document.getElementById(previewId);
+      const label = document.getElementById(labelId);
+      preview.innerHTML = ''; // Clear sebelumnya
 
-    if (file && file.type.startsWith('image/')) {
-      // Sembunyikan tombol upload
-      if (label) label.style.display = 'none';
+      if (file && file.type.startsWith('image/')) {
+        // Sembunyikan tombol upload
+        if (label) label.style.display = 'none';
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        preview.appendChild(img);
-      };
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
     }
-  }
-</script>
+  </script>
 
   <!-- Core JS -->
 

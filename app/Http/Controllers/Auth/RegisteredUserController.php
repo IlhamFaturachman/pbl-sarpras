@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\UserModel;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class RegisteredUserController extends Controller
 {
@@ -22,30 +25,43 @@ class RegisteredUserController extends Controller
     {
         return view('auth.register');
     }
-
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'nama' => ['required', 'string', 'max:255'],
+            'nomor_induk' => ['required', 'string', 'max:50', 'unique:'.UserModel::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.UserModel::class],
+            'password' => ['required', Rules\Password::defaults()],
+            'foto_profile' => ['required', 'image', 'max:2048'],
+            'identitas' => ['required', 'image', 'max:2048'],
         ]);
-
-        $user = User::create([
-            'name' => $request->name,
+    
+        $fotoProfilePath = $request->file('foto_profile')->store('foto_profile', 'public');
+        $identitasPath = $request->file('identitas')->store('identitas', 'public');
+    
+        $user = UserModel::create([
+            'nama_lengkap' => $request->nama_lengkap,
+            'nama' => $request->nama,
+            'nomor_induk' => $request->nomor_induk,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'status' => 'Tidak Aktif',
+            'foto_profile' => $fotoProfilePath,
+            'identitas' => $identitasPath,
+            'created_at' => now(),
         ]);
-
+    
         event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+    
+        // Hanya login jika status user adalah "Aktif"
+        if ($user->status === 'Aktif') {
+            Auth::login($user);
+            return redirect(RouteServiceProvider::HOME);
+        }
+    
+        // Jika belum aktif, arahkan ke halaman info (buatkan view khusus jika perlu)
+        return redirect()->route('waiting')->with('status', 'Akun Anda berhasil didaftarkan. Silakan tunggu verifikasi dari admin.');
     }
 }

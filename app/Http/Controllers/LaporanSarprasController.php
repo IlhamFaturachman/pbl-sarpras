@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\LaporanModel;
 use App\Models\PenugasanModel;
+use App\Models\PrioritasModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LaporanSarprasController extends Controller
 {
-    public function indexPenugasan() {
+    public function indexPenugasan()
+    {
         $laporans = LaporanModel::with([
             'penugasan.teknisi',
             'kerusakan.item',
@@ -19,13 +21,13 @@ class LaporanSarprasController extends Controller
             'kerusakan.fasum',
             'pelapor'
         ])
-        ->where(function ($query) {
-            $query->where(function ($q) {
-                $q->where('status_laporan', 'Disetujui')->whereDoesntHave('penugasan');
-            })->orWhere(function ($q) {
-                $q->where('status_laporan', 'Dikerjakan')->whereHas('penugasan');
-            });
-        })->paginate(10);
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('status_laporan', 'Disetujui')->whereDoesntHave('penugasan');
+                })->orWhere(function ($q) {
+                    $q->where('status_laporan', 'Dikerjakan')->whereHas('penugasan');
+                });
+            })->paginate(10);
 
         $detailLaporan = null;
         $teknisis = UserModel::role('Teknisi')->get();
@@ -48,7 +50,8 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
-    public function getLaporan($id) {
+    public function getLaporan($id)
+    {
         $laporan = LaporanModel::findOrFail($id);
         $penugasan = PenugasanModel::with('teknisi')->where('laporan_id', $id)->latest()->first();
 
@@ -58,7 +61,8 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
-    public function assign(Request $request, $id) {
+    public function assign(Request $request, $id)
+    {
         // Validasi input
         $request->validate([
             'teknisi' => 'required|exists:m_user,user_id'
@@ -90,7 +94,8 @@ class LaporanSarprasController extends Controller
         }
     }
 
-    public function confirm(Request $request, $id) {
+    public function confirm(Request $request, $id)
+    {
         // Validasi input
         $request->validate([
             'konfirmasi' => 'required|in:Selesai,Revisi',
@@ -132,7 +137,8 @@ class LaporanSarprasController extends Controller
         }
     }
 
-    public function showPenugasan($id) {
+    public function showPenugasan($id)
+    {
         $laporan = LaporanModel::with([
             'kerusakan.item',
             'kerusakan.ruang.gedung',
@@ -151,7 +157,8 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
-    public function indexVerifikasi() {
+    public function indexVerifikasi()
+    {
         $laporans = LaporanModel::with([
             'penugasan.teknisi',
             'kerusakan.item',
@@ -160,11 +167,11 @@ class LaporanSarprasController extends Controller
             'prioritas',
             'pelapor'
         ])
-        ->where(function ($query) {
-            $query->where(function ($q) {
-                $q->where('status_laporan', 'Diajukan');
-            });
-        })->paginate(10);
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('status_laporan', 'Diajukan');
+                });
+            })->paginate(10);
 
         $detailLaporan = null;
 
@@ -185,7 +192,8 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
-    public function showVerifikasi($id) {
+    public function showVerifikasi($id)
+    {
         $laporan = LaporanModel::with([
             'kerusakan.item',
             'kerusakan.ruang.gedung',
@@ -201,6 +209,35 @@ class LaporanSarprasController extends Controller
         return response()->json([
             'laporan' => $laporan,
             'penugasan' => $laporan->penugasan,
+        ]);
+    }
+
+    public function simpanPrioritas(Request $request, $id)
+    {
+        $request->validate([
+            'tingkat_kerusakan' => 'required|integer',
+            'dampak' => 'required|integer',
+            'jumlah_terdampak' => 'required|integer',
+            'alternatif' => 'required|integer',
+            'ancaman' => 'required|integer',
+            'skor_laporan' => 'required|integer',
+        ]);
+
+        $prioritas = PrioritasModel::updateOrCreate(
+            ['laporan_id' => $id],
+            [
+                'tingkat_kerusakan' => $request->tingkat_kerusakan,
+                'dampak' => $request->dampak,
+                'jumlah_terdampak' => $request->jumlah_terdampak,
+                'alternatif' => $request->alternatif,
+                'ancaman' => $request->ancaman,
+                'skor_laporan' => $request->skor_laporan,
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Prioritas berhasil disimpan.',
+            'data' => $prioritas
         ]);
     }
 }
