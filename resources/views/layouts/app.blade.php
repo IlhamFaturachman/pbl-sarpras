@@ -41,8 +41,10 @@
     <!-- endbuild -->
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <!-- Page CSS -->
+
 
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
@@ -116,6 +118,7 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- Page JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
 
     <!-- Place this tag before closing body tag for github widget button. -->
