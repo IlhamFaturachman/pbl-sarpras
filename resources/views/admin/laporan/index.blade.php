@@ -18,9 +18,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Laporan Kerusakan</h5>
-        {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#createItem" class="btn btn-outline-primary">
-            <i class="bx bx-plus me-1"></i> Tambah
-        </button> --}}
+        <a href="{{ route('admin.laporan.export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export PDF</a>
     </div>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
@@ -77,8 +75,6 @@
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" class="btn btn-sm btn-primary detail-laporan" data-id="{{ $laporan->laporan_id }}">Detail</button>
-                                <button type="button" class="btn btn-sm btn-warning edit-laporan" data-id="{{ $laporan->laporan_id }}">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $laporan->laporan_id }}', '{{ $laporan->nama }}')">Hapus</button>
                             </div>
                         </td>
                     </tr>
@@ -94,9 +90,6 @@
     
 </div>
 @include('admin.laporan.show')
-{{-- @include('admin.item.create')
-@include('admin.item.edit')
-@include('admin.item.delete')   --}}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
