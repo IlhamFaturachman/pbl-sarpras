@@ -1,50 +1,94 @@
 <div class="modal fade" id="detailLaporanAdmin" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content text-white" style="background-color:rgba(235, 235, 235, 0.96);">
+      <div class="modal-header border-bottom-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Detail Data Laporan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="row mb-2">
-                    <div class="col-md-4">ID Laporan</div>
-                    <strong class="col-md-8" id="detail_nama_lengkap"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Nama Pelapor</div>
-                    <strong class="col-md-8" id="detail_nomor_induk"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Fasilitas</div>
-                    <strong class="col-md-8" id="detail_nama"></strong>
-                </div>
-                @if ($laporans->kerusakan->fasum_id == null)
-                    <div class="row mb-2">
-                        <div class="col-md-4">Ruang</div>
-                        <strong class="col-md-8" id="detail_nama"></strong>
-                    </div>
-                @endif
-                <div class="row mb-2">
-                    <div class="col-md-4">Email</div>
-                    <strong class="col-md-8" id="detail_email"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Role</div>
-                    <strong class="col-md-8" id="detail_role"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Status</div>
-                    <strong class="col-md-8" id="detail_status"></strong>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
-            </div>
-
+        <!-- Detail Laporan Kerusakan -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header border-bottom d-flex align-items-center gap-2">
+            <h5 class="mb-0">Detail Laporan Kerusakan</h5>
+            <span id="status_laporan"></span>
         </div>
+          <div class="card-body pt-5">
+            <div class="row">
+              <!-- Kiri -->
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <div class="fw-semibold">Tanggal Laporan</div>
+                  <div class="mt-1" id="detail_tanggal_laporan"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Lokasi Fasilitas</div>
+                  <div class="mt-1" id="detail_lokasi_fasilitas"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Nama Fasilitas</div>
+                  <div class="mt-1" id="detail_item"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Deskripsi Kerusakan</div>
+                  <div class="mt-1" id="detail_deskripsi_kerusakan"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Nama Pelapor</div>
+                  <div class="mt-1" id="detail_pelapor"></div>
+                </div>
+              </div>
+
+              <!-- Kanan -->
+              <div class="col-md-4">
+                <div class="fw-semibold mb-2">Bukti Kerusakan</div>
+                <img id="detail_foto_kerusakan" class="img-fluid rounded shadow-sm" width="240px" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail Perbaikan -->
+        <div class="card shadow-sm mb-4">
+        <div class="card-header border-bottom d-flex align-items-center gap-2">
+            <h5 class="mb-0">Detail Perbaikan</h5>
+            <span id="status_penugasan"></span>
+        </div>
+          <div class="card-body pt-5">
+            <div class="row">
+              <!-- Kiri -->
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <div class="fw-semibold">Tanggal Mulai Perbaikan</div>
+                  <div class="mt-1" id="detail_tanggal_mulai"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Tanggal Selesai Perbaikan</div>
+                  <div class="mt-1" id="detail_tanggal_selesai"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Nama Teknisi</div>
+                  <div class="mt-1" id="detail_teknisi"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Catatan Perbaikan</div>
+                  <div class="mt-1" id="detail_catatan_perbaikan"></div>
+              </div>
+              </div>
+
+              <!-- Kanan -->
+              <div class="col-md-4">
+                <div class="fw-semibold mb-2">Bukti Perbaikan</div>
+                <img id="detail_bukti_perbaikan" class="img-fluid rounded shadow-sm" width="240px" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

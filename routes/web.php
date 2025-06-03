@@ -81,6 +81,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     });
     Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('admin.data.laporan');
     Route::get('/laporan/{id}/show', [LaporanAdminController::class, 'show'])->name('admin.laporan.show');
+    Route::get('/laporan/export_pdf', [LaporanAdminController::class, 'export_pdf'])->name('admin.laporan.export_pdf');
 });
 
 Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->group(function () {
