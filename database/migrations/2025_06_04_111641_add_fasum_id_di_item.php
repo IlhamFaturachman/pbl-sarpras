@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('m_item', function (Blueprint $table) {
-            $table->unsignedBigInteger('ruang_id')->after('item_id')->nullable(); 
-            $table->foreign('ruang_id')
-                  ->references('ruang_id')
-                  ->on('m_ruang')
+            $table->unsignedBigInteger('fasum_id')->after('ruang_id')->nullable(); 
+            $table->foreign('fasum_id')
+                  ->references('fasum_id')
+                  ->on('m_fasum')
                   ->onDelete('cascade'); 
         });
     }
@@ -26,8 +26,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('m_item', function (Blueprint $table) {
-            $table->dropForeign(['ruang_id']);
-            $table->dropColumn('ruang_id');
+            $table->dropForeign(['fasum_id']);
+            $table->dropColumn('fasum_id');
         });
     }
 };

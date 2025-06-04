@@ -211,13 +211,5 @@
     <script src="../assets/vendor/js/menu.js"></script>
     <script src="../assets/js/main.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-    <!-- Auto redirect after 10 seconds (optional) -->
-    <script>
-      // Uncomment lines below if you want auto redirect to login after 10 seconds
-      // setTimeout(function() {
-      //   window.location.href = "{{ route('login') }}";
-      // }, 10000);
-    </script>
   </body>
 </html>

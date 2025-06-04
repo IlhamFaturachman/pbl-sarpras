@@ -78,6 +78,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
         Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
         Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
+        Route::get('/item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
+
     });
     Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('admin.data.laporan');
     Route::get('/laporan/{id}/show', [LaporanAdminController::class, 'show'])->name('admin.laporan.show');
