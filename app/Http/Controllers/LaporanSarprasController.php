@@ -29,24 +29,11 @@ class LaporanSarprasController extends Controller
                 });
             })->paginate(10);
 
-        $detailLaporan = null;
         $teknisis = UserModel::role('Teknisi')->get();
-
-        // Ambil detail laporan jika ada session 'detailLaporanId'
-        if (session()->has('detailLaporanId')) {
-            $detailLaporan = LaporanModel::with([
-                'kerusakan.item',
-                'kerusakan.ruang.gedung',
-                'kerusakan.fasum',
-                'pelapor',
-                'penugasan'
-            ])->find(session('detailLaporanId'));
-        }
 
         return view('sarpras.penugasan.index', [
             'laporans' => $laporans,
-            'teknisis' => $teknisis,
-            'detailLaporan' => $detailLaporan
+            'teknisis' => $teknisis
         ]);
     }
 
@@ -144,6 +131,7 @@ class LaporanSarprasController extends Controller
             'kerusakan.ruang.gedung',
             'kerusakan.fasum',
             'pelapor',
+            'prioritas',
             'penugasan.teknisi'
         ])->find($id);
 
@@ -173,22 +161,9 @@ class LaporanSarprasController extends Controller
                 });
             })->paginate(10);
 
-        $detailLaporan = null;
-
-        // Ambil detail laporan jika ada session 'detailLaporanId'
-        if (session()->has('detailLaporanId')) {
-            $detailLaporan = LaporanModel::with([
-                'kerusakan.item',
-                'kerusakan.ruang.gedung',
-                'kerusakan.fasum',
-                'pelapor',
-                'penugasan'
-            ])->find(session('detailLaporanId'));
-        }
 
         return view('sarpras.verifikasi.index', [
-            'laporans' => $laporans,
-            'detailLaporan' => $detailLaporan
+            'laporans' => $laporans
         ]);
     }
 
@@ -214,30 +189,187 @@ class LaporanSarprasController extends Controller
 
     public function simpanPrioritas(Request $request, $id)
     {
+        // Validasi input
         $request->validate([
             'tingkat_kerusakan' => 'required|integer',
             'dampak' => 'required|integer',
             'jumlah_terdampak' => 'required|integer',
             'alternatif' => 'required|integer',
             'ancaman' => 'required|integer',
-            'skor_laporan' => 'required|integer',
         ]);
 
-        $prioritas = PrioritasModel::updateOrCreate(
-            ['laporan_id' => $id],
-            [
+        try {
+            DB::beginTransaction();
+
+            // Data input untuk fuzzy
+            $data = [
                 'tingkat_kerusakan' => $request->tingkat_kerusakan,
                 'dampak' => $request->dampak,
                 'jumlah_terdampak' => $request->jumlah_terdampak,
                 'alternatif' => $request->alternatif,
                 'ancaman' => $request->ancaman,
-                'skor_laporan' => $request->skor_laporan,
-            ]
-        );
+            ];
+
+            // Hitung skor dengan Fuzzy Tsukamoto
+            $skor_laporan = $this->hitungSkorFuzzyTsukamoto($data);
+
+            // Simpan atau update prioritas termasuk skor_laporan
+            $prioritas = PrioritasModel::updateOrCreate(
+                ['laporan_id' => $id],
+                [
+                    'tingkat_kerusakan' => $data['tingkat_kerusakan'],
+                    'dampak' => $data['dampak'],
+                    'jumlah_terdampak' => $data['jumlah_terdampak'],
+                    'alternatif' => $data['alternatif'],
+                    'ancaman' => $data['ancaman'],
+                    'skor_laporan' => $skor_laporan, // disimpan ke kolom skor_laporan
+                ]
+            );
+
+            // Update status laporan
+            LaporanModel::where('laporan_id', $id)->update([
+                'status_laporan' => 'Disetujui'
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Prioritas berhasil disimpan.',
+                'data' => $prioritas,
+                'skor_laporan' => $skor_laporan
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Gagal menyimpan prioritas.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function fuzzySegitiga($x, $a, $b, $c)
+    {
+        if ($x <= $a || $x >= $c) return 0;
+        elseif ($x == $b) return 1;
+        elseif ($x > $a && $x < $b) return ($x - $a) / ($b - $a);
+        else return ($c - $x) / ($c - $b);
+    }
+
+    private function hitungSkorFuzzyTsukamoto($input)
+    {
+        // Nilai input
+        $tk = $input['tingkat_kerusakan'];
+        $td = $input['dampak'];
+        $jo = $input['jumlah_terdampak'];
+        $ka = $input['alternatif']; // 0 atau 1
+        $tkt = $input['ancaman'];
+
+        // Fuzzy membership
+        $tk_rendah = $this->fuzzySegitiga($tk, 0, 0, 60);
+        $tk_tinggi = $this->fuzzySegitiga($tk, 40, 100, 100);
+
+        $td_rendah = $this->fuzzySegitiga($td, 0, 0, 60);
+        $td_tinggi = $this->fuzzySegitiga($td, 40, 100, 100);
+
+        $jo_rendah = $this->fuzzySegitiga($jo, 0, 0, 60);
+        $jo_tinggi = $this->fuzzySegitiga($jo, 40, 100, 100);
+
+        $ka_ada = $ka == 1 ? 1 : 0;
+        $ka_tidak = $ka == 0 ? 1 : 0;
+
+        $tkt_rendah = $this->fuzzySegitiga($tkt, 0, 0, 60);
+        $tkt_tinggi = $this->fuzzySegitiga($tkt, 40, 100, 100);
+
+        $rules = [];
+
+        // 32 rule base kombinasi 2^5 (2 kondisi tiap variabel)
+        foreach ([['rendah', $tk_rendah], ['tinggi', $tk_tinggi]] as [$tk_l, $μ_tk]) {
+            foreach ([['rendah', $td_rendah], ['tinggi', $td_tinggi]] as [$td_l, $μ_td]) {
+                foreach ([['rendah', $jo_rendah], ['tinggi', $jo_tinggi]] as [$jo_l, $μ_jo]) {
+                    foreach ([['tidak', $ka_tidak], ['ada', $ka_ada]] as [$ka_l, $μ_ka]) {
+                        foreach ([['rendah', $tkt_rendah], ['tinggi', $tkt_tinggi]] as [$tkt_l, $μ_tkt]) {
+                            $α = min($μ_tk, $μ_td, $μ_jo, $μ_ka, $μ_tkt);
+
+                            if ($α > 0) {
+                                // Penentuan z (output prioritas: 0–100)
+                                // Rendah = turun (nilai rendah jika kondisi buruk sedikit)
+                                // Tinggi = naik (nilai tinggi jika kondisi buruk banyak)
+                                $z = match ([$tk_l, $td_l, $jo_l, $ka_l, $tkt_l]) {
+                                    ['rendah','rendah','rendah','ada','rendah'] => 20,
+                                    ['tinggi','tinggi','tinggi','tidak','tinggi'] => 90,
+                                    default => $this->nilaiOutput($tk_l, $td_l, $jo_l, $ka_l, $tkt_l),
+                                };
+
+                                $rules[] = ['α' => $α, 'z' => $z];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Defuzzifikasi
+        $z_total = array_sum(array_map(fn($r) => $r['α'] * $r['z'], $rules));
+        $α_total = array_sum(array_column($rules, 'α'));
+
+        return $α_total > 0 ? round($z_total / $α_total, 2) : 0;
+    }
+
+    private function nilaiOutput($tk, $td, $jo, $ka, $tkt)
+    {
+        // Sederhana: hitung berapa banyak "tinggi" / "tidak"
+        $nilai = 0;
+        foreach ([$tk, $td, $jo, $tkt] as $val)
+            $nilai += $val === 'tinggi' ? 1 : 0;
+        $nilai += $ka === 'tidak' ? 1 : 0;
+
+        // Konversi ke nilai z (prioritas)
+        return match ($nilai) {
+            0 => 20,
+            1 => 30,
+            2 => 45,
+            3 => 60,
+            4 => 75,
+            5 => 90,
+        };
+    }
+
+    public function index()
+    {
+        $laporans = LaporanModel::with([
+            'penugasan.teknisi',
+            'kerusakan.item',
+            'kerusakan.ruang.gedung',
+            'kerusakan.fasum',
+            'pelapor'
+        ])
+        ->whereIn('status_laporan', ['Selesai', 'Ditolak'])
+        ->paginate(10);
+
+        return view('sarpras.riwayat.index', [
+            'laporans' => $laporans
+        ]);
+    }
+
+    public function show($id)
+    {
+        $laporan = LaporanModel::with([
+            'kerusakan.item',
+            'kerusakan.ruang.gedung',
+            'kerusakan.fasum',
+            'pelapor',
+            'penugasan.teknisi',
+            'prioritas',
+            'feedback'
+        ])->find($id);
+
+        if (!$laporan) {
+            return redirect()->route('laporan.riwayat')->with('error', 'Laporan tidak ditemukan');
+        }
 
         return response()->json([
-            'message' => 'Prioritas berhasil disimpan.',
-            'data' => $prioritas
+            'laporan' => $laporan,
+            'penugasan' => $laporan->penugasan,
         ]);
     }
 }
