@@ -88,6 +88,28 @@
           </div>
         </div>
 
+        <!-- Feedback -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">Feedback</h5>
+          </div>
+          <div class="card-body pt-5">
+            <div class="row">
+              <!-- Komentar -->
+              <div class="col-md-8 mb-3">
+                <div class="fw-semibold">Komentar</div>
+                <div class="mt-1" id="detail_komentar"></div>
+              </div>
+
+              <!-- Rating -->
+              <div class="col-md-4">
+                <div class="fw-semibold mb-2">Rating</div>
+                <div id="detail_rating" class="mt-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>

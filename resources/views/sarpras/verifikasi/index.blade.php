@@ -26,51 +26,37 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th>Tanggal Laporan</th>
-                    <th>Nama Fasilitas</th>
-                    <th>Lokasi Fasilitas</th>
-                    <th>Prioritas Laporan</th>
-                    <th class="text-center">Status Laporan</th>
-                    <th class="text-center">Actions</th>
+                    <th style="font-weight: bold;">No</th>
+                    <th style="font-weight: bold;">Tanggal Laporan</th>
+                    <th style="font-weight: bold;">Nama Fasilitas</th>
+                    <th style="font-weight: bold;">Lokasi Fasilitas</th>
+                    <th style="font-weight: bold;" class="text-center">Status Laporan</th>
+                    <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($laporans as $laporan)
                 @php
-                $kerusakan = $laporan->kerusakan;
-                $penugasan = $laporan->penugasan;
-                $lokasi = $kerusakan->ruang
-                ? $kerusakan->ruang->nama . ', ' . $kerusakan->ruang->gedung->nama
-                : ($kerusakan->fasum->nama ?? '-');
+                    $kerusakan = $laporan->kerusakan;
+                    $penugasan = $laporan->penugasan;
+                    $lokasi = $kerusakan->ruang
+                    ? $kerusakan->ruang->nama . ', ' . $kerusakan->ruang->gedung->nama
+                    : ($kerusakan->fasum->nama ?? '-');
                 $statusLaporan = $laporan->status_laporan ?? null;
                 $status = $penugasan->status_penugasan ?? null;
                 @endphp
                 <tr>
+                    <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
                     <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
                     <td>{{ $kerusakan->item->nama ?? '-' }}</td>
                     <td>{{ $lokasi }}</td>
-                    <td>
-                        @php
-                        $skor = $laporan->prioritas->skor_laporan ?? null;
-                        if (is_null($skor)) {
-                        echo '-';
-                        } elseif ($skor <= 40) {
-                            echo "Rendah ($skor)" ;
-                            } elseif ($skor <=70) {
-                            echo "Sedang ($skor)" ;
-                            } else {
-                            echo "Tinggi ($skor)" ;
-                            }
-                            @endphp
-                            </td>
                     <td class="text-center">
                         @switch($statusLaporan)
-                        @case('Progress')
-                        @case('Diajukan')
-                        <span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>
-                        @break
+                            @case('Diajukan')
+                                <span style="background-color: #ffe8cc; color: #000; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Diajukan</span>
+                            @break
                         @default
-                        <span class="d-inline-block" style="width:100px;">-</span>
+                            <span class="d-inline-block" style="width:100px;">-</span>
                         @endswitch
                     </td>
                     <td class="text-center">
@@ -82,7 +68,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center text-muted">Tidak ada data laporan</td>
+                    <td colspan="6" class="text-center text-muted">Tidak ada data laporan</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -190,60 +176,67 @@
             const kerusakan = parseInt($('#tingkat_kerusakan').val());
             const dampak = parseInt($('#tingkat_dampak').val());
             const terdampak = parseInt($('#jumlah_terdampak').val());
-            const alternatif = parseInt($('#alternatif').val());
+            const alternatif = parseInt($('input[name="alternatif"]:checked').val());
             const keamanan = parseInt($('#keamanan').val());
 
             $('#val_kerusakan').text(kerusakan);
             $('#val_dampak').text(dampak);
             $('#val_terdampak').text(terdampak);
-            $('#val_alternatif').text(alternatif);
+            $('#val_alternatif').text(alternatif === 1 ? 'Ada' : 'Tidak Ada');
             $('#val_keamanan').text(keamanan);
-
-            // Perhitungan sederhana prioritas: semakin besar nilai, semakin tinggi
-            let prioritas = Math.round((kerusakan + dampak + terdampak + (100 - alternatif) + keamanan) / 5);
-
-            let label = 'Rendah';
-            if (prioritas >= 70) label = 'Tinggi';
-            else if (prioritas >= 40) label = 'Sedang';
-
-            $('#nilai_prioritas').text(`${label} (${prioritas})`);
         }
 
-        $('#tingkat_kerusakan, #tingkat_dampak, #jumlah_terdampak, #alternatif, #keamanan').on('input', updateLabelAndPrioritas);
+        $('#tingkat_kerusakan, #tingkat_dampak, #jumlah_terdampak, #keamanan').on('input', updateLabelAndPrioritas);
+        $('input[name="alternatif"]').on('change', updateLabelAndPrioritas);
 
-
-        $('.verifikasi-laporan').on('click', function() {
+        $('.verifikasi-laporan').on('click', function () {
+            const laporanId = $(this).data('id');
+            $('#btnSimpanPrioritas').data('id', laporanId);
             $('#prioritasModal').modal('show');
             updateLabelAndPrioritas();
         });
 
-        $('#btnSimpanPrioritas').on('click', function() {
-            const laporanId = $('.verifikasi-laporan').data('id');
+        $('#btnSimpanPrioritas').on('click', function () {
+            const laporanId = $(this).data('id');
+
+            const kerusakan = parseInt($('#tingkat_kerusakan').val());
+            const dampak = parseInt($('#tingkat_dampak').val());
+            const terdampak = parseInt($('#jumlah_terdampak').val());
+            const alternatif = parseInt($('input[name="alternatif"]:checked').val());
+            const keamanan = parseInt($('#keamanan').val());
 
             $.ajax({
                 url: "{{ url('sarpras/laporan/verifikasi') }}" + '/' + laporanId + '/prioritas',
                 method: 'POST',
                 data: {
-                    _token: "{{ csrf_token() }}",
-                    tingkat_kerusakan: $('#tingkat_kerusakan').val(),
-                    dampak: $('#tingkat_dampak').val(),
-                    jumlah_terdampak: $('#jumlah_terdampak').val(),
-                    alternatif: $('#alternatif').val(),
-                    ancaman: $('#keamanan').val(),
-                    skor_laporan: Math.round((
-                        parseInt($('#tingkat_kerusakan').val()) +
-                        parseInt($('#tingkat_dampak').val()) +
-                        parseInt($('#jumlah_terdampak').val()) +
-                        (100 - parseInt($('#alternatif').val())) +
-                        parseInt($('#keamanan').val())
-                    ) / 5)
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    tingkat_kerusakan: kerusakan,
+                    dampak: dampak,
+                    jumlah_terdampak: terdampak,
+                    alternatif: alternatif,
+                    ancaman: keamanan
                 },
-                success: function(response) {
-                    Swal.fire('Berhasil', response.message, 'success');
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Skor Prioritas: ' + response.skor_laporan + '\n' + response.message,
+                        icon: 'success',
+                        showConfirmButton: true
+                    }).then(() => {
+                        location.reload();
+                    });
+
                     $('#prioritasModal').modal('hide');
                 },
-                error: function(xhr) {
-                    Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan prioritas.', 'error');
+                error: function (xhr) {
+                    let msg = "Terjadi kesalahan saat menyimpan prioritas.";
+                    if (xhr.responseJSON?.error) msg = xhr.responseJSON.error;
+
+                    Swal.fire({
+                        title: "Error",
+                        text: msg,
+                        icon: "error"
+                    });
                 }
             });
         });
