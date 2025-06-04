@@ -36,21 +36,16 @@
             </thead>
             <tbody>
                 @forelse($laporans as $laporan)
-                    @php
-                        $kerusakan = $laporan->kerusakan;
-                        $penugasan = $laporan->penugasan;
-                        $lokasi = $kerusakan->ruang 
-                                    ? $kerusakan->ruang->nama . ', ' . $kerusakan->ruang->gedung->nama 
-                                    : ($kerusakan->fasum->nama ?? '-');
-                        $statusLaporan = $laporan->status_laporan ?? null;
-                    @endphp
                     <tr>
                         <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
                         <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
-                        <td>{{ $kerusakan->item->nama ?? '-' }}</td>
-                        <td>{{ $lokasi }}</td>
+                        <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
+                        <td>{{ $laporan->kerusakan->item->ruang
+                            ? $laporan->kerusakan->item->ruang->nama . ', ' . $laporan->kerusakan->item->ruang->gedung->nama
+                            : ($laporan->kerusakan->item->fasum->nama ?? '-'); }}
+                        </td>
                         <td class="text-center">
-                            @switch($statusLaporan)       
+                            @switch($laporan->status_laporan)       
                                 @case('Selesai')
                                     <span style="background-color: #d3f9d8; color: #37b24d; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Selesai</span>
                                     @break
@@ -141,10 +136,10 @@
 
                     // Lokasi Fasilitas
                     let lokasi = '-';
-                    if (kerusakan.ruang?.nama && kerusakan.ruang?.gedung?.nama) {
-                        lokasi = `${kerusakan.ruang.nama}, ${kerusakan.ruang.gedung.nama}`;
-                    } else if (kerusakan.fasum?.nama) {
-                        lokasi = kerusakan.fasum.nama;
+                    if (kerusakan.item?.ruang?.nama && kerusakan.item?.ruang?.gedung?.nama) {
+                        lokasi = `${kerusakan.item?.ruang.nama}, ${kerusakan.item?.ruang.gedung.nama}`;
+                    } else if (kerusakan.item?.fasum?.nama) {
+                        lokasi = kerusakan.item?.fasum.nama;
                     }
                     
                     function formatTanggalDMY(tanggal) {
@@ -153,6 +148,7 @@
                         return `${day}-${month}-${year}`;
                     }
 
+                    $('#detail_laporan_id').text(laporan.laporan_id);
                     $('#detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
                     $('#detail_lokasi_fasilitas').text(lokasi);
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');

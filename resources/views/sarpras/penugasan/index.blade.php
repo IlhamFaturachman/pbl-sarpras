@@ -38,28 +38,23 @@
             </thead>
             <tbody>
                 @forelse($laporans as $laporan)
-                    @php
-                        $kerusakan = $laporan->kerusakan;
-                        $penugasan = $laporan->penugasan;
-                        $lokasi = $kerusakan->ruang 
-                                    ? $kerusakan->ruang->nama . ', ' . $kerusakan->ruang->gedung->nama 
-                                    : ($kerusakan->fasum->nama ?? '-');
-                        $skor = $laporan->prioritas->skor_laporan ?? null;
-                        $statusLaporan = $laporan->status_laporan ?? null;
-                        $status = $penugasan->status_penugasan ?? null;
-                    @endphp
                     <tr>
                         <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
                         <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
-                        <td>{{ $kerusakan->item->nama ?? '-' }}</td>
-                        <td>{{ $lokasi }}</td>
+                        <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
+                        <td>{{ $laporan->kerusakan->item->ruang
+                            ? $laporan->kerusakan->item->ruang->nama . ', ' . $laporan->kerusakan->item->ruang->gedung->nama
+                            : ($laporan->kerusakan->item->fasum->nama ?? '-'); }}
+                        </td>
                         <td>
                             @php
+                                $skor = optional($laporan->prioritas)->skor_laporan;
+
                                 if (is_null($skor)) {
                                     echo '-';
                                 } elseif ($skor <= 40) {
                                     echo "Rendah ($skor)";
-                                } elseif ($skor <=70) {
+                                } elseif ($skor <= 70) {
                                     echo "Sedang ($skor)";
                                 } else {
                                     echo "Tinggi ($skor)";
@@ -67,7 +62,7 @@
                             @endphp
                         </td>
                         <td class="text-center">
-                            @switch($statusLaporan)
+                            @switch($laporan->status_laporan)
                                 @case('Disetujui')
                                     <span style="background-color: #d0ebff; color: #1c7ed6; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Disetujui</span>
                                     @break
@@ -79,31 +74,35 @@
                             @endswitch
                         </td>
                         <td class="text-center">
-                            @switch($status)
-                                @case('Progress')
-                                    <span style="color: #007bff; border: 1px solid #007bff; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Progress</span>
-                                    @break
-                                @case('Revisi')
-                                    <span style="color: #dc3545; border: 1px solid #dc3545; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Revisi</span>
-                                    @break
-                                @case('Menunggu')
-                                    <span style="color: #ffc107; border: 1px solid #ffc107; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Menunggu</span>
-                                    @break
-                                @default
-                                    <span class="d-inline-block" style="width:100px;">-</span>
-                            @endswitch
+                            @if ($laporan->penugasan)
+                                @switch($laporan->penugasan->status_penugasan)
+                                    @case('Progress')
+                                        <span style="color: #007bff; border: 1px solid #007bff; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Progress</span>
+                                        @break
+                                    @case('Revisi')
+                                        <span style="color: #dc3545; border: 1px solid #dc3545; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Revisi</span>
+                                        @break
+                                    @case('Menunggu')
+                                        <span style="color: #ffc107; border: 1px solid #ffc107; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Menunggu</span>
+                                        @break
+                                    @default
+                                        <span class="d-inline-block" style="width:100px;">-</span>
+                                @endswitch
+                            @else
+                                <span class="d-inline-block" style="width:100px;">-</span>
+                            @endif
                         </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-primary detail-laporan" data-id="{{ $laporan->laporan_id }}">Detail</button>
 
-                                @if($statusLaporan === 'Disetujui')
+                                @if($laporan->status_laporan === 'Disetujui')
                                     <button class="btn btn-sm btn-success assign-penugasan" data-id="{{ $laporan->laporan_id }}" style="width:80px;">Tugaskan</button>
-                                @elseif(is_null($status))
+                                @elseif(is_null($laporan->penugasan->status_penugasan))
                                     <button class="btn btn-sm btn-secondary" style="width:80px;" disabled>Konfirmasi</button>
-                                @elseif($status === 'Progress')
+                                @elseif($laporan->penugasan->status_penugasan === 'Progress')
                                     <button class="btn btn-sm btn-secondary" style="width:80px;" disabled>Konfirmasi</button>
-                                @elseif(in_array($status, ['Menunggu', 'Revisi']))
+                                @elseif(in_array($laporan->penugasan->status_penugasan, ['Menunggu', 'Revisi']))
                                     <button class="btn btn-sm btn-warning confirm-penugasan" data-id="{{ $laporan->laporan_id }}" style="width:80px;">Konfirmasi</button>
                                 @endif
                             </div>
@@ -184,10 +183,10 @@
 
                     // Lokasi Fasilitas
                     let lokasi = '-';
-                    if (kerusakan.ruang?.nama && kerusakan.ruang?.gedung?.nama) {
-                        lokasi = `${kerusakan.ruang.nama}, ${kerusakan.ruang.gedung.nama}`;
-                    } else if (kerusakan.fasum?.nama) {
-                        lokasi = kerusakan.fasum.nama;
+                    if (kerusakan.item?.ruang?.nama && kerusakan.item?.ruang?.gedung?.nama) {
+                        lokasi = `${kerusakan.item?.ruang.nama}, ${kerusakan.item?.ruang.gedung.nama}`;
+                    } else if (kerusakan.item?.fasum?.nama) {
+                        lokasi = kerusakan.item?.fasum.nama;
                     }
                     
                     function formatTanggalDMY(tanggal) {
@@ -196,6 +195,7 @@
                         return `${day}-${month}-${year}`;
                     }
 
+                    $('#detail_laporan_id').text(laporan.laporan_id);
                     $('#detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
                     $('#detail_lokasi_fasilitas').text(lokasi);
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
