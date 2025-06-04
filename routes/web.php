@@ -110,6 +110,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
         // verifikasi
         Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');
         Route::get('/verifikasi/{id}/show', [LaporanSarprasController::class, 'showVerifikasi'])->name('laporan.show');
+        Route::get('/verifikasi/{id}', [LaporanSarprasController::class, 'tolak'])->name('laporan.tolak');
         Route::post('/verifikasi/{id}/prioritas', [LaporanSarprasController::class, 'simpanPrioritas'])->name('laporan.simpanPrioritas');
 
         // penugasan

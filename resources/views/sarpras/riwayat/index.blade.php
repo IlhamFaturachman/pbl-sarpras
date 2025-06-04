@@ -206,6 +206,15 @@
                     $('#detail_komentar').text(feedback.komentar ?? '-');
                     $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
 
+                    // tampilkan/hidden bagian perbaikan & feedback
+                    if (laporan.status_laporan === 'Ditolak') {
+                    $('#card_perbaikan').hide();
+                    $('#card_feedback').hide();
+                    } else {
+                    $('#card_perbaikan').show();
+                    $('#card_feedback').show();
+                    }
+
                     // Tampilkan modal
                     $('#detailLaporan').modal('show');
                 },
