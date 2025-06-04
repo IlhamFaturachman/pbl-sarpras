@@ -134,6 +134,26 @@ class KerusakanController extends Controller
         }
     }
 
+     public function destroy($id){
+        try {
+            $kerusakan = KerusakanModel::findOrFail($id);
+            $kerusakan->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data kerusakan berhasil dihapus',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Gagal menghapus data kerusakan: ' . $e->getMessage(),
+                ],
+                500,
+            );
+        }
+
+
     public function exportPdf()
     {
         $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
