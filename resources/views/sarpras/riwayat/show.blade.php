@@ -1,4 +1,4 @@
-<div class="modal fade" id="detailLaporanAdmin" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="detailLaporan" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content text-white" style="background-color:rgba(235, 235, 235, 0.96);">
       <div class="modal-header border-bottom-0">
@@ -35,6 +35,10 @@
                 <div class="mb-3">
                   <div class="fw-semibold">Nama Pelapor</div>
                   <div class="mt-1" id="detail_pelapor"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Skor Prioritas</div>
+                  <div class="mt-1" id="detail_prioritas"></div>
                 </div>
               </div>
 
@@ -84,6 +88,28 @@
           </div>
         </div>
 
+        <!-- Feedback -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">Feedback</h5>
+          </div>
+          <div class="card-body pt-5">
+            <div class="row">
+              <!-- Komentar -->
+              <div class="col-md-8 mb-3">
+                <div class="fw-semibold">Komentar</div>
+                <div class="mt-1" id="detail_komentar"></div>
+              </div>
+
+              <!-- Rating -->
+              <div class="col-md-4">
+                <div class="fw-semibold mb-2">Rating</div>
+                <div id="detail_rating" class="mt-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>

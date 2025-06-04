@@ -33,6 +33,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
+
+    // ✅ Tambahan route untuk halaman menunggu verifikasi
+    Route::get('waiting', function () {
+        return view('auth.waiting');
+    })->name('waiting');
 });
 
 Route::middleware('auth')->group(function () {

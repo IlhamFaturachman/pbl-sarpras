@@ -11,7 +11,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Login | Sarpras</title>
+    <title>Login | SiLaprak</title>
 
     <meta name="description" content="" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -60,12 +60,12 @@
                       <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="img-fluid d-block mx-auto" style="height: 50px; width: auto;">
                     </span>
                   </span>
-                  <span class="app-brand-text demo text-heading fw-bold">Sarpras</span>
+                  <span class="app-brand-text demo text-heading fw-bold">SiLaprak</span>
                 </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-1">Selamat Datang di Sarpras! 👋</h4>
-              <p class="mb-4">Masukkan email dan password untuk memulai sesi Anda</p>
+              <h4 class="mb-1">Selamat Datang di SiLaprak! 👋</h4>
+              <p class="mb-4">Masukkan email dan password untuk masuk ke dalam aplikasi</p>
 
               <!-- Display error messages -->
               @if(session('status'))
@@ -126,15 +126,18 @@
                       <input class="form-check-input" type="checkbox" id="remember-me" name="remember" />
                       <label class="form-check-label" for="remember-me"> Remember Me </label>
                     </div>
-                    <a href="{{ route('password.request') }}">
-                      <span>Forgot Password?</span>
-                    </a>
                   </div>
                 </div>
                 <div class="mb-6">
                   <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
                 </div>
               </form>
+              <p class="text-center mt-4">
+              <span>Belum Mempunyai akun?</span>
+              <a href="{{ route('register') }}">
+                <span>Daftar</span>
+              </a>
+            </p>
             </div>
           </div>
           <!-- /Register -->

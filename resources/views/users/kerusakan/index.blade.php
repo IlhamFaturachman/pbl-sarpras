@@ -20,9 +20,14 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Kerusakan Fasilitas</h5>
-        <button type="button" class="btn btn-primary" onclick="showCreateModal()">
-            <i class="fas fa-plus me-2"></i>Tambah Kerusakan
-        </button>
+        <div class="d-flex gap-2">
+            <a href="{{ url('/users/kerusakan/export_pdf') }}" class="btn btn-sm btn-warning">
+                <i class="fas fa-file-pdf me-1"></i> Export PDF
+            </a>
+            <button type="button" class="btn btn-primary" onclick="showCreateModal()">
+                <i class="fas fa-plus me-2"></i>Tambah Kerusakan
+            </button>
+        </div>
     </div>
 
     <div class="table-responsive text-nowrap">
@@ -148,15 +153,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function showCreateModal() {
-    // Load data untuk dropdown
     $.ajax({
         url: "{{ route('kerusakan.create') }}",
         type: 'GET',
         success: function(response) {
-            // Set data to global variable for use in modal
             window.modalData = response;
-            
-            // Reset form
             $('#form-create')[0].reset();
             $('#step-1').show();
             $('#step-2').hide();
@@ -166,8 +167,6 @@ function showCreateModal() {
             $('#btn-next').show();
             $('#btn-prev').hide();
             $('#btn-submit').hide();
-            
-            // Show modal
             $('#createKerusakanModal').modal('show');
         },
         error: function() {

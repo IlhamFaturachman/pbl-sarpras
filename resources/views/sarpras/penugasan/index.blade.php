@@ -19,18 +19,21 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data Penugasan Perbaikan Fasilitas</h5>
+        <h5 class="mb-0">Data Penugasan Laporan Perbaikan Fasilitas</h5>
     </div>
 
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th>Tanggal Laporan</th>
-                    <th>Nama Fasilitas</th>
-                    <th>Lokasi Fasilitas</th>
-                    <th class="text-center">Status Penugasan</th>
-                    <th class="text-center">Actions</th>
+                    <th style="font-weight: bold;">No</th>
+                    <th style="font-weight: bold;">Tanggal Laporan</th>
+                    <th style="font-weight: bold;">Nama Fasilitas</th>
+                    <th style="font-weight: bold;">Lokasi Fasilitas</th>
+                    <th style="font-weight: bold;" class="text-center">Prioritas Laporan</th>
+                    <th style="font-weight: bold;" class="text-center">Status Laporan</th>
+                    <th style="font-weight: bold;" class="text-center">Status Penugasan</th>
+                    <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,13 +44,40 @@
                         $lokasi = $kerusakan->ruang 
                                     ? $kerusakan->ruang->nama . ', ' . $kerusakan->ruang->gedung->nama 
                                     : ($kerusakan->fasum->nama ?? '-');
+                        $skor = $laporan->prioritas->skor_laporan ?? null;
                         $statusLaporan = $laporan->status_laporan ?? null;
                         $status = $penugasan->status_penugasan ?? null;
                     @endphp
                     <tr>
+                        <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
                         <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
                         <td>{{ $kerusakan->item->nama ?? '-' }}</td>
                         <td>{{ $lokasi }}</td>
+                        <td>
+                            @php
+                                if (is_null($skor)) {
+                                    echo '-';
+                                } elseif ($skor <= 40) {
+                                    echo "Rendah ($skor)";
+                                } elseif ($skor <=70) {
+                                    echo "Sedang ($skor)";
+                                } else {
+                                    echo "Tinggi ($skor)";
+                                }
+                            @endphp
+                        </td>
+                        <td class="text-center">
+                            @switch($statusLaporan)
+                                @case('Disetujui')
+                                    <span style="background-color: #d0ebff; color: #1c7ed6; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Disetujui</span>
+                                    @break
+                                @case('Dikerjakan')
+                                    <span style="background-color: #fff3bf; color: #f59f00; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Dikerjakan</span>
+                                    @break
+                                @default
+                                    <span class="d-inline-block" style="width:100px;">-</span>
+                            @endswitch
+                        </td>
                         <td class="text-center">
                             @switch($status)
                                 @case('Progress')
@@ -81,7 +111,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">Tidak ada data laporan</td>
+                        <td colspan="8" class="text-center text-muted">Tidak ada data laporan</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -171,6 +201,19 @@
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
                     $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                     $('#detail_pelapor').text(laporan.pelapor?.nama_lengkap ?? '-');
+
+                    const skor = laporan.prioritas?.skor_laporan;
+                    let label = '-';
+                    if (skor === null || skor === undefined) {
+                        label = '-';
+                    } else if (skor <= 40) {
+                        label = `Rendah (${skor})`;
+                    } else if (skor <= 70) {
+                        label = `Sedang (${skor})`;
+                    } else {
+                        label = `Tinggi (${skor})`;
+                    }
+                    $('#detail_prioritas').text(label);
 
                     if(laporan.kerusakan.foto_kerusakan){
                         $('#detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);

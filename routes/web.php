@@ -81,26 +81,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     });
     Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('admin.data.laporan');
     Route::get('/laporan/{id}/show', [LaporanAdminController::class, 'show'])->name('admin.laporan.show');
+    Route::get('/laporan/export_pdf', [LaporanAdminController::class, 'export_pdf'])->name('admin.laporan.export_pdf');
 });
 
 Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->group(function () {
     Route::get('/dashboard', function () {
         return view('users.dashboard');
     })->name('users.dashboard');
-    Route::prefix('users')->group(function () {
 
-        // kerusakan
-        Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
-        Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
-        Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
-        Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
-        Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
-    });
+    // kerusakan
+    Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
+    Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
+    Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+    Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
+    Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
+    Route::get('/kerusakan/export_pdf', [KerusakanController::class, 'exportPdf'])->name('kerusakan.export_pdf');
+
 });
-
-
-
-
 
 // sarpras
 Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function () {
@@ -111,6 +108,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
         // verifikasi
         Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');
         Route::get('/verifikasi/{id}/show', [LaporanSarprasController::class, 'showVerifikasi'])->name('laporan.show');
+        Route::post('/verifikasi/{id}/prioritas', [LaporanSarprasController::class, 'simpanPrioritas'])->name('laporan.simpanPrioritas');
 
         // penugasan
         Route::get('/penugasan', [LaporanSarprasController::class, 'indexPenugasan'])->name('laporan.penugasan');

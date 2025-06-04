@@ -20,6 +20,7 @@ class PenugasanModel extends Model
         'status_penugasan',
         'tanggal_mulai',
         'tanggal_selesai',
+        'bukti_perbaikan',
         'catatan_perbaikan',
     ];
 

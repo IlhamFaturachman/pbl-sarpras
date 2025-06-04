@@ -36,6 +36,10 @@
                   <div class="fw-semibold">Nama Pelapor</div>
                   <div class="mt-1" id="detail_pelapor"></div>
                 </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Skor Prioritas</div>
+                  <div class="mt-1" id="detail_prioritas"></div>
+                </div>
               </div>
 
               <!-- Kanan -->
