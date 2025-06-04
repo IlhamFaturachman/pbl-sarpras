@@ -26,22 +26,22 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th><strong>Tanggal Laporan</strong></th>
-                    <th><strong>Nama Fasilitas</strong></th>
-                    <th><strong>Lokasi Fasilitas</strong></th>
-                    <th class="text-center"><strong>Status Penugasan</strong></th>
-                    <th><strong>Actions</strong></th>
+                    <th style="font-weight: bold;">No</th>
+                    <th style="font-weight: bold;">Tanggal Laporan</th>
+                    <th style="font-weight: bold;">Nama Fasilitas</th>
+                    <th style="font-weight: bold;">Lokasi Fasilitas</th>
+                    <th style="font-weight: bold;" class="text-center">Status Penugasan</th>
+                    <th style="font-weight: bold;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($penugasans as $penugasan)
+                @forelse($penugasans as $penugasan)
                     <tr>
+                        <td>{{ $loop->iteration + ($penugasans->firstItem() - 1) }}</td>
                         <td>{{ \Carbon\Carbon::parse($penugasan->laporan->tanggal_laporan)->format('d-m-y') }}</td>
                         <td>{{ $penugasan->laporan->kerusakan->item->nama }}</td>
                         <td>
-                            @php
-                                $kerusakan = $penugasan->laporan->kerusakan;
-                            @endphp
+                            @php $kerusakan = $penugasan->laporan->kerusakan; @endphp
                             @if ($kerusakan->ruang)
                                 {{ $kerusakan->ruang->nama }}, {{ $kerusakan->ruang->gedung->nama }}
                             @elseif ($kerusakan->fasum)
@@ -50,39 +50,37 @@
                                 -
                             @endif
                         </td>
-                        <td style="text-align: center;">
-                            @if ($penugasan->status_penugasan == 'Progress')
-                                <span style="color: #007bff; border: 1px solid #007bff; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">
-                                    Progress
-                                </span>
-                            @elseif ($penugasan->status_penugasan == 'Selesai')
-                                <span style="color: #28a745; border: 1px solid #28a745; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">
-                                    Selesai
-                                </span>
-                            @elseif ($penugasan->status_penugasan == 'Revisi')
-                                <span style="color: #dc3545; border: 1px solid #dc3545; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">
-                                    Revisi
-                                </span>
-                            @elseif ($penugasan->status_penugasan == 'Menunggu')
-                                <span style="color: #ffc107; border: 1px solid #ffc107; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">
-                                    Menunggu
-                                </span>
-                            @else
-                                <span style="display: inline-block; width: 100px;">-</span>
-                            @endif
+                        <td class="text-center">
+                            @php
+                                $status = $penugasan->status_penugasan;
+                                $statusClass = match ($status) {
+                                    'Progress' => 'color: #007bff; border-color: #007bff;',
+                                    'Selesai' => 'color: #28a745; border-color: #28a745;',
+                                    'Revisi' => 'color: #dc3545; border-color: #dc3545;',
+                                    'Menunggu' => 'color: #ffc107; border-color: #ffc107;',
+                                    default => ''
+                                };
+                            @endphp
+                            <span style="{{ $statusClass }} padding: 4px 8px; border: 1px solid; border-radius: 5px; display: inline-block; width: 100px;">
+                                {{ $status ?? '-' }}
+                            </span>
                         </td>
                         <td class="text-center">
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-sm btn-primary detail-laporan" data-id="{{ $penugasan->laporan->laporan_id }}">Detail</button>
-                                @if ($penugasan->status_penugasan === null)
+                                @if (is_null($penugasan->status_penugasan))
                                     <button type="button" class="btn btn-sm btn-success" style="width: 80px;" onclick="showKerjakanModal('{{ $penugasan->penugasan_id }}')">Kerjakan</button>
-                                @elseif ($penugasan->status_penugasan === 'Progress' || $penugasan->status_penugasan === 'Revisi')
+                                @elseif (in_array($penugasan->status_penugasan, ['Progress', 'Revisi']))
                                     <button type="button" class="btn btn-sm btn-warning report-penugasan" data-id="{{ $penugasan->penugasan_id }}" style="width: 80px;">Lapor</button>
                                 @endif
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Tidak ada data laporan penugasan</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

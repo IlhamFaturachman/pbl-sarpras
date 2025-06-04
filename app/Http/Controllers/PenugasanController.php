@@ -120,6 +120,7 @@ class PenugasanController extends Controller
             // Simpan ke database
             $penugasan->bukti_perbaikan = $path;
             $penugasan->status_penugasan = "Menunggu";
+            $penugasan->tanggal_selesai = Carbon::now();
             $penugasan->save();
         }
 
