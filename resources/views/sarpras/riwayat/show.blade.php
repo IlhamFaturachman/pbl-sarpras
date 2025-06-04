@@ -7,7 +7,7 @@
       <div class="modal-body">
 
         <!-- Detail Laporan Kerusakan -->
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-4" id="card_laporan">
           <div class="card-header border-bottom d-flex align-items-center gap-2">
             <h5 class="mb-0">Detail Laporan Kerusakan</h5>
             <span id="status_laporan"></span>
@@ -52,7 +52,7 @@
         </div>
 
         <!-- Detail Perbaikan -->
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-4" id="card_perbaikan">
         <div class="card-header border-bottom d-flex align-items-center gap-2">
             <h5 class="mb-0">Detail Perbaikan</h5>
             <span id="status_penugasan"></span>
@@ -89,7 +89,7 @@
         </div>
 
         <!-- Feedback -->
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-4" id="card_feedback">
           <div class="card-header border-bottom">
             <h5 class="mb-0">Feedback</h5>
           </div>

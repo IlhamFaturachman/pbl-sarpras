@@ -61,8 +61,9 @@
                     </td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
-                            <button class="btn btn-sm btn-primary detail-laporan" data-id="{{ $laporan->laporan_id }}">Detail</button>
-                            <button class="btn btn-sm btn-success verifikasi-laporan" data-id="{{ $laporan->laporan_id }}">Verifikasi</button>
+                            <button class="btn btn-sm btn-primary detail-laporan" style="width: 70px;" data-id="{{ $laporan->laporan_id }}">Detail</button>
+                            <button class="btn btn-sm btn-success verifikasi-laporan" style="width: 70px;" data-id="{{ $laporan->laporan_id }}">Setujui</button>
+                            <button type="button" class="btn btn-sm btn-danger" style="width: 70px;" onclick="showTolakModal('{{ $laporan->laporan_id }}')">Tolak</button>
                         </div>
                     </td>
                 </tr>
@@ -83,6 +84,7 @@
 
 @include('sarpras.verifikasi.show')
 @include('sarpras.verifikasi.prioritas')
+@include('sarpras.verifikasi.tolak')
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

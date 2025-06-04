@@ -9,6 +9,7 @@ use App\Models\PrioritasModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class LaporanSarprasController extends Controller
 {
@@ -70,7 +71,8 @@ class LaporanSarprasController extends Controller
 
             // Ubah status laporan menjadi "Dikerjakan"
             LaporanModel::where('laporan_id', $id)->update([
-                'status_laporan' => 'Dikerjakan'
+                'status_laporan' => 'Dikerjakan',
+                'tanggal_update_status' => Carbon::now(),
             ]);
 
             DB::commit();
@@ -104,12 +106,14 @@ class LaporanSarprasController extends Controller
             $penugasan->update([
                 'status_penugasan' => $request->konfirmasi,
                 'catatan_perbaikan' => $request->catatan_perbaikan,
+                'tanggal_update_status' => Carbon::now(),
             ]);
 
             // Update status laporan jika konfirmasi selesai
             if ($request->konfirmasi === 'Selesai') {
                 LaporanModel::where('laporan_id', $request->laporan_id)->update([
-                    'status_laporan' => 'Selesai'
+                    'status_laporan' => 'Selesai',
+                    'tanggal_update_status' => Carbon::now(),
                 ]);
             }
 
@@ -187,6 +191,16 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
+    public function tolak($id) {
+        $laporan = LaporanModel::findOrFail($id);
+
+        $laporan->status_laporan = 'Ditolak';
+        $laporan->tanggal_update_status = Carbon::now();
+        $laporan->save();
+
+        return redirect()->route('laporan.verifikasi')->with('success', 'Laporan ditolak');
+    }
+
     public function simpanPrioritas(Request $request, $id)
     {
         // Validasi input
@@ -228,7 +242,9 @@ class LaporanSarprasController extends Controller
 
             // Update status laporan
             LaporanModel::where('laporan_id', $id)->update([
-                'status_laporan' => 'Disetujui'
+                'status_laporan' => 'Disetujui',
+                'tanggal_update_status' => Carbon::now(),
+
             ]);
 
             DB::commit();
