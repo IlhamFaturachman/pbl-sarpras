@@ -39,31 +39,32 @@
                     <tr>
                         <td>{{ $loop->iteration + ($penugasans->firstItem() - 1) }}</td>
                         <td>{{ \Carbon\Carbon::parse($penugasan->laporan->tanggal_laporan)->format('d-m-y') }}</td>
-                        <td>{{ $penugasan->laporan->kerusakan->item->nama }}</td>
-                        <td>
-                            @php $kerusakan = $penugasan->laporan->kerusakan; @endphp
-                            @if ($kerusakan->ruang)
-                                {{ $kerusakan->ruang->nama }}, {{ $kerusakan->ruang->gedung->nama }}
-                            @elseif ($kerusakan->fasum)
-                                {{ $kerusakan->fasum->nama }}
-                            @else
-                                -
-                            @endif
+                        <td>{{ $penugasan->laporan->kerusakan->item->nama ?? '-' }}</td>
+                        <td>{{ $penugasan->laporan->kerusakan->item->ruang
+                            ? $penugasan->laporan->kerusakan->item->ruang->nama . ', ' . $penugasan->laporan->kerusakan->item->ruang->gedung->nama
+                            : ($penugasan->laporan->kerusakan->item->fasum->nama ?? '-'); }}
                         </td>
                         <td class="text-center">
-                            @php
-                                $status = $penugasan->status_penugasan;
-                                $statusClass = match ($status) {
-                                    'Progress' => 'color: #007bff; border-color: #007bff;',
-                                    'Selesai' => 'color: #28a745; border-color: #28a745;',
-                                    'Revisi' => 'color: #dc3545; border-color: #dc3545;',
-                                    'Menunggu' => 'color: #ffc107; border-color: #ffc107;',
-                                    default => ''
-                                };
-                            @endphp
-                            <span style="{{ $statusClass }} padding: 4px 8px; border: 1px solid; border-radius: 5px; display: inline-block; width: 100px;">
-                                {{ $status ?? '-' }}
-                            </span>
+                            @if ($penugasan)
+                                @switch($penugasan->status_penugasan)
+                                    @case('Progress')
+                                        <span style="color: #007bff; border: 1px solid #007bff; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Progress</span>
+                                        @break
+                                    @case('Revisi')
+                                        <span style="color: #dc3545; border: 1px solid #dc3545; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Revisi</span>
+                                        @break
+                                    @case('Menunggu')
+                                        <span style="color: #ffc107; border: 1px solid #ffc107; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Menunggu</span>
+                                        @break
+                                    @case('Selesai')
+                                        <span style="color: #28a745; border: 1px solid #28a745; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Selesai</span>
+                                        @break
+                                    @default
+                                        <span class="d-inline-block" style="width:100px;">-</span>
+                                @endswitch
+                            @else
+                                <span class="d-inline-block" style="width:100px;">-</span>
+                            @endif
                         </td>
                         <td class="text-center">
                             <div class="d-flex gap-2">
@@ -152,12 +153,12 @@
                     }
                     $('#status_laporan').html(renderStatusLaporanBadge(status_laporan));
 
-                    // Lokasi Fasilitas
+                     // Lokasi Fasilitas
                     let lokasi = '-';
-                    if (kerusakan.ruang?.nama && kerusakan.ruang?.gedung?.nama) {
-                        lokasi = `${kerusakan.ruang.nama}, ${kerusakan.ruang.gedung.nama}`;
-                    } else if (kerusakan.fasum?.nama) {
-                        lokasi = kerusakan.fasum.nama;
+                    if (kerusakan.item?.ruang?.nama && kerusakan.item?.ruang?.gedung?.nama) {
+                        lokasi = `${kerusakan.item?.ruang.nama}, ${kerusakan.item?.ruang.gedung.nama}`;
+                    } else if (kerusakan.item?.fasum?.nama) {
+                        lokasi = kerusakan.item?.fasum.nama;
                     }
                     
                     function formatTanggalDMY(tanggal) {
@@ -166,6 +167,7 @@
                         return `${day}-${month}-${year}`;
                     }
 
+                    $('#detail_laporan_id').text(laporan.laporan_id);                    
                     $('#detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
                     $('#detail_lokasi_fasilitas').text(lokasi);
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');

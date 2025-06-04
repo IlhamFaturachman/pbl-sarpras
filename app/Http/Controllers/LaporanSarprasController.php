@@ -16,11 +16,11 @@ class LaporanSarprasController extends Controller
     public function indexPenugasan()
     {
         $laporans = LaporanModel::with([
-            'penugasan.teknisi',
             'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
-            'pelapor'
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum',
+            'prioritas',
+            'penugasan.teknisi'
         ])
             ->where(function ($query) {
                 $query->where(function ($q) {
@@ -132,8 +132,8 @@ class LaporanSarprasController extends Controller
     {
         $laporan = LaporanModel::with([
             'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum',
             'pelapor',
             'prioritas',
             'penugasan.teknisi'
@@ -152,19 +152,11 @@ class LaporanSarprasController extends Controller
     public function indexVerifikasi()
     {
         $laporans = LaporanModel::with([
-            'penugasan.teknisi',
-            'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
-            'prioritas',
-            'pelapor'
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum'
         ])
-            ->where(function ($query) {
-                $query->where(function ($q) {
-                    $q->where('status_laporan', 'Diajukan');
-                });
-            })->paginate(10);
-
+        ->where('status_laporan', 'Diajukan')
+        ->paginate(10);
 
         return view('sarpras.verifikasi.index', [
             'laporans' => $laporans
@@ -175,8 +167,8 @@ class LaporanSarprasController extends Controller
     {
         $laporan = LaporanModel::with([
             'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum',
             'pelapor',
             'penugasan.teknisi'
         ])->find($id);
@@ -371,8 +363,8 @@ class LaporanSarprasController extends Controller
     {
         $laporan = LaporanModel::with([
             'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum',
             'pelapor',
             'penugasan.teknisi',
             'prioritas',

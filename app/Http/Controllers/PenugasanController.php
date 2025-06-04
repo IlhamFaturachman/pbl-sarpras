@@ -69,8 +69,8 @@ class PenugasanController extends Controller
         if (session()->has('detailLaporanId')) {
             $detailLaporan = LaporanModel::with([
                 'kerusakan.item',
-                'kerusakan.ruang.gedung',
-                'kerusakan.fasum',
+                'kerusakan.item.ruang.gedung',
+                'kerusakan.item.fasum',
                 'pelapor',
                 'feedback',
                 'penugasan'
@@ -130,8 +130,8 @@ class PenugasanController extends Controller
     public function show($id) {
         $laporan = LaporanModel::with([
             'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum',
             'pelapor',
             'feedback',
             'penugasan.teknisi'

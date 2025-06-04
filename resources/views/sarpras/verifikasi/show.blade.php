@@ -17,6 +17,10 @@
               <!-- Kiri -->
               <div class="col-md-8">
                 <div class="mb-3">
+                  <div class="fw-semibold">ID Laporan</div>
+                  <div class="mt-1" id="detail_laporan_id"></div>
+                </div>
+                <div class="mb-3">
                   <div class="fw-semibold">Tanggal Laporan</div>
                   <div class="mt-1" id="detail_tanggal_laporan"></div>
                 </div>
