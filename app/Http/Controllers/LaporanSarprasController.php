@@ -236,7 +236,6 @@ class LaporanSarprasController extends Controller
             LaporanModel::where('laporan_id', $id)->update([
                 'status_laporan' => 'Disetujui',
                 'tanggal_update_status' => Carbon::now(),
-
             ]);
 
             DB::commit();
@@ -273,20 +272,20 @@ class LaporanSarprasController extends Controller
         $tkt = $input['ancaman'];
 
         // Fuzzy membership
-        $tk_rendah = $this->fuzzySegitiga($tk, 0, 0, 60);
-        $tk_tinggi = $this->fuzzySegitiga($tk, 40, 100, 100);
+        $tk_rendah = $this->fuzzySegitiga($tk, 0, 30, 60);
+        $tk_tinggi = $this->fuzzySegitiga($tk, 40, 70, 100);
 
-        $td_rendah = $this->fuzzySegitiga($td, 0, 0, 60);
-        $td_tinggi = $this->fuzzySegitiga($td, 40, 100, 100);
+        $td_rendah = $this->fuzzySegitiga($td, 0, 30, 60);
+        $td_tinggi = $this->fuzzySegitiga($td, 40, 70, 100);
 
-        $jo_rendah = $this->fuzzySegitiga($jo, 0, 0, 60);
-        $jo_tinggi = $this->fuzzySegitiga($jo, 40, 100, 100);
+        $jo_rendah = $this->fuzzySegitiga($jo, 0, 30, 60);
+        $jo_tinggi = $this->fuzzySegitiga($jo, 40, 70, 100);
 
         $ka_ada = $ka == 1 ? 1 : 0;
         $ka_tidak = $ka == 0 ? 1 : 0;
 
-        $tkt_rendah = $this->fuzzySegitiga($tkt, 0, 0, 60);
-        $tkt_tinggi = $this->fuzzySegitiga($tkt, 40, 100, 100);
+        $tkt_rendah = $this->fuzzySegitiga($tkt, 0, 30, 60);
+        $tkt_tinggi = $this->fuzzySegitiga($tkt, 40, 70, 100);
 
         $rules = [];
 
@@ -320,7 +319,32 @@ class LaporanSarprasController extends Controller
         $z_total = array_sum(array_map(fn($r) => $r['α'] * $r['z'], $rules));
         $α_total = array_sum(array_column($rules, 'α'));
 
-        return $α_total > 0 ? round($z_total / $α_total, 2) : 0;
+        // Fallback jika semua α = 0, ambil rule berdasarkan nilai tertinggi dari masing-masing variabel
+        if ($α_total == 0) {
+            // Ambil nilai maksimal dari fuzzy untuk tiap variabel (selain alternatif)
+            $μs = [
+                'tk' => max($tk_rendah, $tk_tinggi),
+                'td' => max($td_rendah, $td_tinggi),
+                'jo' => max($jo_rendah, $jo_tinggi),
+                'ka' => max($ka_tidak, $ka_ada),
+                'tkt' => max($tkt_rendah, $tkt_tinggi),
+            ];
+
+            // Ambil label kondisi dominan
+            $conds = [
+                'tk' => $tk_rendah >= $tk_tinggi ? 'rendah' : 'tinggi',
+                'td' => $td_rendah >= $td_tinggi ? 'rendah' : 'tinggi',
+                'jo' => $jo_rendah >= $jo_tinggi ? 'rendah' : 'tinggi',
+                'ka' => $ka_tidak >= $ka_ada ? 'tidak' : 'ada',
+                'tkt' => $tkt_rendah >= $tkt_tinggi ? 'rendah' : 'tinggi',
+            ];
+
+            // Estimasi satu rule default
+            $z = $this->nilaiOutput($conds['tk'], $conds['td'], $conds['jo'], $conds['ka'], $conds['tkt']);
+            return round($z, 2);
+        }
+
+        return round($z_total / $α_total, 2);
     }
 
     private function nilaiOutput($tk, $td, $jo, $ka, $tkt)
