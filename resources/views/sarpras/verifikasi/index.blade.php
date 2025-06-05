@@ -179,7 +179,7 @@
             $('#val_kerusakan').text(kerusakan);
             $('#val_dampak').text(dampak);
             $('#val_terdampak').text(terdampak);
-            $('#val_alternatif').text(alternatif === 1 ? 'Ada' : 'Tidak Ada');
+            $('#val_alternatif').text(alternatif === 0 ? 'Ada' : 'Tidak Ada');
             $('#val_keamanan').text(keamanan);
         }
 
