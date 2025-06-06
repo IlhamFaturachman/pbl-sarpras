@@ -27,6 +27,7 @@
             <thead class="table-primary">
                 <tr>
                     <th style="font-weight: bold;">Nama Item</th>
+                    <th style="font-weight: bold;">Lokasi</th>
                     <th class="text-center" style="font-weight: bold;">Actions</th>
                 </tr>
             </thead>
@@ -34,9 +35,10 @@
                 @foreach($items as $item)
                     <tr>
                         <td>{{ $item->nama }}</td>
+                        <td>{{ $item->ruang ? $item->ruang->gedung->nama . ', ' . $item->ruang->nama : $item->fasum->nama }}</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="button" class="btn btn-sm btn-warning edit-item" data-id="{{ $item->item_id }}">Edit</button>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="editItem({{ $item->item_id }})" data-id="{{ $item->item_id }}">Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $item->item_id }}', '{{ $item->nama }}')">Hapus</button>
                             </div>
                         </td>

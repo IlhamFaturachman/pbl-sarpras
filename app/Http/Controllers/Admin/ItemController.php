@@ -114,18 +114,16 @@ class ItemController extends Controller
     }
 
     public function update(Request $request, $id) {
-        // Validasi dasar
-        $rules = [
-            'nama' => 'required|string|max:255',
-            'location_type' => 'required|in:gedung,fasum',
-        ];
-
-        // Tambahkan validasi conditional - KONSISTEN dengan store()
-        if ($request->location_type == 'gedung') {
-            $rules['gedung_id'] = 'required|exists:m_gedung,gedung_id';
-            $rules['ruang_id'] = 'required|exists:m_ruang,ruang_id';
+        if (request()->location_type == 'gedung') {
+            $rules = [
+                'ruang_id' => 'required|exists:m_ruang,ruang_id',
+                'nama_item_ruang' => 'required|string|max:255',
+            ];
         } else {
-            $rules['fasum_id'] = 'required|exists:m_fasum,fasum_id';
+            $rules = [
+                'fasum_id' => 'required|exists:m_fasum,fasum_id',
+                'nama_item_fasum' => 'required|string|max:255',
+            ];
         }
 
         $messages = [
@@ -137,41 +135,65 @@ class ItemController extends Controller
             'ruang_id.exists' => 'Ruang yang dipilih tidak valid',
             'fasum_id.required' => 'Fasilitas umum harus dipilih',
             'fasum_id.exists' => 'Fasilitas umum yang dipilih tidak valid',
-            'nama.required' => 'Nama item harus diisi',
-            'nama.max' => 'Nama item maksimal 255 karakter',
+            'nama_item_ruang.required' => 'Nama item harus diisi',
+            'nama_item_ruang.max' => 'Nama item maksimal 255 karakter',
+            'nama_item_fasum.required' => 'Nama item harus diisi',
+            'nama_item_fasum.max' => 'Nama item maksimal 255 karakter',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            
             return redirect()->route('data.item')
                 ->withErrors($validator)
                 ->withInput()
-                ->with('editing', true);
+                ->with('editing', true)
+                ->with('editing_item_id', $id);
         }
 
         try {
             $item = ItemModel::findOrFail($id);
             
-            // Update data berdasarkan jenis lokasi
-            $item->nama = $request->nama;
-            
             if ($request->location_type == 'gedung') {
+                $item->nama = $request->nama_item_ruang;
                 $item->ruang_id = $request->ruang_id;
                 $item->fasum_id = null;
             } else {
+                $item->nama = $request->nama_item_fasum;
                 $item->fasum_id = $request->fasum_id;
                 $item->ruang_id = null;
             }
             
             $item->save();
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data item berhasil diperbarui'
+                ]);
+            }
+
             return redirect()->route('data.item')->with('success', 'Data item berhasil diperbarui');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return redirect()->route('data.item')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput()
-                ->with('editing', true);
+                ->with('editing', true)
+                ->with('editing_item_id', $id);
         }
     }
 
