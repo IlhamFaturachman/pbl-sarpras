@@ -2,57 +2,99 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Data Kerusakan Fasilitas</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Laporan Data Kerusakan Fasilitas</title>
     <style>
         body {
-            font-family: sans-serif;
-            font-size: 12px;
+            font-family: "Times New Roman", Times, serif;
+            margin: 30px;
+            font-size: 12pt;
         }
 
-        table {
+        .header-table {
+            width: 100%;
+        }
+
+        .header-table td {
+            vertical-align: top;
+        }
+
+        .logo {
+            height: 90px;
+        }
+
+        .instansi-text {
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .instansi-text span {
+            display: block;
+        }
+
+        hr.garis-bawah {
+            border: 1px solid black;
+            margin-top: 5px;
+        }
+
+        h3 {
+            text-align: center;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table.data {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
-        table, th, td {
+        table.data th,
+        table.data td {
             border: 1px solid #000;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        th, td {
-            padding: 8px;
+            padding: 6px;
             text-align: left;
         }
 
-        h2 {
+        table.data th {
+            background-color: #f2f2f2;
+        }
+
+        .text-center {
             text-align: center;
-            margin-bottom: 0;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 10pt;
         }
     </style>
 </head>
 <body>
-    <body>
-    <table class="border-bottom-header">
+    <table class="header-table">
         <tr>
-        <td width="15%" class="text-center"><img src="{{ asset('polinema-bw.png') }}"></td>            
-        <td width="85%">
-                <span class="text-center d-block font-11 font-bold mb-1">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</span>
-                <span class="text-center d-block font-13 font-bold mb-1">POLITEKNIK NEGERI MALANG</span>
-                <span class="text-center d-block font-10">Jl. Soekarno-Hatta No. 9 Malang 65141</span>
-                <span class="text-center d-block font-10">Telepon (0341) 404424 Pes. 101-105, 0341-404420, Fax. (0341) 404420</span>
-                <span class="text-center d-block font-10">Laman: www.polinema.ac.id</span>
+            <td width="15%" class="text-center">
+                <img src="{{ $imageSrc }}" class="logo">
+            </td>
+            <td width="85%" class="instansi-text">
+                <span style="font-size:13pt; font-weight:bold;">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</span>
+                <span style="font-size:14pt; font-weight:bold;">POLITEKNIK NEGERI MALANG</span>
+                <span style="font-size:11pt;">Jl. Soekarno-Hatta No. 9 Malang 65141</span>
+                <span style="font-size:11pt;">Telepon (0341) 404424 Pes. 101–105, 0341–404420, Fax. (0341) 404420</span>
+                <span style="font-size:11pt;">Laman: www.polinema.ac.id</span>
             </td>
         </tr>
     </table>
-    <h2>Data Kerusakan Fasilitas</h2>
-    <table>
+    <hr class="garis-bawah">
+
+    <h3>Laporan Data Kerusakan Fasilitas</h3>
+
+    <table class="data">
         <thead>
             <tr>
-                <th>No</th>
+                <th class="text-center">No</th>
                 <th>Item</th>
                 <th>Lokasi Fasilitas</th>
                 <th>Deskripsi Kerusakan</th>
@@ -61,7 +103,7 @@
         <tbody>
             @foreach($kerusakans as $index => $kerusakan)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $kerusakan->item->nama ?? '-' }}</td>
                     <td>
                         @if ($kerusakan->ruang)
@@ -77,5 +119,9 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="footer">
+        <p>Dicetak pada: {{ date('d/m/Y H:i:s') }}</p>
+    </div>
 </body>
 </html>
