@@ -48,10 +48,10 @@
                         <td>{{ $kerusakans->firstItem() + $key }}</td>
                         <td>{{ $kerusakan->item->nama ?? '-' }}</td>
                         <td>
-                            @if ($kerusakan->ruang)
-                                {{ $kerusakan->ruang->nama }}, {{ $kerusakan->ruang->gedung->nama }}
-                            @elseif ($kerusakan->fasum)
-                                {{ $kerusakan->fasum->nama }}
+                            @if ($kerusakan->item->ruang)
+                                {{ $kerusakan->item->ruang->nama }}, {{ $kerusakan->item->ruang->gedung->nama }}
+                            @elseif ($kerusakan->item->fasum)
+                                {{ $kerusakan->item->fasum->nama }}
                             @else
                                 -
                             @endif

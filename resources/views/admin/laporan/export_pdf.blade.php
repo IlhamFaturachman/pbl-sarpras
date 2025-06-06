@@ -125,13 +125,13 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $l->laporan_id }}</td>
-                    <td>{{ $l->pelapor->nama ?? '-' }}</td>
+                    <td>{{ $l->kerusakan->pelapor->nama ?? '-' }}</td>
                     <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td>
-                        @if($l->kerusakan->ruang)_id
-                            Gedung {{ $l->kerusakan->ruang->gedung->nama }}, Ruang {{ $l->kerusakan->ruang->nama }}
-                        @elseif($l->kerusakan->fasum)
-                            {{ $l->kerusakan->fasum->nama }}
+                        @if($l->kerusakan->item->ruang)
+                            {{ $l->kerusakan->item->ruang->gedung->nama }}, {{ $l->kerusakan->item->ruang->nama }}
+                        @elseif($l->kerusakan->item->fasum)
+                            {{ $l->kerusakan->item->fasum->nama }}
                         @else
                             -
                         @endif

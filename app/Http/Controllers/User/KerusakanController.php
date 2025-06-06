@@ -21,7 +21,7 @@ class KerusakanController extends Controller
 {
     public function index()
     {
-        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->paginate(10);
+        $kerusakans = KerusakanModel::where('pelapor_id', auth()->id())->paginate(10);
 
         return view('users.kerusakan.index', [
             'kerusakans' => $kerusakans,
