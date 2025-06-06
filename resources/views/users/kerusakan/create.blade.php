@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <form id="form-create" action="{{ route('kerusakan.store') }}" method="POST">
+                <form id="form-create" action="{{ route('kerusakan.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Step 1: Pilih Jenis Fasilitas -->
@@ -197,6 +197,11 @@
 
     .step-indicator.completed+.step-line {
         background-color: #1cc88a;
+    }
+
+    /* Fix untuk SweetAlert2 z-index */
+    .swal2-container {
+        z-index: 99999 !important;
     }
 </style>
 
@@ -495,21 +500,32 @@
     }
 
     function submitForm() {
+        // Disable submit button untuk mencegah double submit
+        const submitBtn = $('#btn-submit');
+        const originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Mengirim...');
+
+        // Pastikan semua field yang tidak diperlukan tidak di-disabled
         const fasilitasType = $('#fasilitas_type').val();
-
+        
+        // Enable semua field sebelum submit
+        $('#form-create input, #form-create select, #form-create textarea').prop('disabled', false);
+        
+        // Disable field yang tidak digunakan berdasarkan tipe fasilitas
         if (fasilitasType === 'ruang') {
-            $('#fasum_id').prop('disabled', true);
-            $('#ruang_id').prop('disabled', false);
+            $('#fasum_id').prop('disabled', true).val('');
         } else if (fasilitasType === 'fasum') {
-            $('#ruang_id').prop('disabled', true);
-            $('#fasum_id').prop('disabled', false);
+            $('#gedung_id').prop('disabled', true).val('');
+            $('#ruang_id').prop('disabled', true).val('');
         }
-
-        $('#foto_kerusakan').prop('disabled', false);
 
         const formData = new FormData($('#form-create')[0]);
 
-        $('#fasum_id, #ruang_id').prop('disabled', false);
+        // Debug: Log form data
+        console.log('Form Data yang akan dikirim:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
         $.ajax({
             url: $('#form-create').attr('action'),
@@ -517,7 +533,13 @@
             data: formData,
             processData: false,
             contentType: false,
+            beforeSend: function() {
+                // Show loading state
+                console.log('Mengirim data ke server...');
+            },
             success: function(response) {
+                console.log('Response dari server:', response);
+                
                 if (response.success) {
                     $('#createKerusakanModal').modal('hide');
                     Swal.fire({
@@ -528,32 +550,93 @@
                         location.reload();
                     });
                 } else {
-                    Swal.fire('Error', response.message, 'error');
+                    Swal.fire('Error', response.message || 'Gagal menyimpan data kerusakan.', 'error');
                 }
             },
-            error: function(xhr) {
+            error: function(xhr, status, error) {
                 console.error('Debug Error Response dari Laravel:', {
                     status: xhr.status,
                     statusText: xhr.statusText,
-                    responseText: xhr.responseText,
+                    responseText: xhr.responseText.substring(0, 500), // Limit untuk debugging
                     responseJSON: xhr.responseJSON,
-                    errors: xhr.responseJSON?.errors
+                    errors: xhr.responseJSON?.errors,
+                    actualError: error
                 });
 
                 let errorMessage = 'Gagal menyimpan data kerusakan.';
+                let showDetails = false;
 
+                // Parse error berdasarkan response
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
                     const errors = xhr.responseJSON.errors;
                     if (errors.foto_kerusakan) {
                         errorMessage = errors.foto_kerusakan.join(', ');
                     } else {
-                        errorMessage = Object.values(errors).map(err => err.join(', ')).join('\n');
+                        errorMessage = Object.values(errors).map(err => 
+                            Array.isArray(err) ? err.join(', ') : err
+                        ).join('\n');
                     }
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Terjadi kesalahan pada server. Periksa konfigurasi atau log Laravel.';
+                    showDetails = true;
+                    
+                    // Coba extract error dari HTML response
+                    if (xhr.responseText.includes('FatalErrorException') || 
+                        xhr.responseText.includes('ErrorException') ||
+                        xhr.responseText.includes('FatalError')) {
+                        
+                        // Extract error message dari HTML jika memungkinkan
+                        const errorMatch = xhr.responseText.match(/<h1[^>]*>(.*?)<\/h1>/);
+                        if (errorMatch && errorMatch[1]) {
+                            errorMessage += '\n\nDetail: ' + errorMatch[1].replace(/&quot;/g, '"');
+                        }
+                    }
+                } else if (xhr.status === 404) {
+                    errorMessage = 'URL tidak ditemukan. Periksa route di web.php';
+                } else if (xhr.status === 0) {
+                    errorMessage = 'Tidak dapat terhubung ke server. Periksa koneksi internet.';
+                } else if (xhr.status === 422) {
+                    errorMessage = 'Data tidak valid. Periksa semua field yang diperlukan.';
                 }
 
-                Swal.fire('Error', errorMessage, 'error');
+                // Tampilkan error dengan opsi untuk melihat detail
+                if (showDetails && xhr.responseText.length > 100) {
+                    Swal.fire({
+                        title: 'Error Server',
+                        text: errorMessage,
+                        icon: 'error',
+                        showCancelButton: true,
+                        confirmButtonText: 'Lihat Detail Error',
+                        cancelButtonText: 'Tutup',
+                        confirmButtonColor: '#dc3545'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Buka window baru dengan error detail
+                            const errorWindow = window.open('', '_blank');
+                            errorWindow.document.write(xhr.responseText);
+                        }
+                    });
+                } else {
+                    Swal.fire('Error', errorMessage, 'error');
+                }
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false).text(originalText);
             }
         });
     }
+
+    // Reset form ketika modal ditutup
+    $('#createKerusakanModal').on('hidden.bs.modal', function () {
+        $('#form-create')[0].reset();
+        currentStep = 1;
+        showStep(currentStep);
+        $('.facility-card').removeClass('selected');
+        $('#fasilitas_type').val('');
+        $('#btn-next').prop('disabled', false);
+    });
 });
 </script>

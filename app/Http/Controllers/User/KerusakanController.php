@@ -64,29 +64,21 @@ class KerusakanController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'item_id' => 'required|exists:m_item,item_id',
-            'deskripsi_kerusakan' => 'required|string|max:255',
-            'foto_kerusakan' => 'required|file|image|max:2048',
+        // Validasi
+        $validated = $request->validate([
             'fasilitas_type' => 'required|in:ruang,fasum',
-            'fasum_id' => 'required_if:fasilitas_type,fasum|exists:m_fasum,fasum_id',
-            'ruang_id' => 'required_if:fasilitas_type,ruang|exists:m_ruang,ruang_id',
+            'item_id' => 'required|exists:m_item,item_id',
+            'deskripsi_kerusakan' => 'required|string',
+            'foto_kerusakan' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'fasum_id' => 'nullable|required_if:fasilitas_type,fasum|exists:m_fasum,fasum_id'
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(
-                [
-                    'success' => false,
-                    'errors' => $validator->errors(),
-                ],
-                422
-            );
-        }
 
         try {
             DB::beginTransaction();
 
+            // 1. Simpan ke tabel m_kerusakan
             $kerusakan = new KerusakanModel();
+            $kerusakan->pelapor_id = auth()->id(); // Ambil ID user yang login
             $kerusakan->item_id = $request->item_id;
             $kerusakan->deskripsi_kerusakan = $request->deskripsi_kerusakan;
 
@@ -98,15 +90,9 @@ class KerusakanController extends Controller
                 $kerusakan->foto_kerusakan = $path;
             }
 
-            if ($request->fasilitas_type === 'fasum') {
-                $kerusakan->fasum_id = $request->fasum_id;
-            } else {
-                $kerusakan->ruang_id = $request->ruang_id;
-            }
-
             $kerusakan->save();
 
-            // Ambil periode berdasarkan tahun sekarang
+            // 2. Simpan ke tabel m_laporan
             $periode = PeriodeModel::where('nama_periode', now()->year)->first();
 
             if (!$periode) {
@@ -117,18 +103,14 @@ class KerusakanController extends Controller
                 ], 500);
             }
 
-            DB::table('m_laporan')->insert([
-                'laporan_id' => (string) Str::uuid(),
-                'pelapor_id' => Auth::id(),
-                'kerusakan_id' => $kerusakan->kerusakan_id,
-                'verifikator_id' => null,
-                'status_laporan' => 'Diajukan',
-                'tanggal_laporan' => now(),
-                'tanggal_update_status' => null,
-                'periode_id' => $periode->periode_id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $laporan = new LaporanModel();
+            $laporan->laporan_id = 'LAP' . mt_rand(100000, 999999); // Generate random ID dengan prefix LAP
+            $laporan->kerusakan_id = $kerusakan->kerusakan_id;
+            $laporan->verifikator_id = null;
+            $laporan->status_laporan = 'Diajukan';
+            $laporan->tanggal_laporan = now()->toDateString(); // Hanya tanggal tanpa waktu
+            $laporan->periode_id = $periode->periode_id;
+            $laporan->save();
 
             DB::commit();
 
@@ -136,15 +118,13 @@ class KerusakanController extends Controller
                 'success' => true,
                 'message' => 'Data kerusakan berhasil ditambahkan',
             ]);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage(),
-                ],
-                500
-            );
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
