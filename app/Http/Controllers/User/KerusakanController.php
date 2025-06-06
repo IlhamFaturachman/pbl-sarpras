@@ -158,7 +158,11 @@ class KerusakanController extends Controller
     {
         $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
 
-        $pdf = Pdf::loadView('users.kerusakan.pdf', compact('kerusakans'))
+        $imagePath = public_path('/assets/img/polinema.png');
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageSrc = 'data:image/png;base64,' . $imageData;
+
+        $pdf = Pdf::loadView('users.kerusakan.pdf', compact('kerusakans', 'imageSrc'))
                   ->setPaper('a4', 'landscape');
 
     return $pdf->stream('laporan-kerusakan.pdf');
