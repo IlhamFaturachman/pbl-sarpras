@@ -39,6 +39,7 @@
                     <th><strong>Lokasi Fasilitas</strong></th>
                     <th><strong>Deskripsi Kerusakan</strong></th>
                     <th><strong>Foto Kerusakan</strong></th>
+                    <th><strong>Status Laporan</strong></th>
                     <th class="text-center"><strong>Actions</strong></th>
                 </tr>
             </thead>
@@ -65,6 +66,27 @@
                             @else
                                 <span class="text-muted">Tidak ada foto</span>
                             @endif
+                        </td>
+                        <td class="text-center">
+                            @switch($laporan->status_laporan)
+                                @case('Diajukan')
+                                    <span style="background-color: #ffe8cc; color: #000; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Diajukan</span>
+                                    @break
+                                @case('Disetujui')
+                                    <span style="background-color: #d0ebff; color: #1c7ed6; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Disetujui</span>
+                                    @break
+                                @case('Ditolak')
+                                    <span style="background-color: #ffe3e3; color: #f03e3e; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Ditolak</span>
+                                    @break
+                                @case('Dikerjakan')
+                                    <span style="background-color: #fff3bf; color: #f59f00; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Dikerjakan</span>
+                                    @break
+                                @case('Selesai')
+                                    <span style="background-color: #d3f9d8; color: #37b24d; padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px;">Selesai</span>
+                                    @break
+                                @default
+                                    <span class="d-inline-block" style="width:100px;">-</span>
+                            @endswitch
                         </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
