@@ -35,28 +35,18 @@ class ItemController extends Controller
     }
 
     public function store(Request $request) {
-        // TAMBAHKAN LOG DI AWAL UNTUK CEK APAKAH METHOD INI DIPANGGIL
-        \Log::info('=== STORE METHOD DIPANGGIL ===');
-        \Log::info('Request Data Lengkap:', $request->all());
-        // \Log::info('Location Type:', $request->location_type);
         
-        // Validasi dasar
-        $rules = [
-            'nama' => 'required|string|max:255',
-            'location_type' => 'required|in:gedung,fasum',
-        ];
-
-        // Tambahkan validasi conditional
-        if ($request->location_type == 'gedung') {
-            \Log::info('Validasi untuk GEDUNG');
-            $rules['gedung_id'] = 'required|exists:m_gedung,gedung_id';
-            $rules['ruang_id'] = 'required|exists:m_ruang,ruang_id';
+        if (request()->location_type == 'gedung') {
+            $rules = [
+                'ruang_id' => 'required|exists:m_ruang,ruang_id',
+                'nama_item_ruang' => 'required|string|max:255',
+            ];
         } else {
-            \Log::info('Validasi untuk FASUM');
-            $rules['fasum_id'] = 'required|exists:m_fasum,fasum_id';
+            $rules = [
+                'fasum_id' => 'required|exists:m_fasum,fasum_id',
+                'nama_item_fasum' => 'required|string|max:255',
+            ];
         }
-
-        \Log::info('Rules validasi:', $rules);
 
         $messages = [
             'location_type.required' => 'Jenis lokasi harus dipilih',
@@ -74,45 +64,30 @@ class ItemController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            \Log::error('VALIDASI GAGAL:', $validator->errors()->toArray());
             return redirect()->route('data.item')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('adding', true);
         }
 
-        \Log::info('VALIDASI BERHASIL');
+        // dd($request->all());
 
         try {
-            $data = [
-                'nama' => $request->nama,
-            ];
-
             // Set data berdasarkan jenis lokasi
             if ($request->location_type == 'gedung') {
+                $data['nama'] = $request->nama_item_ruang;
                 $data['ruang_id'] = $request->ruang_id;
                 $data['fasum_id'] = null; 
-                \Log::info('Data untuk GEDUNG:', $data);
             } else {
+                $data['nama'] = $request->nama_item_fasum;
                 $data['fasum_id'] = $request->fasum_id;
                 $data['ruang_id'] = null; 
-                \Log::info('Data untuk FASUM:', $data);
             }
-
-            \Log::info('Data yang akan disimpan:', $data);
-
+            
             ItemModel::create($data);
-
-            \Log::info('DATA BERHASIL DISIMPAN');
 
             return redirect()->route('data.item')->with('success', 'Data item berhasil disimpan');
         } catch (\Exception $e) {
-            \Log::error('Error saat menyimpan item:', [
-                'error' => $e->getMessage(), 
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
-                'data' => $request->all()
-            ]);
             return redirect()->route('data.item')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput()
@@ -193,7 +168,6 @@ class ItemController extends Controller
 
             return redirect()->route('data.item')->with('success', 'Data item berhasil diperbarui');
         } catch (\Exception $e) {
-            \Log::error('Error saat update item:', ['error' => $e->getMessage(), 'data' => $request->all()]);
             return redirect()->route('data.item')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput()
