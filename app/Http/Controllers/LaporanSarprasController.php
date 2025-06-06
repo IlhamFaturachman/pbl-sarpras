@@ -134,7 +134,7 @@ class LaporanSarprasController extends Controller
             'kerusakan.item',
             'kerusakan.item.ruang.gedung',
             'kerusakan.item.fasum',
-            'pelapor',
+            'kerusakan.pelapor',
             'prioritas',
             'penugasan.teknisi'
         ])->find($id);
@@ -166,10 +166,11 @@ class LaporanSarprasController extends Controller
     public function showVerifikasi($id)
     {
         $laporan = LaporanModel::with([
+            'verifikator',
             'kerusakan.item',
             'kerusakan.item.ruang.gedung',
             'kerusakan.item.fasum',
-            'pelapor',
+            'kerusakan.pelapor',
             'penugasan.teknisi'
         ])->find($id);
 

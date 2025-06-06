@@ -132,7 +132,7 @@ class PenugasanController extends Controller
             'kerusakan.item',
             'kerusakan.item.ruang.gedung',
             'kerusakan.item.fasum',
-            'pelapor',
+            'kerusakan.pelapor',
             'feedback',
             'penugasan.teknisi'
         ])->find($id);
