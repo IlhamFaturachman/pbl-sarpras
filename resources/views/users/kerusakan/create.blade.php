@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <form id="form-create" action="{{ route('kerusakan.store') }}" method="POST">
+                <form id="form-create" action="{{ route('kerusakan.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Step 1: Pilih Jenis Fasilitas -->
@@ -198,298 +198,445 @@
     .step-indicator.completed+.step-line {
         background-color: #1cc88a;
     }
+
+    /* Fix untuk SweetAlert2 z-index */
+    .swal2-container {
+        z-index: 99999 !important;
+    }
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Tambahkan sebelum script kerusakan -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function() {
-        let currentStep = 1;
-        const totalSteps = 3;
+    let currentStep = 1;
+    const totalSteps = 3;
 
-        // Facility card selection
-        $('.facility-card').on('click', function() {
-            $('.facility-card').removeClass('selected');
-            $(this).addClass('selected');
+    // Facility card selection
+    $('.facility-card').on('click', function() {
+        $('.facility-card').removeClass('selected');
+        $(this).addClass('selected');
 
-            const facilityType = $(this).data('type');
-            $('#fasilitas_type').val(facilityType);
+        const facilityType = $(this).data('type');
+        $('#fasilitas_type').val(facilityType);
 
-            // Enable next button
-            $('#btn-next').prop('disabled', false);
-        });
+        // Reset semua form step 2 dan 3
+        resetFormSteps(facilityType);
 
-        // Next button
-        $('#btn-next').on('click', function() {
-            if (validateCurrentStep()) {
-                if (currentStep < totalSteps) {
-                    currentStep++;
-                    showStep(currentStep);
+        // Enable next button
+        $('#btn-next').prop('disabled', false);
+    });
 
-                    if (currentStep === 2) {
-                        loadStep2Data();
-                    }
+    function resetFormSteps(facilityType) {
+        // Reset step 2
+        if (facilityType === 'ruang') {
+            $('#fasum_id').val('').prop('disabled', true);
+            $('#gedung_id').val('').prop('disabled', false);
+            $('#ruang_id').val('').prop('disabled', true);
+        } else {
+            $('#gedung_id').val('').prop('disabled', true);
+            $('#ruang_id').val('').prop('disabled', true);
+            $('#fasum_id').val('').prop('disabled', false);
+        }
 
-                    if (currentStep === 3) {
-                        loadStep3Data();
-                    }
+        // Reset step 3
+        $('#item_id').empty().append('<option value="">Pilih lokasi terlebih dahulu</option>');
+        $('#deskripsi_kerusakan').val('');
+        $('#foto_kerusakan').val('');
+
+        // Jika sudah di step 2 atau 3, kembali ke step 1
+        if (currentStep > 1) {
+            currentStep = 1;
+            showStep(currentStep);
+        }
+    }
+
+    // Next button
+    $('#btn-next').on('click', function() {
+        if (validateCurrentStep()) {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+
+                if (currentStep === 2) {
+                    loadStep2Data();
+                }
+
+                if (currentStep === 3) {
+                    loadStep3Data();
                 }
             }
-        });
+        }
+    });
 
-        // Previous button
-        $('#btn-prev').on('click', function() {
-            if (currentStep > 1) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        });
+    // Previous button
+    $('#btn-prev').on('click', function() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
 
-        // Submit button
-        $('#btn-submit').on('click', function() {
-            if (validateCurrentStep()) {
-                submitForm();
-            }
-        });
+    // Submit button
+    $('#btn-submit').on('click', function() {
+        if (validateCurrentStep()) {
+            submitForm();
+        }
+    });
 
-        // Gedung change event
-        $('#gedung_id').on('change', function() {
-            const gedungId = $(this).val();
-            if (gedungId) {
-                $.ajax({
-                    url: "{{ url('users/kerusakan/ruang') }}/" + gedungId,
-                    type: 'GET',
-                    success: function(response) {
-                        $('#ruang_id').empty().append(
-                            '<option value="">Pilih Ruangan</option>');
+    // Gedung change event
+    $('#gedung_id').on('change', function() {
+        const gedungId = $(this).val();
+        
+        // Reset ruang dan item dropdown
+        $('#ruang_id').empty().append('<option value="">Pilih gedung terlebih dahulu</option>').prop('disabled', true);
+        $('#item_id').empty().append('<option value="">Pilih ruangan terlebih dahulu</option>');
+        
+        if (gedungId) {
+            $.ajax({
+                url: "{{ url('users/kerusakan/ruang') }}/" + gedungId,
+                type: 'GET',
+                success: function(response) {
+                    $('#ruang_id').empty().append('<option value="">Pilih Ruangan</option>');
 
-                        response.ruangs.forEach(function(ruang) {
-                            $('#ruang_id').append(
-                                `<option value="${ruang.ruang_id}">${ruang.nama} (${ruang.kode})</option>`
+                    response.ruangs.forEach(function(ruang) {
+                        $('#ruang_id').append(
+                            `<option value="${ruang.ruang_id}">${ruang.nama} (${ruang.kode})</option>`
+                        );
+                    });
+
+                    $('#ruang_id').prop('disabled', false);
+                },
+                error: function() {
+                    Swal.fire('Error', 'Gagal memuat data ruangan.', 'error');
+                }
+            });
+        }
+    });
+
+    // Ruang change event - Load items berdasarkan ruang yang dipilih
+    $('#ruang_id').on('change', function() {
+        const ruangId = $(this).val();
+        
+        // Reset item dropdown
+        $('#item_id').empty().append('<option value="">Pilih Item</option>');
+        
+        if (ruangId) {
+            $.ajax({
+                url: "{{ url('users/kerusakan/item-by-ruang') }}/" + ruangId,
+                type: 'GET',
+                success: function(response) {
+                    $('#item_id').empty().append('<option value="">Pilih Item</option>');
+                    
+                    if (response.items && response.items.length > 0) {
+                        response.items.forEach(function(item) {
+                            $('#item_id').append(
+                                `<option value="${item.item_id}">${item.nama}</option>`
                             );
                         });
-
-                        $('#ruang_id').prop('disabled', false);
-                    },
-                    error: function() {
-                        Swal.fire('Error', 'Gagal memuat data ruangan.', 'error');
+                    } else {
+                        $('#item_id').append('<option value="" disabled>Tidak ada item tersedia untuk ruangan ini</option>');
                     }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Gagal memuat data item.', 'error');
+                }
+            });
+        }
+    });
+
+    // Fasum change event - Load items berdasarkan fasum yang dipilih
+    $('#fasum_id').on('change', function() {
+        const fasumId = $(this).val();
+        
+        // Reset item dropdown
+        $('#item_id').empty().append('<option value="">Pilih Item</option>');
+        
+        if (fasumId) {
+            $.ajax({
+                url: "{{ url('users/kerusakan/item-by-fasum') }}/" + fasumId,
+                type: 'GET',
+                success: function(response) {
+                    $('#item_id').empty().append('<option value="">Pilih Item</option>');
+                    
+                    if (response.items && response.items.length > 0) {
+                        response.items.forEach(function(item) {
+                            $('#item_id').append(
+                                `<option value="${item.item_id}">${item.nama}</option>`
+                            );
+                        });
+                    } else {
+                        $('#item_id').append('<option value="" disabled>Tidak ada item tersedia untuk fasilitas ini</option>');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Gagal memuat data item.', 'error');
+                }
+            });
+        }
+    });
+
+    function showStep(step) {
+        // Hide all steps
+        $('.form-step').hide();
+
+        // Show current step
+        $(`#step-${step}`).show();
+
+        // Update step indicators
+        $('.step-indicator').removeClass('active completed');
+
+        for (let i = 1; i < step; i++) {
+            $(`.step-indicator[data-step="${i}"]`).addClass('completed');
+        }
+
+        $(`.step-indicator[data-step="${step}"]`).addClass('active');
+
+        // Update buttons
+        $('#btn-prev').toggle(step > 1);
+        $('#btn-next').toggle(step < totalSteps);
+        $('#btn-submit').toggle(step === totalSteps);
+    }
+
+    function loadStep2Data() {
+        const facilityType = $('#fasilitas_type').val();
+
+        if (facilityType === 'ruang') {
+            $('#fasum_id').val('').prop('disabled', true);
+            $('#ruang-section').show();
+            $('#fasum-section').hide();
+
+            // Load gedung data
+            if (window.modalData && window.modalData.gedungs) {
+                $('#gedung_id').empty().append('<option value="">Pilih Gedung</option>');
+                window.modalData.gedungs.forEach(function(gedung) {
+                    $('#gedung_id').append(
+                        `<option value="${gedung.gedung_id}">${gedung.nama} (${gedung.kode})</option>`
+                    );
                 });
-            } else {
-                $('#ruang_id').empty().append('<option value="">Pilih gedung terlebih dahulu</option>');
-                $('#ruang_id').prop('disabled', true);
             }
-        });
+        } else if (facilityType === 'fasum') {
+            $('#ruang_id').val('').prop('disabled', true);
+            $('#gedung_id').val('').prop('disabled', true);
+            $('#fasum-section').show();
+            $('#ruang-section').hide();
 
-        function showStep(step) {
-            // Hide all steps
-            $('.form-step').hide();
-
-            // Show current step
-            $(`#step-${step}`).show();
-
-            // Update step indicators
-            $('.step-indicator').removeClass('active completed');
-
-            for (let i = 1; i < step; i++) {
-                $(`.step-indicator[data-step="${i}"]`).addClass('completed');
-            }
-
-            $(`.step-indicator[data-step="${step}"]`).addClass('active');
-
-            // Update buttons
-            $('#btn-prev').toggle(step > 1);
-            $('#btn-next').toggle(step < totalSteps);
-            $('#btn-submit').toggle(step === totalSteps);
-        }
-
-        // function loadStep2Data() {
-        //     const facilityType = $('#fasilitas_type').val();
-
-        //     if (facilityType === 'ruang') {
-        //         $('#fasum_id').val('').prop('disabled', true); // <== tambahkan .prop('disabled', true)
-        //         $('#ruang_id').prop('disabled', false); // <== aktifkan kembali
-        //         $('#ruang-section').show();
-        //         $('#fasum-section').hide();
-
-        //         if (window.modalData && window.modalData.gedungs) {
-        //             $('#gedung_id').empty().append('<option value="">Pilih Gedung</option>');
-        //             window.modalData.gedungs.forEach(function(gedung) {
-        //                 $('#gedung_id').append(
-        //                     `<option value="${gedung.gedung_id}">${gedung.nama} (${gedung.kode})</option>`
-        //                 );
-        //             });
-        //         }
-        //     } else if (facilityType === 'fasum') {
-        //         $('#ruang_id').val('').prop('disabled', true); // <== tambahkan .prop('disabled', true)
-        //         $('#fasum_id').prop('disabled', false); // <== aktifkan kembali
-        //         $('#fasum-section').show();
-        //         $('#ruang-section').hide();
-
-        //         if (window.modalData && window.modalData.fasums) {
-        //             $('#fasum_id').empty().append('<option value="">Pilih Fasilitas Umum</option>');
-        //             window.modalData.fasums.forEach(function(fasum) {
-        //                 $('#fasum_id').append(
-        //                     `<option value="${fasum.fasum_id}">${fasum.nama}</option>`
-        //                 );
-        //             });
-        //         }
-        //     }
-
-        // }
-        function loadStep2Data() {
-            const facilityType = $('#fasilitas_type').val();
-
-            if (facilityType === 'ruang') {
-                $('#fasum_id').val('').prop('disabled', true); // <== tambahkan .prop('disabled', true)
-                // $('#ruang_id').prop('disabled', false); // <== aktifkan kembali
-                $('#ruang-section').show();
-                $('#fasum-section').hide();
-
-                // Load gedung data
-                if (window.modalData && window.modalData.gedungs) {
-                    $('#gedung_id').empty().append('<option value="">Pilih Gedung</option>');
-                    window.modalData.gedungs.forEach(function(gedung) {
-                        $('#gedung_id').append(
-                            `<option value="${gedung.gedung_id}">${gedung.nama} (${gedung.kode})</option>`
-                        );
-                    });
-                }
-            } else if (facilityType === 'fasum') {
-                $('#ruang_id').val('').prop('disabled', true);
-                $('#fasum-section').show();
-                $('#ruang-section').hide();
-
-                // Load fasum data
-                if (window.modalData && window.modalData.fasums) {
-                    $('#fasum_id').empty().append('<option value="">Pilih Fasilitas Umum</option>');
-                    window.modalData.fasums.forEach(function(fasum) {
-                        $('#fasum_id').append(
-                            `<option value="${fasum.fasum_id}">${fasum.nama}</option>`
-                        );
-                    });
-                }
-            }
-        }
-
-        function loadStep3Data() {
-            // Load item data
-            if (window.modalData && window.modalData.items) {
-                $('#item_id').empty().append('<option value="">Pilih Item</option>');
-                window.modalData.items.forEach(function(item) {
-                    $('#item_id').append(
-                        `<option value="${item.item_id}">${item.nama}</option>`
+            // Load fasum data
+            if (window.modalData && window.modalData.fasums) {
+                $('#fasum_id').empty().append('<option value="">Pilih Fasilitas Umum</option>');
+                window.modalData.fasums.forEach(function(fasum) {
+                    $('#fasum_id').append(
+                        `<option value="${fasum.fasum_id}">${fasum.nama}</option>`
                     );
                 });
             }
         }
+    }
 
-        function validateCurrentStep() {
-            if (currentStep === 1) {
-                if (!$('#fasilitas_type').val()) {
-                    Swal.fire('Perhatian', 'Pilih jenis fasilitas terlebih dahulu.', 'warning');
+    function loadStep3Data() {
+        // Reset item dropdown saat masuk ke step 3
+        $('#item_id').empty().append('<option value="">Pilih lokasi terlebih dahulu</option>');
+        
+        // Jika sudah ada ruang atau fasum yang dipilih, load items nya
+        const facilityType = $('#fasilitas_type').val();
+        
+        if (facilityType === 'ruang') {
+            const ruangId = $('#ruang_id').val();
+            if (ruangId) {
+                // Trigger change event untuk load items
+                $('#ruang_id').trigger('change');
+            }
+        } else if (facilityType === 'fasum') {
+            const fasumId = $('#fasum_id').val();
+            if (fasumId) {
+                // Trigger change event untuk load items
+                $('#fasum_id').trigger('change');
+            }
+        }
+    }
+
+    function validateCurrentStep() {
+        if (currentStep === 1) {
+            if (!$('#fasilitas_type').val()) {
+                Swal.fire('Perhatian', 'Pilih jenis fasilitas terlebih dahulu.', 'warning');
+                return false;
+            }
+        } else if (currentStep === 2) {
+            const facilityType = $('#fasilitas_type').val();
+
+            if (facilityType === 'ruang') {
+                if (!$('#gedung_id').val() || !$('#ruang_id').val()) {
+                    Swal.fire('Perhatian', 'Pilih gedung dan ruangan terlebih dahulu.', 'warning');
                     return false;
                 }
-            } else if (currentStep === 2) {
-                const facilityType = $('#fasilitas_type').val();
-
-                if (facilityType === 'ruang') {
-                    if (!$('#gedung_id').val() || !$('#ruang_id').val()) {
-                        Swal.fire('Perhatian', 'Pilih gedung dan ruangan terlebih dahulu.', 'warning');
-                        return false;
-                    }
-                } else if (facilityType === 'fasum') {
-                    if (!$('#fasum_id').val()) {
-                        Swal.fire('Perhatian', 'Pilih fasilitas umum terlebih dahulu.', 'warning');
-                        return false;
-                    }
-                }
-            } else if (currentStep === 3) {
-                if (!$('#item_id').val()) {
-                    Swal.fire('Perhatian', 'Pilih item terlebih dahulu.', 'warning');
-                    return false;
-                }
-
-                const deskripsi = $('#deskripsi_kerusakan').val().trim();
-                if (!deskripsi) {
-                    Swal.fire('Perhatian', 'Deskripsi kerusakan tidak boleh kosong.', 'warning');
-                    return false;
-                }
-
-                const fotoKerusakan = $('#foto_kerusakan')[0].files;
-                if (!fotoKerusakan || fotoKerusakan.length === 0) {
-                    Swal.fire('Perhatian', 'Mohon unggah foto kerusakan.', 'warning');
+            } else if (facilityType === 'fasum') {
+                if (!$('#fasum_id').val()) {
+                    Swal.fire('Perhatian', 'Pilih fasilitas umum terlebih dahulu.', 'warning');
                     return false;
                 }
             }
+        } else if (currentStep === 3) {
+            if (!$('#item_id').val()) {
+                Swal.fire('Perhatian', 'Pilih item terlebih dahulu.', 'warning');
+                return false;
+            }
 
+            const deskripsi = $('#deskripsi_kerusakan').val().trim();
+            if (!deskripsi) {
+                Swal.fire('Perhatian', 'Deskripsi kerusakan tidak boleh kosong.', 'warning');
+                return false;
+            }
 
-            return true;
+            const fotoKerusakan = $('#foto_kerusakan')[0].files;
+            if (!fotoKerusakan || fotoKerusakan.length === 0) {
+                Swal.fire('Perhatian', 'Mohon unggah foto kerusakan.', 'warning');
+                return false;
+            }
         }
 
-        function submitForm() {
-            const fasilitasType = $('#fasilitas_type').val();
+        return true;
+    }
 
-            if (fasilitasType === 'ruang') {
-                $('#fasum_id').prop('disabled', true);
-                $('#ruang_id').prop('disabled', false);
-            } else if (fasilitasType === 'fasum') {
-                $('#ruang_id').prop('disabled', true);
-                $('#fasum_id').prop('disabled', false);
-            }
+    function submitForm() {
+        // Disable submit button untuk mencegah double submit
+        const submitBtn = $('#btn-submit');
+        const originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Mengirim...');
 
-            $('#foto_kerusakan').prop('disabled', false);
+        // Pastikan semua field yang tidak diperlukan tidak di-disabled
+        const fasilitasType = $('#fasilitas_type').val();
+        
+        // Enable semua field sebelum submit
+        $('#form-create input, #form-create select, #form-create textarea').prop('disabled', false);
+        
+        // Disable field yang tidak digunakan berdasarkan tipe fasilitas
+        if (fasilitasType === 'ruang') {
+            $('#fasum_id').prop('disabled', true).val('');
+        } else if (fasilitasType === 'fasum') {
+            $('#gedung_id').prop('disabled', true).val('');
+            $('#ruang_id').prop('disabled', true).val('');
+        }
 
-            const formData = new FormData($('#form-create')[0]);
+        const formData = new FormData($('#form-create')[0]);
 
-            $('#fasum_id, #ruang_id').prop('disabled', false);
+        // Debug: Log form data
+        console.log('Form Data yang akan dikirim:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
-            $.ajax({
-                url: $('#form-create').attr('action'),
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.success) {
-                        $('#createKerusakanModal').modal('hide');
-                        Swal.fire({
-                            title: 'Berhasil',
-                            text: response.message,
-                            icon: 'success'
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Debug Error Response dari Laravel:', {
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: xhr.responseText,
-                        responseJSON: xhr.responseJSON,
-                        errors: xhr.responseJSON?.errors
+        $.ajax({
+            url: $('#form-create').attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                // Show loading state
+                console.log('Mengirim data ke server...');
+            },
+            success: function(response) {
+                console.log('Response dari server:', response);
+                
+                if (response.success) {
+                    $('#createKerusakanModal').modal('hide');
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: response.message,
+                        icon: 'success'
+                    }).then(() => {
+                        location.reload();
                     });
+                } else {
+                    Swal.fire('Error', response.message || 'Gagal menyimpan data kerusakan.', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Debug Error Response dari Laravel:', {
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    responseText: xhr.responseText.substring(0, 500), // Limit untuk debugging
+                    responseJSON: xhr.responseJSON,
+                    errors: xhr.responseJSON?.errors,
+                    actualError: error
+                });
 
-                    let errorMessage = 'Gagal menyimpan data kerusakan.';
+                let errorMessage = 'Gagal menyimpan data kerusakan.';
+                let showDetails = false;
 
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        const errors = xhr.responseJSON.errors;
-                        if (errors.foto_kerusakan) {
-                            errorMessage = errors.foto_kerusakan.join(', ');
-                        } else {
-                            errorMessage = Object.values(errors).map(err => err.join(', ')).join(
-                                '\n');
+                // Parse error berdasarkan response
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    if (errors.foto_kerusakan) {
+                        errorMessage = errors.foto_kerusakan.join(', ');
+                    } else {
+                        errorMessage = Object.values(errors).map(err => 
+                            Array.isArray(err) ? err.join(', ') : err
+                        ).join('\n');
+                    }
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Terjadi kesalahan pada server. Periksa konfigurasi atau log Laravel.';
+                    showDetails = true;
+                    
+                    // Coba extract error dari HTML response
+                    if (xhr.responseText.includes('FatalErrorException') || 
+                        xhr.responseText.includes('ErrorException') ||
+                        xhr.responseText.includes('FatalError')) {
+                        
+                        // Extract error message dari HTML jika memungkinkan
+                        const errorMatch = xhr.responseText.match(/<h1[^>]*>(.*?)<\/h1>/);
+                        if (errorMatch && errorMatch[1]) {
+                            errorMessage += '\n\nDetail: ' + errorMatch[1].replace(/&quot;/g, '"');
                         }
                     }
+                } else if (xhr.status === 404) {
+                    errorMessage = 'URL tidak ditemukan. Periksa route di web.php';
+                } else if (xhr.status === 0) {
+                    errorMessage = 'Tidak dapat terhubung ke server. Periksa koneksi internet.';
+                } else if (xhr.status === 422) {
+                    errorMessage = 'Data tidak valid. Periksa semua field yang diperlukan.';
+                }
 
+                // Tampilkan error dengan opsi untuk melihat detail
+                if (showDetails && xhr.responseText.length > 100) {
+                    Swal.fire({
+                        title: 'Error Server',
+                        text: errorMessage,
+                        icon: 'error',
+                        showCancelButton: true,
+                        confirmButtonText: 'Lihat Detail Error',
+                        cancelButtonText: 'Tutup',
+                        confirmButtonColor: '#dc3545'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Buka window baru dengan error detail
+                            const errorWindow = window.open('', '_blank');
+                            errorWindow.document.write(xhr.responseText);
+                        }
+                    });
+                } else {
                     Swal.fire('Error', errorMessage, 'error');
                 }
-            });
-        }
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false).text(originalText);
+            }
+        });
+    }
 
+    // Reset form ketika modal ditutup
+    $('#createKerusakanModal').on('hidden.bs.modal', function () {
+        $('#form-create')[0].reset();
+        currentStep = 1;
+        showStep(currentStep);
+        $('.facility-card').removeClass('selected');
+        $('#fasilitas_type').val('');
+        $('#btn-next').prop('disabled', false);
     });
+});
 </script>

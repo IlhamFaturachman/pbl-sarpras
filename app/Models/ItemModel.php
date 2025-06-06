@@ -21,7 +21,7 @@ class ItemModel extends Model
 
     public function ruang()
     {
-        return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id');
+        return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id')->with('gedung');
     }
 
     public function fasum() {

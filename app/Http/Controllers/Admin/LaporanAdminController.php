@@ -20,9 +20,8 @@ class LaporanAdminController extends Controller
 
     public function show($id) {
         $laporan = LaporanModel::with([
-            'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
+            'kerusakan.item.ruang.gedung', 
+            'kerusakan.item.fasum',
             'kerusakan.pelapor',
             'penugasan.teknisi'
         ])->find($id);

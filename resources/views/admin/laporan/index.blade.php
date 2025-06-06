@@ -39,7 +39,7 @@
                     <tr>
                         <td>{{ $laporan->laporan_id }}</td>
                         <td>{{ $laporan->kerusakan->pelapor->nama_lengkap }}</td>
-                        <td>{{ $laporan->verifikator->nama_lengkap }}</td>
+                        <td>{{ $laporan->verifikator->nama_lengkap ?? '-' }}</td>
                         @if ($laporan->kerusakan->item->fasum_id == null)
                             <td>{{ Str::limit($laporan->kerusakan->item->ruang->gedung->nama, 30, '...') }}</td>
                         @else 
@@ -142,6 +142,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const kerusakan = laporan.kerusakan || {};
                 const teknisi = penugasan.teknisi || {};
 
+                console.log('Response data:', response);
+                console.log('Kerusakan data:', kerusakan);
+                console.log('Ruang data:', kerusakan.ruang);
+                console.log('Fasum data:', kerusakan.fasum);
+
                 // Function untuk format tanggal
                 function formatTanggalDMY(tanggal) {
                     if (!tanggal) return '-';
@@ -194,16 +199,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Lokasi Fasilitas
                 let lokasi = '-';
-                if (kerusakan.ruang?.nama && kerusakan.ruang?.gedung?.nama) {
-                    lokasi = `${kerusakan.ruang.nama}, ${kerusakan.ruang.gedung.nama}`;
-                } else if (kerusakan.fasum?.nama) {
-                    lokasi = kerusakan.fasum.nama;
+                if (kerusakan.item && kerusakan.item.ruang_id && kerusakan.item.ruang) {
+                    // Jika ada ruang dan gedung
+                    const gedungNama = kerusakan.item.ruang.gedung?.nama || 'Gedung Tidak Diketahui';
+                    lokasi = `${kerusakan.item.ruang.nama}, ${gedungNama}`;
+                } else if (kerusakan.item && kerusakan.item.fasum_id && kerusakan.item.fasum) {
+                    // Jika ada fasum
+                    lokasi = kerusakan.item.fasum.nama;
+                } else if (kerusakan.item) {
+                    // Fallback ke nama item saja
+                    lokasi = kerusakan.item.nama;
                 }
+
                 $('#detail_lokasi_fasilitas').text(lokasi);
                 
                 $('#detail_item').text(kerusakan.item?.nama ?? '-');
                 $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
-                $('#detail_pelapor').text(laporan.pelapor?.nama_lengkap ?? '-');
+                $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
 
                 // Set foto kerusakan
                 if(laporan.kerusakan?.foto_kerusakan) {
