@@ -2,16 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PenugasanController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\FasumController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
-use App\Http\Controllers\Admin\LaporanAdminController;
-use App\Http\Controllers\User\KerusakanController;
-use App\Http\Controllers\PenugasanController;
+use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\LaporanSarprasController;
+use App\Http\Controllers\User\KerusakanController;
+use App\Http\Controllers\Admin\LaporanAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,7 @@ Route::get('/', function () {
 
 // admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
     Route::prefix('data')->group(function () {
         // user
         Route::get('/user', [UserController::class, 'index'])->name('data.user');

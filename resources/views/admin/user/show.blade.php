@@ -11,12 +11,25 @@
             <!-- Body -->
             <div class="modal-body">
                 <div class="row">
-                    <!-- Foto Profil -->
-                    <div class="col-md-12 text-center mb-4">
-                        <img id="detail_foto_profile"
-                             src="{{ asset('assets/img/avatars/default-avatar.png') }}"
-                             class="img-thumbnail rounded-circle"
-                             style="width: 150px; height: 150px; object-fit: cover;">
+                    <!-- Foto Profil and Foto Identitas Container -->
+                    <div class="col-md-12 d-flex justify-content-center gap-4 mb-4">
+                        <!-- Foto Profil -->
+                        <div class="text-center mr-4">
+                            <img id="detail_foto_profile"
+                                src="{{ asset('assets/img/avatars/default-avatar.png') }}"
+                                class="img-thumbnail rounded-circle"
+                                style="width: 150px; height: 150px; object-fit: cover;">
+                            <div class="mt-2">Foto Profil</div>
+                        </div>
+                        
+                        <!-- Foto Identitas (KTM) -->
+                        <div class="text-center">
+                            <img id="detail_foto_identitas"
+                                src="{{ asset('assets/img/default-ktm.png') }}"
+                                class="img-thumbnail"
+                                style="width: 200px; height: 150px; object-fit: cover;">
+                            <div class="mt-2">Foto Identitas</div>
+                        </div>
                     </div>
                 </div>
 
