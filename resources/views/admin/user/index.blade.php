@@ -127,6 +127,12 @@
                         $('#detail_foto_profile').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
                     }
 
+                    if (user.identitas) {
+                        $('#detail_foto_identitas').attr('src', "{{ asset('storage') }}/" + user.identitas);
+                    } else {
+                        $('#detail_foto_identitas').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
+                    }
+
                     // Show the modal
                     $('#detailUser').modal('show');
                 },
