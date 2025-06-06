@@ -134,7 +134,7 @@ class KerusakanController extends Controller
         }
     }
 
-     public function destroy($id){
+    public function destroy($id){
         try {
             $kerusakan = KerusakanModel::findOrFail($id);
             $kerusakan->delete();
@@ -152,8 +152,8 @@ class KerusakanController extends Controller
                 500,
             );
         }
-
-
+    }
+    
     public function exportPdf()
     {
         $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
