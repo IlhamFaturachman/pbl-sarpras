@@ -186,6 +186,7 @@ class LaporanSarprasController extends Controller
     public function tolak($id) {
         $laporan = LaporanModel::findOrFail($id);
 
+        $laporan->verifikator_id = auth()->user()->user_id;
         $laporan->status_laporan = 'Ditolak';
         $laporan->tanggal_update_status = Carbon::now();
         $laporan->save();
@@ -232,8 +233,11 @@ class LaporanSarprasController extends Controller
                 ]
             );
 
+            // dd(auth()->user()->user_id);
+
             // Update status laporan
             LaporanModel::where('laporan_id', $id)->update([
+                'verifikator_id' => auth()->user()->user_id,
                 'status_laporan' => 'Disetujui',
                 'tanggal_update_status' => Carbon::now(),
             ]);

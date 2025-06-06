@@ -20,6 +20,7 @@ class LaporanAdminController extends Controller
 
     public function show($id) {
         $laporan = LaporanModel::with([
+            'verifikator',
             'kerusakan.item.ruang.gedung', 
             'kerusakan.item.fasum',
             'kerusakan.pelapor',
@@ -27,7 +28,7 @@ class LaporanAdminController extends Controller
         ])->find($id);
 
         if (!$laporan) {
-            return redirect()->route('laporan.penugasan')->with('error', 'Laporan tidak ditemukan');
+            return redirect()->route('admin.data.laporan')->with('error', 'Laporan tidak ditemukan');
         }
 
         return response()->json([

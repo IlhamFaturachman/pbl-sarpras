@@ -21,11 +21,12 @@ class KerusakanController extends Controller
 {
     public function index()
     {
-        $kerusakans = KerusakanModel::where('pelapor_id', auth()->id())->paginate(10);
+        $laporans = LaporanModel::join('m_kerusakan', 'm_laporan.kerusakan_id', '=', 'm_kerusakan.kerusakan_id')
+            ->where('m_kerusakan.pelapor_id', auth()->id())
+            ->select('m_laporan.*') 
+            ->paginate(10);
 
-        return view('users.kerusakan.index', [
-            'kerusakans' => $kerusakans,
-        ]);
+        return view('users.kerusakan.index', compact('laporans'));
     }
 
     public function create()
@@ -147,10 +148,29 @@ class KerusakanController extends Controller
             );
         }
     }
+
+    public function show($id) {
+        $laporan = LaporanModel::with([
+            'verifikator',
+            'kerusakan.item.ruang.gedung', 
+            'kerusakan.item.fasum',
+            'kerusakan.pelapor',
+            'penugasan.teknisi'
+        ])->find($id);
+
+        if (!$laporan) {
+            return redirect()->route('users.kerusakan')->with('error', 'Laporan tidak ditemukan');
+        }
+
+        return response()->json([
+            'laporan' => $laporan,
+            'penugasan' => $laporan->penugasan,
+        ]);
+    }
     
     public function exportPdf()
     {
-        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
+        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->where('pelapor_id', auth()->id())->get();
 
         $imagePath = public_path('/assets/img/polinema.png');
         $imageData = base64_encode(file_get_contents($imagePath));
