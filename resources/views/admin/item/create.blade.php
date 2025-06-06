@@ -69,8 +69,8 @@
                         
                         <div class="row">
                             <div class="col mb-3">
-                                <label for="nama" class="form-label">Nama Item</label>
-                                <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan Nama Item" value="{{ old('nama') }}">
+                                <label for="nama_item_ruang" class="form-label">Nama Item</label>
+                                <input type="text" id="nama_item_ruang" name="nama_item_ruang" class="form-control" placeholder="Masukkan Nama Item" value="{{ old('nama') }}">
                             </div>
                         </div>
                         <input type="hidden" name="location_type" value="gedung">
@@ -101,8 +101,8 @@
                         
                         <div class="row">
                             <div class="col mb-3">
-                                <label for="nama" class="form-label">Nama Item</label>
-                                <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan Nama Item" value="{{ old('nama') }}">
+                                <label for="nama_item_fasum" class="form-label">Nama Item</label>
+                                <input type="text" id="nama_item_fasum" name="nama_item_fasum" class="form-control" placeholder="Masukkan Nama Item" value="{{ old('nama') }}">
                             </div>
                         </div>
                         <input type="hidden" name="location_type" value="fasum">
@@ -134,7 +134,9 @@ jQuery(document).ready(function($) {
     // Handle klik tombol jenis lokasi
     $('.location-type').on('click', function() {
         const type = $(this).data('type');
-        console.log('Location type selected:', type);
+
+        // Update nilai input hidden
+        $('input[name="location_type"]').val(type);
         
         // Sembunyikan semua step content
         $('.step-content').hide();
@@ -156,7 +158,6 @@ jQuery(document).ready(function($) {
     // Event handler untuk perubahan gedung
     $('#gedung_id').on('change', function() {
         const gedungId = $(this).val();
-        console.log('Gedung selected:', gedungId);
         
         if (gedungId) {
             loadRuangByGedung(gedungId);
@@ -166,34 +167,43 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // DEBUG: Tambahkan event listener untuk form submit
+        // DEBUG: Tambahkan event listener untuk form submit
     $('#form-tambah').on('submit', function(e) {
         const locationType = $('input[name="location_type"]').val();
+        let isValid = true;
         
         if (locationType === 'fasum') {
             if (!$('#fasum_id').val()) {
                 alert('Pilih fasilitas umum terlebih dahulu');
-                e.preventDefault();
-                return;
+                isValid = false;
+            }
+            if (!$('#nama_item_fasum').val()) {
+                alert('Isi nama item terlebih dahulu');
+                isValid = false;
             }
         } else if (locationType === 'gedung') {
             if (!$('#gedung_id').val() || !$('#ruang_id').val()) {
                 alert('Pilih gedung dan ruang terlebih dahulu');
-                e.preventDefault();
-                return;
+                isValid = false;
+            }
+            if (!$('#nama_item_ruang').val()) {
+                alert('Isi nama item terlebih dahulu');
+                isValid = false;
             }
         }
         
-        if (!$('#nama').val()) {
-            alert('Isi nama item terlebih dahulu');
+        if (!isValid) {
             e.preventDefault();
-            return;
+            // Tampilkan step yang sesuai jika validasi gagal
+            if (locationType) {
+                $('.step-content').hide();
+                $('#step2-' + locationType).show();
+            }
         }
     });
 
     function loadRuangByGedung(gedungId, selectedRuangId = null) {
         const ruangSelect = $('#ruang_id');
-        console.log('Loading ruang for gedung:', gedungId);
         
         $.ajax({
             url: '/admin/data/item/get-ruang/' + gedungId,
@@ -204,7 +214,6 @@ jQuery(document).ready(function($) {
                            .html('<option value="">Loading...</option>');
             },
             success: function(response) {
-                console.log('Ruang response:', response);
                 let options = '<option value="">-- Pilih Ruang --</option>';
                 
                 if (response && response.length > 0) {
