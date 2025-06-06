@@ -48,6 +48,20 @@ class KerusakanController extends Controller
         return response()->json(['ruangs' => $ruangs]);
     }
 
+    public function getItemByRuang($ruang_id)
+    {
+        $items = ItemModel::where('ruang_id', $ruang_id)->get();
+
+        return response()->json(['items' => $items]);
+    }
+
+    public function getItemByFasum($fasum_id)
+    {
+        $items = ItemModel::where('fasum_id', $fasum_id)->get();
+
+        return response()->json(['items' => $items]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
