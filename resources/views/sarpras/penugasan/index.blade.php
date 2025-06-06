@@ -200,7 +200,7 @@
                     $('#detail_lokasi_fasilitas').text(lokasi);
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
                     $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
-                    $('#detail_pelapor').text(laporan.pelapor?.nama_lengkap ?? '-');
+                    $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
 
                     const skor = laporan.prioritas?.skor_laporan;
                     let label = '-';
