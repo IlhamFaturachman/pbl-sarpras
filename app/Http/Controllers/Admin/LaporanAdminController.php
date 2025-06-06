@@ -20,6 +20,7 @@ class LaporanAdminController extends Controller
 
     public function show($id) {
         $laporan = LaporanModel::with([
+            'verifikator',
             'kerusakan.item.ruang.gedung', 
             'kerusakan.item.fasum',
             'kerusakan.pelapor',

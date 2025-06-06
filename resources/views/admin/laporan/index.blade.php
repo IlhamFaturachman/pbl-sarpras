@@ -26,7 +26,6 @@
                 <tr>
                     <th style="font-weight: bold;">ID Laporan</th>
                     <th style="font-weight: bold;">Nama Pelapor</th>
-                    <th style="font-weight: bold;">Nama Verifikator</th>
                     <th style="font-weight: bold;">Fasilitas</th>
                     <th style="font-weight: bold;">Item</th>
                     <th style="font-weight: bold;">Tanggal Dilaporkan</th>
@@ -39,7 +38,6 @@
                     <tr>
                         <td>{{ $laporan->laporan_id }}</td>
                         <td>{{ $laporan->kerusakan->pelapor->nama_lengkap }}</td>
-                        <td>{{ $laporan->verifikator->nama_lengkap ?? '-' }}</td>
                         @if ($laporan->kerusakan->item->fasum_id == null)
                             <td>{{ Str::limit($laporan->kerusakan->item->ruang->gedung->nama, 30, '...') }}</td>
                         @else 
@@ -144,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 console.log('Response data:', response);
                 console.log('Kerusakan data:', kerusakan);
+                console.log('verifikator:', laporan.verifikator_id);
                 console.log('Ruang data:', kerusakan.ruang);
                 console.log('Fasum data:', kerusakan.fasum);
 
@@ -216,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#detail_item').text(kerusakan.item?.nama ?? '-');
                 $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                 $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
 
                 // Set foto kerusakan
                 if(laporan.kerusakan?.foto_kerusakan) {

@@ -150,7 +150,7 @@ class KerusakanController extends Controller
     
     public function exportPdf()
     {
-        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
+        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->where('pelapor_id', auth()->id())->get();
 
         $imagePath = public_path('/assets/img/polinema.png');
         $imageData = base64_encode(file_get_contents($imagePath));
