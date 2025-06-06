@@ -23,7 +23,7 @@ class LaporanAdminController extends Controller
             'kerusakan.item',
             'kerusakan.ruang.gedung',
             'kerusakan.fasum',
-            'pelapor',
+            'kerusakan.pelapor',
             'penugasan.teknisi'
         ])->find($id);
 
@@ -53,7 +53,7 @@ class LaporanAdminController extends Controller
             'logoSrc' => $imageSrc
         ]);
     
-        $pdf->setPaper('a4', 'portrait');
+        $pdf->setPaper('a4', 'landscape');
         $pdf->setOption("isRemoteEnabled", true);
         $pdf->render();
 

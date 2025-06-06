@@ -36,4 +36,9 @@ class KerusakanModel extends Model
     {
         return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id');
     }
+
+    public function pelapor(): BelongsTo
+    {
+        return $this->belongsTo(UserModel::class, 'pelapor_id', 'user_id');
+    }
 }

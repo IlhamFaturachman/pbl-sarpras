@@ -38,12 +38,12 @@
                 @foreach($laporans as $laporan)
                     <tr>
                         <td>{{ $laporan->laporan_id }}</td>
-                        <td>{{ $laporan->pelapor->nama_lengkap }}</td>
+                        <td>{{ $laporan->kerusakan->pelapor->nama_lengkap }}</td>
                         <td>{{ $laporan->verifikator->nama_lengkap }}</td>
-                        @if ($laporan->kerusakan->fasum_id == null)
-                            <td>{{ Str::limit($laporan->kerusakan->ruang->gedung->nama, 30, '...') }}</td>
+                        @if ($laporan->kerusakan->item->fasum_id == null)
+                            <td>{{ Str::limit($laporan->kerusakan->item->ruang->gedung->nama, 30, '...') }}</td>
                         @else 
-                            <td>{{ $laporan->kerusakan->fasum->nama }}</td>
+                            <td>{{ $laporan->kerusakan->item->fasum->nama }}</td>
                         @endif
                         <td>{{ $laporan->kerusakan->item->nama }}</td>
                         <td>{{ $laporan->tanggal_laporan }}</td>
