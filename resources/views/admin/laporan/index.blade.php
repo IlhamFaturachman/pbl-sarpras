@@ -140,12 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const kerusakan = laporan.kerusakan || {};
                 const teknisi = penugasan.teknisi || {};
 
-                console.log('Response data:', response);
-                console.log('Kerusakan data:', kerusakan);
-                console.log('verifikator:', laporan.verifikator_id);
-                console.log('Ruang data:', kerusakan.ruang);
-                console.log('Fasum data:', kerusakan.fasum);
-
                 // Function untuk format tanggal
                 function formatTanggalDMY(tanggal) {
                     if (!tanggal) return '-';

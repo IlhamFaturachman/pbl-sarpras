@@ -43,23 +43,23 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($kerusakans as $key => $kerusakan)
+                @foreach($laporans as $key => $laporan)
                     <tr>
-                        <td>{{ $kerusakans->firstItem() + $key }}</td>
-                        <td>{{ $kerusakan->item->nama ?? '-' }}</td>
+                        <td>{{ $laporans->firstItem() + $key }}</td>
+                        <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
                         <td>
-                            @if ($kerusakan->item->ruang)
-                                {{ $kerusakan->item->ruang->nama }}, {{ $kerusakan->item->ruang->gedung->nama }}
-                            @elseif ($kerusakan->item->fasum)
-                                {{ $kerusakan->item->fasum->nama }}
+                            @if ($laporan->kerusakan->item->ruang)
+                                {{ $laporan->kerusakan->item->ruang->nama }}, {{ $laporan->kerusakan->item->ruang->gedung->nama }}
+                            @elseif ($laporan->kerusakan->item->fasum)
+                                {{ $laporan->kerusakan->item->fasum->nama }}
                             @else
                                 -
                             @endif
                         </td>
-                        <td>{{ $kerusakan->deskripsi_kerusakan }}</td>
+                        <td>{{ $laporan->kerusakan->deskripsi_kerusakan }}</td>
                         <td>
-                            @if($kerusakan->foto_kerusakan)
-                                <img src="{{ asset('storage/' . $kerusakan->foto_kerusakan) }}" 
+                            @if($laporan->kerusakan->foto_kerusakan)
+                                <img src="{{ asset('storage/' . $laporan->kerusakan->foto_kerusakan) }}" 
                                      alt="Foto Kerusakan" 
                                      style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
                             @else
@@ -68,9 +68,15 @@
                         </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="button" class="btn btn-sm btn-danger delete-kerusakan" 
-                                        data-id="{{ $kerusakan->kerusakan_id }}">
-                                    <i class="fas fa-trash"></i>
+                                <button type="button" 
+                                        class="btn btn-sm btn-primary detail-laporan" 
+                                        data-id="{{ $laporan->laporan_id }}">
+                                    Detail
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-sm btn-danger delete-kerusakan" 
+                                        data-id="{{ $laporan->laporan_id }}"> 
+                                    Hapus
                                 </button>
                             </div>
                         </td>
@@ -82,13 +88,14 @@
 
     <!-- Pagination -->
     <div class="d-flex justify-content-end mt-3 me-3">
-        @if ($kerusakans->hasPages())
-            <x-pagination :paginator="$kerusakans" />
+        @if ($laporans->hasPages())
+            <x-pagination :paginator="$laporans" />
         @endif
     </div>
 </div>
 
 @include('users.kerusakan.create')
+@include('users.kerusakan.show')
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -108,6 +115,146 @@ document.addEventListener('DOMContentLoaded', function () {
             icon: "error"
         });
     @endif
+
+    $(document).on('click', '.detail-laporan', function(e) {
+        e.preventDefault();
+        
+        const laporanId = $(this).data('id');
+        
+        // Tampilkan loading
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Mengambil detail laporan',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        $.ajax({
+            url: "{{ url('users/kerusakan') }}/" + laporanId + "/show",
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                
+                // Tutup loading
+                Swal.close();
+                
+                const laporan = response.laporan || {};
+                const penugasan = response.penugasan || {};
+                const kerusakan = laporan.kerusakan || {};
+                const teknisi = penugasan.teknisi || {};
+
+                // Function untuk format tanggal
+                function formatTanggalDMY(tanggal) {
+                    if (!tanggal) return '-';
+                    const [year, month, day] = tanggal.split('-');
+                    return `${day}-${month}-${year}`;
+                }
+
+                // Function untuk render status laporan badge
+                function renderStatusLaporanBadge(status_laporan) {
+                    const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
+                    switch (status_laporan) {
+                        case 'Diajukan':
+                            return `<span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>`;
+                        case 'Disetujui':
+                            return `<span style="background-color: #d0ebff; color: #1c7ed6; ${baseStyle}">Disetujui</span>`;
+                        case 'Dikerjakan':
+                            return `<span style="background-color: #fff3bf; color: #f59f00; ${baseStyle}">Dikerjakan</span>`;
+                        case 'Selesai':
+                            return `<span style="background-color: #d3f9d8; color: #37b24d; ${baseStyle}">Selesai</span>`;
+                        case 'Ditolak':
+                            return `<span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>`;
+                        default:
+                            return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                    }
+                }
+
+                // Function untuk render status perbaikan badge
+                function renderStatusPerbaikanBadge(status_perbaikan) {
+                    const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center;";
+                    switch (status_perbaikan) {
+                        case 'Progress':
+                            return `<span style="color: #007bff; border: 1px solid #007bff; ${baseStyle}">Progress</span>`;
+                        case 'Selesai':
+                            return `<span style="color: #28a745; border: 1px solid #28a745; ${baseStyle}">Selesai</span>`;
+                        case 'Revisi':
+                            return `<span style="color: #dc3545; border: 1px solid #dc3545; ${baseStyle}">Revisi</span>`;
+                        case 'Menunggu':
+                            return `<span style="color: #ffc107; border: 1px solid #ffc107; ${baseStyle}">Menunggu</span>`;
+                        default:
+                            return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                    }
+                }
+
+                // Set status laporan
+                const status_laporan = laporan.status_laporan ?? '-';
+                $('#status_laporan').html(renderStatusLaporanBadge(status_laporan));
+
+                // Set data laporan
+                $('#detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
+                
+                // Lokasi Fasilitas
+                let lokasi = '-';
+                if (kerusakan.item && kerusakan.item.ruang_id && kerusakan.item.ruang) {
+                    // Jika ada ruang dan gedung
+                    const gedungNama = kerusakan.item.ruang.gedung?.nama || 'Gedung Tidak Diketahui';
+                    lokasi = `${kerusakan.item.ruang.nama}, ${gedungNama}`;
+                } else if (kerusakan.item && kerusakan.item.fasum_id && kerusakan.item.fasum) {
+                    // Jika ada fasum
+                    lokasi = kerusakan.item.fasum.nama;
+                } else if (kerusakan.item) {
+                    // Fallback ke nama item saja
+                    lokasi = kerusakan.item.nama;
+                }
+
+                $('#detail_lokasi_fasilitas').text(lokasi);
+                
+                $('#detail_item').text(kerusakan.item?.nama ?? '-');
+                $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
+                $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
+
+                // Set foto kerusakan
+                if(laporan.kerusakan?.foto_kerusakan) {
+                    $('#detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);
+                    $('#detail_foto_kerusakan').show();
+                } else {
+                    $('#detail_foto_kerusakan').hide();
+                }
+
+                // Set status penugasan
+                const status_perbaikan = penugasan.status_penugasan ?? '-';
+                $('#status_penugasan').html(renderStatusPerbaikanBadge(status_perbaikan));
+
+                // Set data penugasan
+                $('#detail_tanggal_mulai').text(formatTanggalDMY(penugasan.tanggal_mulai));
+                $('#detail_tanggal_selesai').text(formatTanggalDMY(penugasan.tanggal_selesai));
+                $('#detail_teknisi').text(teknisi?.nama_lengkap ?? '-');
+                $('#detail_catatan_perbaikan').text(penugasan.catatan_perbaikan ?? '-');
+
+                // Set bukti perbaikan
+                if(penugasan.bukti_perbaikan) {
+                    $('#detail_bukti_perbaikan').attr('src', '/storage/' + penugasan.bukti_perbaikan);
+                    $('#detail_bukti_perbaikan').show();
+                } else {
+                    $('#detail_bukti_perbaikan').hide();
+                }
+
+                // Tampilkan modal - PASTIKAN ID MODAL BENAR
+                $('#detailLaporanAdmin').modal('show'); // Sesuaikan dengan ID modal yang benar
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', error); // Debug log
+                console.error('Response:', xhr.responseText); // Debug log
+                
+                Swal.close();
+                Swal.fire('Error', 'Gagal mengambil detail laporan: ' + error, 'error');
+            }
+        });
+    });
 
     // Delete button
     $('.delete-kerusakan').on('click', function () {

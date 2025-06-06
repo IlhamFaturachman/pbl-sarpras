@@ -95,6 +95,7 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
     Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
     Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+    Route::get('/kerusakan/{id}/show', [KerusakanController::class, 'show'])->name('kerusakan.show');
     Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
     Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
     Route::get('/kerusakan/export_pdf', [KerusakanController::class, 'exportPdf'])->name('kerusakan.export_pdf');

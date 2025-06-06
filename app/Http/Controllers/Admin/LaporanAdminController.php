@@ -28,7 +28,7 @@ class LaporanAdminController extends Controller
         ])->find($id);
 
         if (!$laporan) {
-            return redirect()->route('laporan.penugasan')->with('error', 'Laporan tidak ditemukan');
+            return redirect()->route('admin.data.laporan')->with('error', 'Laporan tidak ditemukan');
         }
 
         return response()->json([
