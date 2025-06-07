@@ -10,6 +10,7 @@ use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanSarprasController extends Controller
 {
@@ -409,4 +410,26 @@ class LaporanSarprasController extends Controller
             'penugasan' => $laporan->penugasan,
         ]);
     }
+
+    public function export_pdf()
+    {
+        ini_set('max_execution_time', 300);
+
+        $laporan = LaporanModel::get(); 
+
+        $imagePath = public_path('/assets/img/polinema.png');
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageSrc = 'data:image/png;base64,' . $imageData;
+
+        $pdf = Pdf::loadView('sarpras.riwayat.export_pdf', [
+            'laporan' => $laporan,
+            'logoSrc' => $imageSrc
+        ]);
+    
+        $pdf->setPaper('a4', 'landscape');
+        $pdf->setOption("isRemoteEnabled", true);
+        $pdf->render();
+
+        return $pdf->stream('Laporan Kerusakan Fasilitas '.date('Y-m-d H:i:s').'.pdf');
+    }  
 }

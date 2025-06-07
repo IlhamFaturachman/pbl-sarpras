@@ -27,14 +27,16 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
+                    <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Kode Gedung</th>
                     <th style="font-weight: bold;">Nama Gedung</th>
-                    <th style="font-weight: bold;" class="text-center">Actions</>
+                    <th style="font-weight: bold;" class="text-center">Aksi</>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($gedungs as $gedung)
+                @forelse($gedungs as $gedung)
                     <tr>
+                        <td>{{ $loop->iteration + ($gedungs->firstItem() - 1) }}</td>
                         <td>{{ $gedung->kode }}</td>
                         <td>{{ $gedung->nama }}</td>
                         <td class="text-center">
@@ -44,7 +46,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="4" class="text-center text-muted">Tidak ada data gedung</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

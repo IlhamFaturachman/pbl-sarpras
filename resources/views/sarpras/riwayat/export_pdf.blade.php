@@ -78,12 +78,7 @@
             font-weight: bold;
         }
 
-        .status-proses {
-            color: orange;
-            font-weight: bold;
-        }
-
-        .status-pending {
+        .status-ditolak {
             color: red;
             font-weight: bold;
         }
@@ -112,13 +107,14 @@
             <tr>
                 <th class="text-center">No</th>
                 <th>ID Laporan</th>
+                <th>Tanggal Laporan</th>
                 <th>Pelapor</th>
                 <th>Verifikator</th>
                 <th>Sarana</th>
                 <th>Lokasi</th>
                 <th>Deskripsi Kerusakan</th>
                 <th>Status</th>
-                <th>Tanggal Laporan</th>
+                <th>Teknisi</th>
             </tr>
         </thead>
         <tbody>
@@ -126,32 +122,32 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $l->laporan_id }}</td>
-                    <td>{{ $l->kerusakan->pelapor->nama ?? '-' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($l->tanggal_laporan)->format('d/m/Y') }}</td>
                     <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td>{{ $l->kerusakan->item->nama }}</td>
                     <td>
                         @if($l->kerusakan->item->ruang)
-                            {{ $l->kerusakan->item->ruang->gedung->nama }}, {{ $l->kerusakan->item->ruang->nama }}
+                        {{ $l->kerusakan->item->ruang->gedung->nama }}, {{ $l->kerusakan->item->ruang->nama }}
                         @elseif($l->kerusakan->item->fasum)
-                            {{ $l->kerusakan->item->fasum->nama }}
+                        {{ $l->kerusakan->item->fasum->nama }}
                         @else
-                            -
+                        -
                         @endif
                     </td>
                     <td>{{ $l->kerusakan->deskripsi_kerusakan ?? '-' }}</td>
                     <td class="
-                        @if($l->status_laporan == 'Selesai')
-                            status-selesai
-                        @elseif($l->status_laporan == 'Prosess')
-                            status-proses
-                        @else
-                            status-pending
-                        @endif
+                    @if($l->status_laporan == 'Selesai')
+                    status-selesai
+                    @elseif($l->status_laporan == 'Ditolak')
+                    status-ditolak
+                    @else
+                    -
+                    @endif
                     ">
-                        {{ ucfirst($l->status_laporan) }}
+                    {{ ucfirst($l->status_laporan) }}
                     </td>
-                    <td>{{ \Carbon\Carbon::parse($l->tanggal_laporan)->format('d/m/Y') }}</td>
-                </tr>
+                    <td>{{ $l->penugasan->teknisi->nama ?? '-' }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>
@@ -160,8 +156,7 @@
         <p><strong>Keterangan Status:</strong></p>
         <ul style="margin: 5px 0;">
             <li><span class="status-selesai">Selesai</span> - Laporan telah ditangani dan selesai</li>
-            <li><span class="status-proses">Proses</span> - Laporan sedang dalam proses perbaikan</li>
-            <li><span class="status-pending">Pending</span> - Laporan menunggu penanganan</li>
+            <li><span class="status-ditolak">Ditolak</span> - Laporan ditolak</li>
         </ul>
     </div>
 

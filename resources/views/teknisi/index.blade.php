@@ -28,7 +28,7 @@
                 <tr>
                     <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Tanggal Laporan</th>
-                    <th style="font-weight: bold;">Nama Fasilitas</th>
+                    <th style="font-weight: bold;">Nama Sarana</th>
                     <th style="font-weight: bold;">Lokasi Fasilitas</th>
                     <th style="font-weight: bold;" class="text-center">Status Penugasan</th>
                     <th style="font-weight: bold;">Aksi</th>

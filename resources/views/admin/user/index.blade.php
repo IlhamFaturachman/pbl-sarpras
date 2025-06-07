@@ -18,7 +18,7 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data User</h5>
+        <h5 class="mb-0">Data Pengguna</h5>
         <button type="button" data-bs-toggle="modal" data-bs-target="#createUser" class="btn btn-outline-primary">
             <i class="bx bx-plus me-1"></i> Tambah
         </button>
@@ -27,19 +27,23 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th style="font-weight: bold;">Nama</th>
+                    <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Nomor Induk</th>
+                    <th style="font-weight: bold;">Nama Lengkap</th>
+                    <th style="font-weight: bold;">Jenis Pengguna</th>
                     <th style="font-weight: bold;">Username</th>
                     <th style="font-weight: bold;">Email</th>
                     <th style="font-weight: bold;">Status</th>
-                    <th style="font-weight: bold;" class="text-center">Actions</th>
+                    <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($users as $user)
+                @forelse($users as $user)
                     <tr>
-                        <td>{{ $user->nama_lengkap }}</td>
+                        <td>{{ $loop->iteration + ($users->firstItem() - 1) }}</td>
                         <td>{{ $user->nomor_induk }}</td>
+                        <td>{{ $user->nama_lengkap }}</td>
+                        <td>{{ \Illuminate\Support\Str::title($user->getRoleNames()->first()) }}</td>
                         <td>{{ $user->nama }}</td>
                         <td>{{ $user->email }}</td>
                         <td><span class="badge bg-label-{{ $user->status == 'Aktif' ? 'success' : 'danger' }} me-1">{{ $user->status }}</span></td>
@@ -51,7 +55,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Tidak ada data pengguna</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

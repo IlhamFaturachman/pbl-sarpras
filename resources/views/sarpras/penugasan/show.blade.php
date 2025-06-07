@@ -25,12 +25,12 @@
                   <div class="mt-1" id="detail_tanggal_laporan"></div>
                 </div>
                 <div class="mb-3">
-                  <div class="fw-semibold">Lokasi Fasilitas</div>
-                  <div class="mt-1" id="detail_lokasi_fasilitas"></div>
+                  <div class="fw-semibold">Nama Sarana</div>
+                  <div class="mt-1" id="detail_item"></div>
                 </div>
                 <div class="mb-3">
-                  <div class="fw-semibold">Nama Fasilitas</div>
-                  <div class="mt-1" id="detail_item"></div>
+                  <div class="fw-semibold">Lokasi Fasilitas</div>
+                  <div class="mt-1" id="detail_lokasi_fasilitas"></div>
                 </div>
                 <div class="mb-3">
                   <div class="fw-semibold">Deskripsi Kerusakan</div>

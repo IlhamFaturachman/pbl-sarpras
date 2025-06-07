@@ -4,59 +4,77 @@
 
             <!-- Header -->
             <div class="modal-header">
-                <h5 class="modal-title">Detail Data User</h5>
+                <h5 class="modal-title">Detail Data Pengguna</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
             </div>
 
             <!-- Body -->
             <div class="modal-body">
-                <div class="row">
-                    <!-- Foto Profil and Foto Identitas Container -->
-                    <div class="col-md-12 d-flex justify-content-center gap-4 mb-4">
-                        <!-- Foto Profil -->
-                        <div class="text-center mr-4">
-                            <img id="detail_foto_profile"
-                                src="{{ asset('assets/img/avatars/default-avatar.png') }}"
-                                class="img-thumbnail rounded-circle"
-                                style="width: 150px; height: 150px; object-fit: cover;">
-                            <div class="mt-2">Foto Profil</div>
-                        </div>
-                        
-                        <!-- Foto Identitas (KTM) -->
+                <!-- Foto Profil -->
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-center">
                         <div class="text-center">
-                            <img id="detail_foto_identitas"
-                                src="{{ asset('assets/img/default-ktm.png') }}"
-                                class="img-thumbnail"
-                                style="width: 200px; height: 150px; object-fit: cover;">
-                            <div class="mt-2">Foto Identitas</div>
+                            <img id="detail_foto_profile"
+                                 src="{{ asset('assets/img/avatars/default-avatar.png') }}"
+                                 class="img-thumbnail rounded-circle"
+                                 style="width: 150px; height: 150px; object-fit: cover;">
                         </div>
                     </div>
                 </div>
 
-                <!-- Informasi User -->
-                <div class="row mb-2">
-                    <div class="col-md-4">Nama Lengkap</div>
-                    <strong class="col-md-8" id="detail_nama_lengkap"></strong>
+                <!-- Informasi Pengguna -->
+                <div class="card mb-4">
+                    <div class="card-header border-bottom">
+                        <h6 class="mb-0">Informasi Pengguna</h6>
+                    </div>
+                    <div class="card-body pt-4">
+                        <div class="row">
+                            <!-- Kolom Kiri -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <div class="fw-semibold">Nomor Induk</div>
+                                    <div class="mt-1" id="detail_nomor_induk"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-semibold">Nama Lengkap</div>
+                                    <div class="mt-1" id="detail_nama_lengkap"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-semibold">Jenis Pengguna</div>
+                                    <div class="mt-1" id="detail_role"></div>
+                                </div>
+                            </div>
+
+                            <!-- Kolom Kanan -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <div class="fw-semibold">Username</div>
+                                    <div class="mt-1" id="detail_nama"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-semibold">Email</div>
+                                    <div class="mt-1" id="detail_email"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-semibold">Status</div>
+                                    <div class="mt-1" id="detail_status"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Nomor Induk</div>
-                    <strong class="col-md-8" id="detail_nomor_induk"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Username</div>
-                    <strong class="col-md-8" id="detail_nama"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Email</div>
-                    <strong class="col-md-8" id="detail_email"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Role</div>
-                    <strong class="col-md-8" id="detail_role"></strong>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-md-4">Status</div>
-                    <strong class="col-md-8" id="detail_status"></strong>
+
+                <!-- Foto Identitas -->
+                <div class="card">
+                    <div class="card-header border-bottom">
+                        <h6 class="mb-0">Foto Identitas Civitas Akademik</h6>
+                    </div>
+                    <div class="card-body text-center pt-4">
+                        <img id="detail_foto_identitas"
+                             src="{{ asset('assets/img/default-ktm.png') }}"
+                             class="img-thumbnail"
+                             style="width: 270px; height: 170px; object-fit: cover;">
+                    </div>
                 </div>
             </div>
 
