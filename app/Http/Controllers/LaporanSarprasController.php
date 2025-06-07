@@ -14,7 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanSarprasController extends Controller
 {
-    public function indexPenugasan()
+    public function indexPenugasan(Request $request)
     {
         $laporans = LaporanModel::with([
             'kerusakan.item',
@@ -23,13 +23,26 @@ class LaporanSarprasController extends Controller
             'prioritas',
             'penugasan.teknisi'
         ])
-            ->where(function ($query) {
-                $query->where(function ($q) {
-                    $q->where('status_laporan', 'Disetujui')->whereDoesntHave('penugasan');
-                })->orWhere(function ($q) {
+        ->where(function ($query) {
+            $query->where('status_laporan', 'Disetujui')->whereDoesntHave('penugasan')
+                ->orWhere(function ($q) {
                     $q->where('status_laporan', 'Dikerjakan')->whereHas('penugasan');
                 });
-            })->paginate(10);
+        });
+
+        if ($request->filled('status_penugasan')) {
+            $laporans->whereHas('penugasan', function ($q) use ($request) {
+                $q->where('status_penugasan', $request->status_penugasan);
+            });
+        }
+
+        if ($request->filled('skor_laporan')) {
+            $laporans->whereHas('penugasan', function ($q) use ($request) {
+                $q->where('skor_laporan', $request->skor_laporan);
+            });
+        }
+
+        $laporans = $laporans->paginate(10)->withQueryString(); // withQueryString agar filter tetap saat paginate
 
         $teknisis = UserModel::role('Teknisi')->get();
 
@@ -375,11 +388,9 @@ class LaporanSarprasController extends Controller
     public function index()
     {
         $laporans = LaporanModel::with([
-            'penugasan.teknisi',
             'kerusakan.item',
             'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
-            'pelapor'
+            'kerusakan.fasum'
         ])
         ->whereIn('status_laporan', ['Selesai', 'Ditolak'])
         ->paginate(10);
@@ -395,7 +406,7 @@ class LaporanSarprasController extends Controller
             'kerusakan.item',
             'kerusakan.item.ruang.gedung',
             'kerusakan.item.fasum',
-            'pelapor',
+            'kerusakan.pelapor',
             'penugasan.teknisi',
             'prioritas',
             'feedback'
@@ -415,7 +426,7 @@ class LaporanSarprasController extends Controller
     {
         ini_set('max_execution_time', 300);
 
-        $laporan = LaporanModel::get(); 
+        $laporan = LaporanModel::get()->whereIn('status_laporan', ['Selesai', 'Ditolak']); 
 
         $imagePath = public_path('/assets/img/polinema.png');
         $imageData = base64_encode(file_get_contents($imagePath));

@@ -20,6 +20,16 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Penugasan Perbaikan Fasilitas</h5>
+
+        <div class="position-relative" style="max-width: 300px; width: 100%;">
+            <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+            <input 
+            type="text" 
+            id="searchInput" 
+            class="form-control form-control-sm" 
+            placeholder="Cari..." 
+            style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
+        </div>
     </div>
 
     <div class="table-responsive text-nowrap">
@@ -30,9 +40,33 @@
                     <th style="font-weight: bold;">Tanggal Laporan</th>
                     <th style="font-weight: bold;">Nama Sarana</th>
                     <th style="font-weight: bold;">Lokasi Fasilitas</th>
-                    <th style="font-weight: bold;" class="text-center">Prioritas Laporan</th>
+                    <th style="font-weight: bold;">Prioritas Laporan
+                        <div class="dropdown d-inline-block">
+                            <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-filter" style="font-size: 1.1rem;"></i>
+                            </a>
+                                <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="font-size: 0.85rem; padding: 0.25rem 0;">
+                                <li><a class="dropdown-item filter-prioritas" data-value="">Semua</a></li>
+                                <li><a class="dropdown-item filter-prioritas" data-value="Rendah">Rendah</a></li>
+                                <li><a class="dropdown-item filter-prioritas" data-value="Sedang">Sedang</a></li>
+                                <li><a class="dropdown-item filter-prioritas" data-value="Tinggi">Tinggi</a></li>
+                            </ul>
+                        </div>
+                    </th>
                     <th style="font-weight: bold;" class="text-center">Status Laporan</th>
-                    <th style="font-weight: bold;" class="text-center">Status Penugasan</th>
+                    <th style="font-weight: bold;" class="text-center">Status Penugasan
+                        <div class="dropdown d-inline-block">
+                            <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-filter" style="font-size: 1.1rem;"></i>
+                            </a>
+                                <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="font-size: 0.85rem; padding: 0.25rem 0;">
+                                <li><a class="dropdown-item filter-status" data-value="">Semua</a></li>
+                                <li><a class="dropdown-item filter-status" data-value="Progress">Progress</a></li>
+                                <li><a class="dropdown-item filter-status" data-value="Revisi">Revisi</a></li>
+                                <li><a class="dropdown-item filter-status" data-value="Menunggu">Menunggu</a></li>
+                            </ul>
+                        </div>
+                    </th>
                     <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
@@ -118,14 +152,26 @@
     </div>
 
     <!-- Pagination -->
+    @php
+        $paginator = $laporans->appends(request()->query());
+    @endphp
+
     <div class="d-flex justify-content-end mt-3 me-3">
-        {{ $laporans->links() }}
+        <x-pagination :paginator="$paginator" />
     </div>
 </div>
 
 @include('sarpras.penugasan.show')
 @include('sarpras.penugasan.confirm')
 @include('sarpras.penugasan.create')
+
+<style>
+    /* Sembunyikan icon panah dropdown bawaan Bootstrap */
+    .dropdown-toggle::after {
+    display: none !important;
+    }
+
+</style>
 
 <script>
     
@@ -332,6 +378,52 @@
                         text: "Gagal mengambil data laporan",
                         icon: "error"
                     });
+                }
+            });
+        });
+        
+        // Search input filtering
+        $('#searchInput').on('keyup', function () {
+            const keyword = $(this).val().toLowerCase().trim();
+            
+            $('table tbody tr').each(function () {
+                // Cek semua kolom di baris ini
+                const rowText = $(this).text().toLowerCase();
+                
+                if (rowText.indexOf(keyword) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+        
+        $('.filter-status').on('click', function () {
+            const selectedStatus = $(this).data('value').toLowerCase();
+
+            $('table tbody tr').each(function () {
+                const statusCell = $(this).find('td').eq(6); // kolom status_penugasan
+                const statusText = statusCell.text().toLowerCase().trim();
+
+                if (!selectedStatus || statusText.includes(selectedStatus)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $('.filter-prioritas').on('click', function () {
+            const selectedPrioritas = $(this).data('value').toLowerCase();
+
+            $('table tbody tr').each(function () {
+                const prioritasCell = $(this).find('td').eq(4); // kolom skor_laporan
+                const prioritasText = prioritasCell.text().toLowerCase().trim();
+
+                if (!selectedPrioritas || prioritasText.includes(selectedPrioritas)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
                 }
             });
         });

@@ -20,6 +20,16 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Laporan Penugasan Perbaikan Fasilitas</h5>
+
+         <div class="position-relative" style="max-width: 300px; width: 100%;">
+            <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+            <input 
+            type="text" 
+            id="searchInput" 
+            class="form-control form-control-sm" 
+            placeholder="Cari..." 
+            style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
+        </div>
     </div>
 
     <div class="table-responsive text-nowrap">
@@ -266,6 +276,22 @@
             } else {
                 $('#preview-image').hide();
             }
+        });
+
+        // Search input filtering
+        $('#searchInput').on('keyup', function () {
+            const keyword = $(this).val().toLowerCase().trim();
+            
+            $('table tbody tr').each(function () {
+                // Cek semua kolom di baris ini
+                const rowText = $(this).text().toLowerCase();
+                
+                if (rowText.indexOf(keyword) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
         });
     });
 </script>
