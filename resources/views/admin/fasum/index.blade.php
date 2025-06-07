@@ -26,13 +26,15 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
+                    <th class="align-middle" style="font-weight: bold;">No</th>
                     <th class="align-middle" style="font-weight: bold;">Nama Fasilitas Umum</th>
-                    <th class="align-middle text-center" style="font-weight: bold;">Actions</th>
+                    <th class="align-middle text-center" style="font-weight: bold;">Aksi</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($fasums as $fasum)
+                @forelse($fasums as $fasum)
                     <tr>
+                        <td>{{ $loop->iteration + ($fasums->firstItem() - 1) }}</td>
                         <td class="align-middle">{{ $fasum->nama }}</td>
                         <td class="text-center align-middle">
                             <div class="d-flex justify-content-center align-items-center gap-2">
@@ -41,7 +43,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Tidak ada data fasilitas umum</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

@@ -57,6 +57,6 @@ class LaporanAdminController extends Controller
         $pdf->setOption("isRemoteEnabled", true);
         $pdf->render();
 
-        return $pdf->stream('Data Barang '.date('Y-m-d H:i:s').'.pdf');
+        return $pdf->stream('Laporan Kerusakan Fasilitas '.date('Y-m-d H:i:s').'.pdf');
     }  
 }

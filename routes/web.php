@@ -126,6 +126,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
         // riwayat
         Route::get('/riwayat', [LaporanSarprasController::class, 'index'])->name('laporan.riwayat');
         Route::get('/riwayat/{id}/show', [LaporanSarprasController::class, 'show'])->name('riwayat.show');
+        Route::get('/riwayat/export_pdf', [LaporanSarprasController::class, 'export_pdf'])->name('riwayat.export_pdf');
     });
 });
 

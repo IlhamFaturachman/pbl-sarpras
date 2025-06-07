@@ -19,13 +19,13 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data Kerusakan Fasilitas</h5>
+        <h5 class="mb-0">Data Laporan Kerusakan Fasilitas</h5>
         <div class="d-flex gap-2">
             <a href="{{ url('/users/kerusakan/export_pdf') }}" class="btn btn-sm btn-warning">
                 <i class="fas fa-file-pdf me-1"></i> Export PDF
             </a>
-            <button type="button" class="btn btn-primary" onclick="showCreateModal()">
-                <i class="fas fa-plus me-2"></i>Tambah Kerusakan
+            <button type="button" class="btn btn-outline-primary" onclick="showCreateModal()">
+                <i class="bx bx-plus me-1"></i> Tambah
             </button>
         </div>
     </div>
@@ -35,16 +35,16 @@
             <thead class="table-primary">
                 <tr>
                     <th><strong>No</strong></th>
-                    <th><strong>Item</strong></th>
+                    <th><strong>Nama Sarana</strong></th>
                     <th><strong>Lokasi Fasilitas</strong></th>
                     <th><strong>Deskripsi Kerusakan</strong></th>
                     <th><strong>Foto Kerusakan</strong></th>
                     <th><strong>Status Laporan</strong></th>
-                    <th class="text-center"><strong>Actions</strong></th>
+                    <th class="text-center"><strong>Aksi</strong></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($laporans as $key => $laporan)
+                @forelse($laporans as $key => $laporan)
                     <tr>
                         <td>{{ $laporans->firstItem() + $key }}</td>
                         <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
@@ -103,7 +103,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Tidak ada data laporan</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

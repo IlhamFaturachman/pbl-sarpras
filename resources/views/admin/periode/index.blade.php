@@ -27,13 +27,15 @@
             <table class="table table-striped">
                 <thead class="table-primary">
                     <tr>
+                        <th style="font-weight: bold;">No</th>
                         <th style="font-weight: bold;">Nama Periode</th>
-                        <th style="font-weight: bold;" class="text-center">Actions</th>
+                        <th style="font-weight: bold;" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    @foreach ($periodes as $periode)
+                    @forelse ($periodes as $periode)
                         <tr>
+                            <td>{{ $loop->iteration + ($periodes->firstItem() - 1) }}</td>
                             <td>{{ $periode->nama_periode }}</td>
                             <td>
                                 <div class="demo-inline-spacing text-center">
@@ -47,9 +49,14 @@
                                                 onclick="showDeletePeriodeModal('{{ $periode->periode_id }}', '{{ $periode->nama_periode }}')">Hapus</button>
                                         </div>
                                     </div>
+                                </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Tidak ada data periode</td>
+                </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>

@@ -17,33 +17,35 @@
 @endif
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data Laporan Kerusakan</h5>
+        <h5 class="mb-0">Data Laporan Kerusakan Fasilitas</h5>
         <a href="{{ route('admin.laporan.export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export PDF</a>
     </div>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
+                    <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">ID Laporan</th>
                     <th style="font-weight: bold;">Nama Pelapor</th>
-                    <th style="font-weight: bold;">Fasilitas</th>
-                    <th style="font-weight: bold;">Item</th>
+                    <th style="font-weight: bold;">Nama Sarana</th>
+                    <th style="font-weight: bold;">Lokasi Fasilitas</th>
                     <th style="font-weight: bold;">Tanggal Dilaporkan</th>
                     <th style="font-weight: bold;"  class="text-center">Status</th>
-                    <th class="text-center" style="font-weight: bold;">Actions</th>
+                    <th class="text-center" style="font-weight: bold;">Aksi</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($laporans as $laporan)
+                @forelse($laporans as $laporan)
                     <tr>
+                        <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
                         <td>{{ $laporan->laporan_id }}</td>
                         <td>{{ $laporan->kerusakan->pelapor->nama_lengkap }}</td>
+                        <td>{{ $laporan->kerusakan->item->nama }}</td>
                         @if ($laporan->kerusakan->item->fasum_id == null)
                             <td>{{ Str::limit($laporan->kerusakan->item->ruang->gedung->nama, 30, '...') }}</td>
                         @else 
                             <td>{{ $laporan->kerusakan->item->fasum->nama }}</td>
                         @endif
-                        <td>{{ $laporan->kerusakan->item->nama }}</td>
                         <td>{{ $laporan->tanggal_laporan }}</td>
                         <td class="text-center">
                             @if ($laporan->status_laporan == 'Diajukan')
@@ -76,7 +78,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="8" class="text-center text-muted">Tidak ada data laporan</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

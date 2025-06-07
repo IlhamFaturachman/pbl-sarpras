@@ -27,22 +27,22 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
+                    <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Kode Ruang</th>
                     <th style="font-weight: bold;">Nama Ruang</th>
                     <th style="font-weight: bold;">Kode Gedung</th>
                     <th style="font-weight: bold;">Nama Gedung</th>
-                    <th style="font-weight: bold;">Lantai</th>
-                    <th style="font-weight: bold;" class="text-center">Actions</th>
+                    <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($ruangs as $ruang)
+                @forelse($ruangs as $ruang)
                     <tr>
+                        <td>{{ $loop->iteration + ($ruangs->firstItem() - 1) }}</td>
                         <td>{{ $ruang->kode }}</td>
                         <td>{{ $ruang->nama }}</td>
                         <td>{{ $ruang->gedung->kode }}</td>
                         <td>{{ $ruang->gedung->nama }}</td>
-                        <td>{{ $ruang->lantai }}</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" class="btn btn-sm btn-primary detail-ruang" data-id="{{ $ruang->ruang_id }}">Detail</button>
@@ -51,7 +51,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Tidak ada data ruang</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

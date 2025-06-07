@@ -19,7 +19,8 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data Riwayat Laporan Perbaikan Fasilitas</h5>
+        <h5 class="mb-0">Data Riwayat Laporan Kerusakan Fasilitas</h5>
+        <a href="{{ url('/sarpras/laporan/riwayat/export_pdf') }}" class="btn btn-sm btn-warning"><i class="fas fa-file-pdf me-1"></i> Export PDF</a>
     </div>
 
     <div class="table-responsive text-nowrap">
@@ -28,7 +29,7 @@
                 <tr>
                     <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Tanggal Laporan</th>
-                    <th style="font-weight: bold;">Nama Fasilitas</th>
+                    <th style="font-weight: bold;">Nama Sarana</th>
                     <th style="font-weight: bold;">Lokasi Fasilitas</th>
                     <th style="font-weight: bold;" class="text-center">Status Laporan</th>
                     <th style="font-weight: bold;" class="text-center">Aksi</th>

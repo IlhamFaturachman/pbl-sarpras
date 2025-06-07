@@ -117,14 +117,14 @@ class KerusakanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data kerusakan berhasil ditambahkan',
+                'message' => 'Laporan kerusakan berhasil ditambahkan',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menambahkan data kerusakan: ' . $e->getMessage(),
+                'message' => 'Gagal menambahkan laporan kerusakan: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -136,13 +136,13 @@ class KerusakanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data kerusakan berhasil dihapus',
+                'message' => 'laporan kerusakan berhasil dihapus',
             ]);
         } catch (\Exception $e) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => 'Gagal menghapus data kerusakan: ' . $e->getMessage(),
+                    'message' => 'Gagal menghapus laporan kerusakan: ' . $e->getMessage(),
                 ],
                 500,
             );
@@ -179,6 +179,6 @@ class KerusakanController extends Controller
         $pdf = Pdf::loadView('users.kerusakan.pdf', compact('kerusakans', 'imageSrc'))
                   ->setPaper('a4', 'landscape');
 
-    return $pdf->stream('laporan-kerusakan.pdf');
+        return $pdf->stream('Laporan Kerusakan Fasilitas '.date('Y-m-d H:i:s').'.pdf');        
     }
 }

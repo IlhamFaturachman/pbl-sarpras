@@ -17,7 +17,7 @@
 @endif
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data Item</h5>
+        <h5 class="mb-0">Data Sarana</h5>
         <button type="button" data-bs-toggle="modal" data-bs-target="#createItem" class="btn btn-outline-primary">
             <i class="bx bx-plus me-1"></i> Tambah
         </button>
@@ -26,14 +26,16 @@
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th style="font-weight: bold;">Nama Item</th>
+                    <th style="font-weight: bold;">No</th>
+                    <th style="font-weight: bold;">Nama Sarana</th>
                     <th style="font-weight: bold;">Lokasi</th>
-                    <th class="text-center" style="font-weight: bold;">Actions</th>
+                    <th class="text-center" style="font-weight: bold;">Aksi</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($items as $item)
+                @forelse($items as $item)
                     <tr>
+                        <td>{{ $loop->iteration + ($items->firstItem() - 1) }}</td>
                         <td>{{ $item->nama }}</td>
                         <td>{{ $item->ruang ? $item->ruang->gedung->nama . ', ' . $item->ruang->nama : $item->fasum->nama }}</td>
                         <td class="text-center">
@@ -43,7 +45,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="4" class="text-center text-muted">Tidak ada data sarana</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

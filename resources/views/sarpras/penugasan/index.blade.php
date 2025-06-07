@@ -19,7 +19,7 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data Penugasan Laporan Perbaikan Fasilitas</h5>
+        <h5 class="mb-0">Data Penugasan Perbaikan Fasilitas</h5>
     </div>
 
     <div class="table-responsive text-nowrap">
@@ -28,7 +28,7 @@
                 <tr>
                     <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Tanggal Laporan</th>
-                    <th style="font-weight: bold;">Nama Fasilitas</th>
+                    <th style="font-weight: bold;">Nama Sarana</th>
                     <th style="font-weight: bold;">Lokasi Fasilitas</th>
                     <th style="font-weight: bold;" class="text-center">Prioritas Laporan</th>
                     <th style="font-weight: bold;" class="text-center">Status Laporan</th>
@@ -110,7 +110,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center text-muted">Tidak ada data laporan</td>
+                        <td colspan="8" class="text-center text-muted">Tidak ada penugasan perbaikan</td>
                     </tr>
                 @endforelse
             </tbody>
