@@ -18,13 +18,38 @@
 @endif
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <!-- Judul -->
         <h5 class="mb-0">Data Laporan Kerusakan Fasilitas</h5>
-        <div class="d-flex gap-2">
-            <a href="{{ url('/users/kerusakan/export_pdf') }}" class="btn btn-sm btn-warning">
+
+        <!-- Kontrol: Search + Buttons -->
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <!-- Search Bar -->
+            <div class="position-relative" style="width: 300px;">
+                <i class="bi bi-search position-absolute" 
+                style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control form-control-sm" 
+                    placeholder="Cari..." 
+                    style="background-color: #f8f9fa; border: 1px solid #ced4da; 
+                        color: #495057; font-weight: 400; font-size: 1rem; 
+                        height: 42px; padding-left: 2.5rem;" />
+            </div>
+
+            <!-- Button: Export PDF -->
+            <a href="{{ url('/users/kerusakan/export_pdf') }}" 
+            class="btn btn-warning btn-sm d-flex align-items-center" 
+            style="height: 42px;">
                 <i class="fas fa-file-pdf me-1"></i> Export PDF
             </a>
-            <button type="button" class="btn btn-outline-primary" onclick="showCreateModal()">
+
+            <!-- Button: Tambah -->
+            <button type="button" 
+                    class="btn btn-outline-primary btn-sm d-flex align-items-center" 
+                    style="height: 42px;" 
+                    onclick="showCreateModal()">
                 <i class="bx bx-plus me-1"></i> Tambah
             </button>
         </div>
@@ -320,6 +345,22 @@ document.addEventListener('DOMContentLoaded', function () {
                         Swal.fire('Error', 'Gagal menghapus data kerusakan.', 'error');
                     }
                 });
+            }
+        });
+    });
+
+    // Search input filtering
+    $('#searchInput').on('keyup', function () {
+        const keyword = $(this).val().toLowerCase().trim();
+        
+        $('table tbody tr').each(function () {
+            // Cek semua kolom di baris ini
+            const rowText = $(this).text().toLowerCase();
+            
+            if (rowText.indexOf(keyword) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
             }
         });
     });

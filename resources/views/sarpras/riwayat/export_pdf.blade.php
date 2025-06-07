@@ -123,6 +123,7 @@
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $l->laporan_id }}</td>
                     <td>{{ \Carbon\Carbon::parse($l->tanggal_laporan)->format('d/m/Y') }}</td>
+                    <td>{{ $l->kerusakan->pelapor->nama ?? '-' }}</td>
                     <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td>{{ $l->kerusakan->item->nama }}</td>
                     <td>

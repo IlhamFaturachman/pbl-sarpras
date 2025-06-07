@@ -12,26 +12,38 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index() {
-        $users = UserModel::paginate(10); 
+    public function index(Request $request) {
+        // Ambil semua role
         $roles = DB::table('m_role')->select('id', 'name')->get();
-        
-        // Default empty user for edit (to avoid errors when no user is being edited)
-        $editUser = new UserModel();
-        $userRole = '';
-        $detailUser = null;
-        
-        // Check if we're in edit mode with validation errors
-        if (session('editUserId')) {
-            $editUser = UserModel::find(session('editUserId'));
-            $userRole = $editUser->roles->first() ? $editUser->roles->first()->id : '';
+
+        // Query awal user
+        $query = UserModel::query();
+
+        // Filter berdasarkan role (jika ada)
+        if ($request->filled('roles')) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('id', $request->roles);
+            });
         }
 
-        // Detail User
+        // Paginate dengan filter query string
+        $users = $query->paginate(10)->withQueryString();
+
+        // Default empty user untuk form edit
+        $editUser = new UserModel();
+        $userRole = '';
+
+        if (session('editUserId')) {
+            $editUser = UserModel::find(session('editUserId'));
+            $userRole = $editUser->roles->first()?->id ?? '';
+        }
+
+        // Detail user
+        $detailUser = null;
         if (session('detailUserId')) {
             $detailUser = UserModel::with('roles')->find(session('detailUserId'));
         }
-    
+
         return view('admin.user.index', [
             'users' => $users,
             'roles' => $roles,
