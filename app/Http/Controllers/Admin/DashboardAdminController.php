@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\LaporanModel;
 use App\Models\GedungModel;
 use App\Models\RuangModel;
 use App\Models\FasumModel;
+use App\Models\PeriodeModel;
 use App\Models\UserModel;
 use Carbon\Carbon;
 
@@ -23,6 +24,9 @@ class DashboardAdminController extends Controller
             ->get()
             ->pluck('total', 'month')
             ->toArray();
+
+        $periode = PeriodeModel::get('nama_periode');
+        // dd($periode);
 
         // Isi bulan yang tidak ada data dengan 0
         $monthlyData = [];
@@ -45,10 +49,22 @@ class DashboardAdminController extends Controller
         $teknisi = UserModel::role('teknisi')->get();
 
         // Data laporan terbaru
-        $recentReports = LaporanModel::with(['kerusakan', 'kerusakan.ruang', 'kerusakan.ruang.gedung'])
-            ->orderBy('tanggal_laporan', 'desc')
-            ->limit(5)
-            ->get();
+        $recentReportsQuery = LaporanModel::with(['kerusakan', 'kerusakan.item.ruang', 'kerusakan.item.ruang.gedung'])
+            ->orderBy('tanggal_laporan', 'desc');
+
+        $recentReports = $recentReportsQuery->limit(5)->get();
+        $totalRecentReports = $recentReportsQuery->count();
+
+        $getStatusColor = function ($status) {
+            return match ($status) {
+                'Diajukan' => 'warning',
+                'Disetujui' => 'info',
+                'Dikerjakan' => 'warning',
+                'Selesai' => 'success',
+                'Ditolak' => 'danger',
+                default => 'secondary',
+            };
+        };
 
         return view('admin.dashboard', [
             'monthlyData' => $monthlyData,
@@ -58,7 +74,11 @@ class DashboardAdminController extends Controller
             'statusCounts' => $statusCounts,
             'teknisi' => $teknisi,
             'recentReports' => $recentReports,
-            'currentYear' => $currentYear
+            'totalRecentReports' => $totalRecentReports,
+            'getStatusColor' => $getStatusColor,
+            'currentYear' => $currentYear,
+            'periode' => $periode
         ]);
     }
+
 }

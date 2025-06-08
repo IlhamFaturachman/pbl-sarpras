@@ -105,7 +105,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="m-0 me-2">Total Perbaikan Tahun {{ $currentYear }}</h5>
+            <h5 class="m-0 me-2">Total Perbaikan</h5>
             <div class="dropdown">
               <button
                 class="btn p-0"
@@ -132,47 +132,27 @@
     <!-- Card Growth -->
     <div class="row">
       @php
-        $labels = ['Gedung', 'Ruang', 'Fasum'];
-        $values = [$totalGedung, $totalRuang, $totalFasum];
-        $maxValues = [100, 150, 200]; // Nilai maksimal untuk persentase
-        $progress = [];
-        for ($i = 0; $i < 3; $i++) {
-          $progress[$i] = min(100, round(($values[$i] / $maxValues[$i]) * 100));
-        }
+      $cards = [
+        ['label' => 'Gedung', 'value' => $totalGedung, 'icon' => 'building', 'color' => 'primary'],
+        ['label' => 'Ruang', 'value' => $totalRuang, 'icon' => 'door-open', 'color' => 'info'],
+        ['label' => 'Fasum', 'value' => $totalFasum, 'icon' => 'map', 'color' => 'warning']
+      ];
+
       @endphp
 
-      @for ($i = 0; $i < 3; $i++)
+      @foreach ($cards as $card)
       <div class="col-md-4 mb-4">
-        <div class="card h-100">
-          <div class="card-body d-flex align-items-center flex-column py-4">
-            <!-- Dropdown Tahun -->
-            <div class="text-center mb-3">
-              <div class="btn-group">
-                <button type="button" class="btn btn-outline-primary">{{ $currentYear }}</button>
-                <button
-                  type="button"
-                  class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">{{ $currentYear - 1 }}</a></li>
-                  <li><a class="dropdown-item" href="#">{{ $currentYear - 2 }}</a></li>
-                </ul>
-              </div>
+        <div class="card h-100 border-0 shadow-sm rounded-3">
+          <div class="card-body text-center py-5 px-3 d-flex flex-column justify-content-center align-items-center">
+            <div class="icon-box mb-3 bg-light-{{ $card['color'] }} d-flex justify-content-center align-items-center rounded-circle" style="width: 70px; height: 70px;">
+              <i class='bx bx-{{ $card['icon'] }} fs-2 text-{{ $card['color'] }}'></i>
             </div>
-
-            <!-- Radial Chart -->
-            <div id="growthChart{{ $i+1 }}" class="mb-3"></div>
-
-            <!-- Label -->
-            <h6 class="mb-0">{{ $values[$i] }} {{ $labels[$i] }}</h6>
-            <small class="text-muted">{{ $progress[$i] }}% dari target</small>
+            <h2 class="fw-bold text-{{ $card['color'] }}">{{ $card['value'] }}</h2>
+            <p class="mb-0 text-muted">{{ $card['label'] }}</p>
           </div>
         </div>
       </div>
-      @endfor
+      @endforeach
     </div>
 
     <!-- Status Laporan dan Laporan Terbaru -->
@@ -211,7 +191,7 @@
             <ul class="p-0 m-0">
               <li class="d-flex align-items-center mb-5">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-primary"
+                  <span class="avatar-initial rounded bg-label-success"
                     ><i class="icon-base bx bx-check-circle"></i
                   ></span>
                 </div>
@@ -221,7 +201,7 @@
                     <small>Laporan yang sudah diperbaiki</small>
                   </div>
                   <div class="user-progress">
-                    <h6 class="mb-0">{{ $statusCounts['selesai'] ?? 0 }}</h6>
+                    <h6 class="mb-0">{{ $statusCounts['Selesai'] ?? 0 }}</h6>
                   </div>
                 </div>
               </li>
@@ -237,13 +217,13 @@
                     <small>Laporan dalam penanganan</small>
                   </div>
                   <div class="user-progress">
-                    <h6 class="mb-0">{{ $statusCounts['proses'] ?? 0 }}</h6>
+                    <h6 class="mb-0">{{ ($statusCounts['Disetujui']+$statusCounts['Dikerjakan']) ?? 0 }}</h6>
                   </div>
                 </div>
               </li>
               <li class="d-flex align-items-center mb-5">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-danger"
+                  <span class="avatar-initial rounded bg-label-info"
                     ><i class="icon-base bx bx-error"></i
                   ></span>
                 </div>
@@ -253,13 +233,13 @@
                     <small>Laporan belum ditangani</small>
                   </div>
                   <div class="user-progress">
-                    <h6 class="mb-0">{{ $statusCounts['menunggu'] ?? 0 }}</h6>
+                    <h6 class="mb-0">{{ $statusCounts['Diajukan'] ?? 0 }}</h6>
                   </div>
                 </div>
               </li>
               <li class="d-flex align-items-center">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-info"
+                  <span class="avatar-initial rounded bg-label-danger"
                     ><i class="icon-base bx bx-x-circle"></i
                   ></span>
                 </div>
@@ -269,7 +249,7 @@
                     <small>Laporan tidak valid</small>
                   </div>
                   <div class="user-progress">
-                    <h6 class="mb-0">{{ $statusCounts['ditolak'] ?? 0 }}</h6>
+                    <h6 class="mb-0">{{ $statusCounts['Ditolak'] ?? 0 }}</h6>
                   </div>
                 </div>
               </li>
@@ -303,22 +283,23 @@
               @foreach($recentReports as $report)
               <li class="d-flex align-items-center mb-6">
                 <div class="avatar flex-shrink-0 me-3">
-                  11
-                  {{-- <span class="avatar-initial rounded bg-label-{{ $this->getStatusColor($report->status_laporan) }}">
-                    <i class="icon-base bx bx-{{ $this->getStatusIcon($report->status_laporan) }}"></i>
-                  </span> --}}
+                  <span class="avatar-initial rounded bg-label-{{ $getStatusColor($report->status_laporan) }}">
+                    <i class="icon-base bx bx-{{ $getStatusColor($report->status_laporan) }}"></i>
+                  </span>
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
-                    22
-                    {{-- <small class="d-block">{{ $report->kerusakan->ruang->gedung->nama }} - {{ $report->kerusakan->ruang->nama }}</small> --}}
+                    @if ($report->kerusakan->item->ruang == null)
+                      <small class="d-block">{{ $report->kerusakan->item->fasum->nama }} - {{ $report->kerusakan->item->nama }}</small>
+                    @else
+                      <small class="d-block">{{ $report->kerusakan->item->ruang->gedung->nama }} - {{ $report->kerusakan->item->ruang->nama }} - {{ $report->kerusakan->item->nama }}</small>
+                    @endif
                     <h6 class="fw-normal mb-0">{{ Str::limit($report->kerusakan->deskripsi_kerusakan, 40) }}</h6>
                   </div>
                   <div class="user-progress d-flex align-items-center gap-2">
-                    33
-                    {{-- <span class="badge bg-label-{{ $this->getStatusColor($report->status_laporan) }}">
+                    <span class="badge bg-label-{{ $getStatusColor($report->status_laporan) }}">
                       {{ ucfirst($report->status_laporan) }}
-                    </span> --}}
+                    </span>
                   </div>
                 </div>
               </li>
@@ -333,6 +314,7 @@
 
 @push('scripts')
 <script>
+  
   // Chart Total Perbaikan
   document.addEventListener('DOMContentLoaded', function() {
     const monthlyData = @json(array_values($monthlyData));
@@ -340,7 +322,7 @@
     const totalPerbaikanChart = new ApexCharts(document.getElementById("TotalPerbaikanChart"), {
       series: [{
         name: 'Total Perbaikan',
-        data: monthlyData
+        data: $periode
       }],
       chart: {
         height: 350,
@@ -358,8 +340,11 @@
         width: 2
       },
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
+        categories: [$periode],
       },
+      yaxis: {
+        min: 0 // 
+      }
       tooltip: {
         y: {
           formatter: function(val) {
@@ -393,44 +378,6 @@
       }
     });
     statusLaporanChart.render();
-
-    // Chart Growth (3 card)
-    @for ($i = 0; $i < 3; $i++)
-    const growthChart{{ $i+1 }} = new ApexCharts(document.getElementById("growthChart{{ $i+1 }}"), {
-      series: [{{ $progress[$i] }}],
-      chart: {
-        height: 100,
-        width: 100,
-        type: 'radialBar',
-      },
-      plotOptions: {
-        radialBar: {
-          hollow: {
-            size: '55%',
-          },
-          dataLabels: {
-            name: {
-              show: false,
-            },
-            value: {
-              offsetY: 5,
-              fontSize: '14px',
-              fontWeight: '600',
-              show: true,
-              formatter: function(val) {
-                return val + '%';
-              }
-            }
-          }
-        }
-      },
-      colors: ['#7367F0'],
-      stroke: {
-        lineCap: 'round'
-      }
-    });
-    growthChart{{ $i+1 }}.render();
-    @endfor
   });
 
   function refreshChart() {

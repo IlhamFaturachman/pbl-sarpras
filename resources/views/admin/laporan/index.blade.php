@@ -18,7 +18,20 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Laporan Kerusakan Fasilitas</h5>
-        <a href="{{ route('admin.laporan.export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export PDF</a>
+        <div class="d-flex align-items-center gap-2" style="max-width: 100%;">
+            <div class="position-relative" style="max-width: 300px; width: 100%;">
+                <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control form-control-sm" 
+                    placeholder="Cari..." 
+                    style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
+            </div>
+            <a href="{{ route('admin.laporan.export_pdf') }}" class="btn btn-warning btn-sm flex-shrink-0" style="height: 42px; width:70px align-items: center;">
+                <i class="fas fa-file-pdf me-1"></i> Export PDF
+            </a>
+        </div>
     </div>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
@@ -265,6 +278,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 Swal.close();
                 Swal.fire('Error', 'Gagal mengambil detail laporan: ' + error, 'error');
+            }
+        });
+    });
+
+    $('#searchInput').on('keyup', function () {
+        const keyword = $(this).val().toLowerCase().trim();
+        
+        $('table tbody tr').each(function () {
+            // Cek semua kolom di baris ini
+            const rowText = $(this).text().toLowerCase();
+            
+            if (rowText.indexOf(keyword) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
             }
         });
     });

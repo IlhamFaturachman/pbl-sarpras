@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\FasumController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
-use App\Http\Controllers\DashboardAdminController;
+use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\LaporanSarprasController;
 use App\Http\Controllers\User\KerusakanController;
 use App\Http\Controllers\Admin\LaporanAdminController;
