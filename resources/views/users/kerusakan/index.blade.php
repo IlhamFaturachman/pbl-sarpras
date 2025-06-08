@@ -261,13 +261,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Fallback ke nama item saja
                     lokasi = kerusakan.item.nama;
                 }
-
+                
                 $('#detail_lokasi_fasilitas').text(lokasi);
                 
                 $('#detail_item').text(kerusakan.item?.nama ?? '-');
                 $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                 $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
                 $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
+                $('#detail_penolakan').text(laporan.alasan_penolakan ?? '-');
+
+                if (laporan.status_laporan != 'Ditolak') {
+                    $('#alasan_penolakan').hide();
+                } else {
+                    $('#alasan_penolakan').show();
+                }
 
                 // Set foto kerusakan
                 if(laporan.kerusakan?.foto_kerusakan) {

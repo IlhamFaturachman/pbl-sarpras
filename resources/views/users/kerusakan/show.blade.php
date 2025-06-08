@@ -40,6 +40,10 @@
                   <div class="fw-semibold">Nama Verifikator</div>
                   <div class="mt-1" id="detail_verifikator"></div>
                 </div>
+                <div class="mb-3" id="alasan_penolakan">
+                  <div class="fw-semibold">Alasan Penolakan</div>
+                  <div class="mt-1" id="detail_penolakan"></div>
+                </div>
               </div>
 
               <!-- Kanan -->

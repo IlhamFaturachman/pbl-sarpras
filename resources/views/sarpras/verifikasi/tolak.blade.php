@@ -5,15 +5,18 @@
         <h5 class="modal-title">Konfirmasi Tolak Laporan</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
       </div>
-      <div class="modal-body">
-        <p>Apakah Anda yakin ingin menolak laporan ini?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Batal</button>
-        <form id="tolak-form" method="GET">
-          <button type="submit" class="btn btn-primary">Ya, tolak</button>
-        </form>
-      </div>
+      <form id="tolak-form" method="GET">
+        <div class="modal-body">
+          <p>Apakah Anda yakin ingin menolak laporan ini?</p>
+          <label for="alasan_penolakan" class="form-label">Alasan Penolakan</label>
+          <input type="text" id="alasan_penolakan" name="alasan_penolakan" class="form-control"
+          placeholder="Masukkan alasan penolakan jika memilih 'Tolak'" value="{{ old('alasan_penolakan') }}">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Tolak</button>
+          </div>
+      </form>
     </div>
   </div>
 </div>
