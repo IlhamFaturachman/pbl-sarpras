@@ -231,7 +231,7 @@
                     $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
 
                     // tampilkan/hidden bagian perbaikan & feedback
-                    if (laporan.status_laporan === 'Ditolak') {
+                    if (laporan.status_laporan === 'Ditolak' || laporan.status_laporan === 'Diajukan') {
                     $('#card_perbaikan').hide();
                     $('#card_feedback').hide();
                     } else {

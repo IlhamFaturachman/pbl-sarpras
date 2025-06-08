@@ -198,7 +198,7 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
-    public function tolak($id) {
+    public function tolak($id, Request $request) {
         $laporan = LaporanModel::findOrFail($id);
 
         $laporan->verifikator_id = auth()->user()->user_id;
