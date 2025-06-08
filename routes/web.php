@@ -108,6 +108,17 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
     Route::get('/dashboard', function () {
         return view('sarpras.dashboard');
     })->name('sarpras.dashboard');
+
+    Route::prefix('sarpras')->group(function () {
+        // item
+        Route::get('/item', [ItemController::class, 'index'])->name('sarpras.item');
+        Route::post('/item', [ItemController::class, 'store'])->name('item.store');
+        Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
+        Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
+        Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
+        Route::get('/item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
+    });
+
     Route::prefix('laporan')->group(function () {
         // verifikasi
         Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');

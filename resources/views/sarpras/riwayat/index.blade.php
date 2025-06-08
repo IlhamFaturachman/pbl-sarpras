@@ -31,7 +31,7 @@
                     placeholder="Cari..." 
                     style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
             </div>
-            <a href="{{ url('/sarpras/laporan/riwayat/export_pdf') }}" class="btn btn-warning btn-sm flex-shrink-0" style="height: 42px; width:70px align-items: center;">
+            <a href="{{ route('riwayat.export_pdf') }}" class="btn btn-warning btn-sm flex-shrink-0" style="height: 42px; width:70px align-items: center;">
                 <i class="fas fa-file-pdf me-1"></i> Export PDF
             </a>
         </div>
@@ -53,7 +53,7 @@
                 @forelse($laporans as $laporan)
                     <tr>
                         <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
-                        <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('Y') }}</td>
                         <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
                         <td>{{ $laporan->kerusakan->item->ruang
                             ? $laporan->kerusakan->item->ruang->nama . ', ' . $laporan->kerusakan->item->ruang->gedung->nama
@@ -133,16 +133,8 @@
                     function renderStatusLaporanBadge(status_laporan) {
                         const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
                         switch (status_laporan) {
-                            case 'Diajukan':
-                                return `<span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>`;
-                            case 'Disetujui':
-                                return `<span style="background-color: #d0ebff; color: #1c7ed6; ${baseStyle}">Disetujui</span>`;
-                            case 'Dikerjakan':
-                                return `<span style="background-color: #fff3bf; color: #f59f00; ${baseStyle}">Dikerjakan</span>`;
                             case 'Selesai':
                                 return `<span style="background-color: #d3f9d8; color: #37b24d; ${baseStyle}">Selesai</span>`;
-                            case 'Ditolak':
-                                return `<span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>`;
                             default:
                                 return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
                         }
@@ -169,6 +161,7 @@
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
                     $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                     $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                    $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
                     
                     const skor = laporan.prioritas?.skor_laporan;
                     let label = '-';
@@ -210,12 +203,6 @@
 
                     $('#status_penugasan').html(renderStatusPerbaikanBadge(status_perbaikan));
 
-                    function formatTanggalDMY(tanggal) {
-                        if (!tanggal) return '-';
-                        const [year, month, day] = tanggal.split('-');
-                        return `${day}-${month}-${year}`;
-                    }
-
                     $('#detail_tanggal_mulai').text(formatTanggalDMY(penugasan.tanggal_mulai));
                     $('#detail_tanggal_selesai').text(formatTanggalDMY(penugasan.tanggal_selesai));
                     $('#detail_teknisi').text(teknisi?.nama_lengkap ?? '-');
@@ -230,13 +217,45 @@
                     $('#detail_komentar').text(feedback.komentar ?? '-');
                     $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
 
-                    // tampilkan/hidden bagian perbaikan & feedback
-                    if (laporan.status_laporan === 'Ditolak' || laporan.status_laporan === 'Diajukan') {
-                    $('#card_perbaikan').hide();
-                    $('#card_feedback').hide();
+                    // card laporan ditolak
+                    $('#ditolak_detail_laporan_id').text(laporan.laporan_id);
+                    $('#ditolak_detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
+                    $('#ditolak_detail_lokasi_fasilitas').text(lokasi);
+                    $('#ditolak_detail_item').text(kerusakan.item?.nama ?? '-');
+                    $('#ditolak_detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
+                    $('#ditolak_detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                    $('#ditolak_detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
+                    $('#ditolak_detail_alasan_penolakan').text(laporan.alasan_penolakan ?? '-');
+                    
+                    if(laporan.kerusakan.foto_kerusakan){
+                        $('#ditolak_detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);
                     } else {
-                    $('#card_perbaikan').show();
-                    $('#card_feedback').show();
+                        $('#ditolak_detail_foto_kerusakan').attr('src', '');
+                    }
+                    // Set status_laporan dengan badge warna
+                    const status_laporan_ditolak = laporan.status_laporan ?? '-';
+                    function renderStatusLaporanDitolakBadge(status_laporan) {
+                        const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
+                        switch (status_laporan_ditolak) {
+                            case 'Ditolak':
+                                return `<span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>`;
+                            default:
+                                return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                        }
+                    }
+                    $('#status_laporan_ditolak').html(renderStatusLaporanDitolakBadge(status_laporan_ditolak));
+
+                    // tampilkan/hidden bagian perbaikan & feedback
+                    if (laporan.status_laporan === 'Selesai') {
+                        $('#card_laporan_ditolak').hide();
+                        $('#card_laporan_disetujui').show();
+                        $('#card_perbaikan').show();
+                        $('#card_feedback').show();
+                    } else if (laporan.status_laporan === 'Ditolak'){
+                        $('#card_laporan_ditolak').show();
+                        $('#card_laporan_disetujui').hide();
+                        $('#card_perbaikan').hide();
+                        $('#card_feedback').hide();
                     }
 
                     // Tampilkan modal

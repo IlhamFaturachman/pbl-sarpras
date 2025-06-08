@@ -59,26 +59,26 @@
                         @else 
                             <td>{{ $laporan->kerusakan->item->fasum->nama }}</td>
                         @endif
-                        <td>{{ $laporan->tanggal_laporan }}</td>
+                        <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-Y') }}</td>
                         <td class="text-center">
                             @if ($laporan->status_laporan == 'Diajukan')
-                                <span style="background-color: #fcefdc; color: #9c6b1a; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
+                                <span style="background-color: #ffe8cc; color: #000; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
                                     Diajukan
                                 </span>
                             @elseif ($laporan->status_laporan == 'Disetujui')
-                                <span style="background-color: #e3f2fd; color: #007bff; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
+                                <span style="background-color: #d0ebff; color: #1c7ed6; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
                                     Disetujui
                                 </span>
                             @elseif ($laporan->status_laporan == 'Dikerjakan')
-                                <span style="background-color: #fff3cd; color: #856404; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
+                                <span style="background-color: #fff3cd; color: #f59f00; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
                                     Dikerjakan
                                 </span>
                             @elseif ($laporan->status_laporan == 'Selesai')
-                                <span style="background-color: #d4edda; color: #155724; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
+                                <span style="background-color: #d3f9d8; color: #37b24d; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
                                     Selesai
                                 </span>
                             @elseif ($laporan->status_laporan == 'Ditolak')
-                                <span style="background-color: #f8d7da; color: #721c24; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
+                                <span style="background-color: #ffe3e3; color: #f03e3e; padding: 6px 12px; border-radius: 8px; display: inline-block; width: 100px; text-align: center;">
                                     Ditolak
                                 </span>
                             @else
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 function formatTanggalDMY(tanggal) {
                     if (!tanggal) return '-';
                     const [year, month, day] = tanggal.split('-');
-                    return `${day}-${month}-${year}`;
+                    return ${day}-${month}-${year};
                 }
 
                 // Function untuk render status laporan badge
@@ -172,17 +172,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
                     switch (status_laporan) {
                         case 'Diajukan':
-                            return `<span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>`;
+                            return <span style="background-color: #ffe8cc; color: #000; ${baseStyle}">Diajukan</span>;
                         case 'Disetujui':
-                            return `<span style="background-color: #d0ebff; color: #1c7ed6; ${baseStyle}">Disetujui</span>`;
+                            return <span style="background-color: #d0ebff; color: #1c7ed6; ${baseStyle}">Disetujui</span>;
                         case 'Dikerjakan':
-                            return `<span style="background-color: #fff3bf; color: #f59f00; ${baseStyle}">Dikerjakan</span>`;
+                            return <span style="background-color: #fff3bf; color: #f59f00; ${baseStyle}">Dikerjakan</span>;
                         case 'Selesai':
-                            return `<span style="background-color: #d3f9d8; color: #37b24d; ${baseStyle}">Selesai</span>`;
+                            return <span style="background-color: #d3f9d8; color: #37b24d; ${baseStyle}">Selesai</span>;
                         case 'Ditolak':
-                            return `<span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>`;
+                            return <span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>;
                         default:
-                            return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                            return <span style="display: inline-block; width: 100px; text-align: center;">-</span>;
                     }
                 }
 
@@ -191,15 +191,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center;";
                     switch (status_perbaikan) {
                         case 'Progress':
-                            return `<span style="color: #007bff; border: 1px solid #007bff; ${baseStyle}">Progress</span>`;
+                            return <span style="color: #007bff; border: 1px solid #007bff; ${baseStyle}">Progress</span>;
                         case 'Selesai':
-                            return `<span style="color: #28a745; border: 1px solid #28a745; ${baseStyle}">Selesai</span>`;
+                            return <span style="color: #28a745; border: 1px solid #28a745; ${baseStyle}">Selesai</span>;
                         case 'Revisi':
-                            return `<span style="color: #dc3545; border: 1px solid #dc3545; ${baseStyle}">Revisi</span>`;
+                            return <span style="color: #dc3545; border: 1px solid #dc3545; ${baseStyle}">Revisi</span>;
                         case 'Menunggu':
-                            return `<span style="color: #ffc107; border: 1px solid #ffc107; ${baseStyle}">Menunggu</span>`;
+                            return <span style="color: #ffc107; border: 1px solid #ffc107; ${baseStyle}">Menunggu</span>;
                         default:
-                            return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                            return <span style="display: inline-block; width: 100px; text-align: center;">-</span>;
                     }
                 }
 
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (kerusakan.item && kerusakan.item.ruang_id && kerusakan.item.ruang) {
                     // Jika ada ruang dan gedung
                     const gedungNama = kerusakan.item.ruang.gedung?.nama || 'Gedung Tidak Diketahui';
-                    lokasi = `${kerusakan.item.ruang.nama}, ${gedungNama}`;
+                    lokasi = ${kerusakan.item.ruang.nama}, ${gedungNama};
                 } else if (kerusakan.item && kerusakan.item.fasum_id && kerusakan.item.fasum) {
                     // Jika ada fasum
                     lokasi = kerusakan.item.fasum.nama;
@@ -238,6 +238,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     $('#detail_foto_kerusakan').hide();
                 }
+                
+                const skor = laporan.prioritas?.skor_laporan;
+                let label = '-';
+                if (skor === null || skor === undefined) {
+                    label = '-';
+                } else if (skor <= 40) {
+                    label = Rendah (${skor});
+                } else if (skor <= 70) {
+                    label = Sedang (${skor});
+                } else {
+                    label = Tinggi (${skor});
+                }
+
+                $('#detail_prioritas').text(label);
 
                 // Set status penugasan
                 const status_perbaikan = penugasan.status_penugasan ?? '-';
@@ -261,10 +275,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#detail_komentar').text(feedback.komentar ?? '-');
                 $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
 
-                if (laporan.status_laporan === 'Ditolak' || laporan.status_laporan === 'Diajukan') {
+                // card laporan ditolak
+                $('#ditolak_detail_laporan_id').text(laporan.laporan_id);
+                $('#ditolak_detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
+                $('#ditolak_detail_lokasi_fasilitas').text(lokasi);
+                $('#ditolak_detail_item').text(kerusakan.item?.nama ?? '-');
+                $('#ditolak_detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
+                $('#ditolak_detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                $('#ditolak_detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
+                $('#ditolak_detail_alasan_penolakan').text(laporan.alasan_penolakan ?? '-');
+                
+                if(laporan.kerusakan.foto_kerusakan){
+                    $('#ditolak_detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);
+                } else {
+                    $('#ditolak_detail_foto_kerusakan').attr('src', '');
+                }
+                
+                // Set status_laporan dengan badge warna
+                const status_laporan_ditolak = laporan.status_laporan ?? '-';
+                function renderStatusLaporanDitolakBadge(status_laporan) {
+                    const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
+                    switch (status_laporan_ditolak) {
+                        case 'Ditolak':
+                            return <span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>;
+                        default:
+                            return <span style="display: inline-block; width: 100px; text-align: center;">-</span>;
+                    }
+                }
+                $('#status_laporan_ditolak').html(renderStatusLaporanDitolakBadge(status_laporan_ditolak));
+
+                // tampilkan/hidden bagian perbaikan & feedback
+                if (laporan.status_laporan === 'Ditolak'){
+                    $('#card_laporan_ditolak').show();
+                    $('#card_laporan_disetujui').hide();
                     $('#card_perbaikan').hide();
                     $('#card_feedback').hide();
+                } else if (laporan.status_laporan === 'Diajukan' || laporan.status_laporan === 'Disetujui') {
+                    $('#card_laporan_disetujui').show();
+                    $('#card_laporan_ditolak').hide();
+                    $('#card_perbaikan').hide();
+                    $('#card_feedback').hide();
+                } else if (laporan.status_laporan === 'Dikerjakan') {
+                    $('#card_laporan_disetujui').show();
+                    $('#card_laporan_ditolak').hide();
+                    $('#card_perbaikan').show();
+                    $('#card_feedback').hide(); 
                 } else {
+                    $('#card_laporan_ditolak').hide();
+                    $('#card_laporan_disetujui').show();
                     $('#card_perbaikan').show();
                     $('#card_feedback').show();
                 }

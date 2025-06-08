@@ -25,6 +25,7 @@ class LaporanAdminController extends Controller
             'kerusakan.item.fasum',
             'kerusakan.pelapor',
             'penugasan.teknisi',
+            'prioritas',
             'feedback'
         ])->find($id);
 

@@ -74,7 +74,7 @@
                 @forelse($laporans as $laporan)
                     <tr>
                         <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
-                        <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-Y') }}</td>
                         <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
                         <td>{{ $laporan->kerusakan->item->ruang
                             ? $laporan->kerusakan->item->ruang->nama . ', ' . $laporan->kerusakan->item->ruang->gedung->nama
@@ -247,6 +247,7 @@
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
                     $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                     $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                    $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
 
                     const skor = laporan.prioritas?.skor_laporan;
                     let label = '-';
@@ -288,12 +289,6 @@
 
                     $('#status_penugasan').html(renderStatusPerbaikanBadge(status_perbaikan));
 
-                    function formatTanggalDMY(tanggal) {
-                        if (!tanggal) return '-';
-                        const [year, month, day] = tanggal.split('-');
-                        return `${day}-${month}-${year}`;
-                    }
-
                     $('#detail_tanggal_mulai').text(formatTanggalDMY(penugasan.tanggal_mulai));
                     $('#detail_tanggal_selesai').text(formatTanggalDMY(penugasan.tanggal_selesai));
                     $('#detail_teknisi').text(teknisi?.nama_lengkap ?? '-');
@@ -303,6 +298,15 @@
                         $('#detail_bukti_perbaikan').attr('src', '/storage/' + penugasan.bukti_perbaikan);
                     } else {
                         $('#detail_bukti_perbaikan').attr('src', '');
+                    }
+
+                    // tampilkan/hidden bagian perbaikan & feedback
+                    if (laporan.status_laporan === 'Disetujui') {
+                        $('#card_laporan_disetujui').show();
+                        $('#card_perbaikan').hide();
+                    } else {
+                        $('#card_laporan_disetujui').show();
+                        $('#card_perbaikan').show();
                     }
 
                     // Tampilkan modal

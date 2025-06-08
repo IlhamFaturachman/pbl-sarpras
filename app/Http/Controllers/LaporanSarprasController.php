@@ -150,6 +150,7 @@ class LaporanSarprasController extends Controller
             'kerusakan.item.fasum',
             'kerusakan.pelapor',
             'prioritas',
+            'verifikator',
             'penugasan.teknisi'
         ])->find($id);
 
@@ -415,6 +416,7 @@ class LaporanSarprasController extends Controller
             'kerusakan.pelapor',
             'penugasan.teknisi',
             'prioritas',
+            'verifikator',
             'feedback'
         ])->find($id);
 

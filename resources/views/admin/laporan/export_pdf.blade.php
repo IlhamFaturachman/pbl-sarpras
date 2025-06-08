@@ -7,7 +7,7 @@
         body {
             font-family: "Times New Roman", Times, serif;
             margin: 6px 20px 5px 20px;
-            line-height: 15px;
+            line-height: 20px;
         }
 
         table {
@@ -22,6 +22,7 @@
 
         th {
             text-align: left;
+            background-color: #f2f2f2;
         }
 
         .d-block {
@@ -70,7 +71,7 @@
         .border-all,
         .border-all th,
         .border-all td {
-            border: 1px solid;
+            border: 1px solid black;;
         }
 
         .status-selesai {
@@ -83,7 +84,7 @@
             font-weight: bold;
         }
 
-        .status-pending {
+        .status-ditolak {
             color: red;
             font-weight: bold;
         }
@@ -111,14 +112,14 @@
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>ID Laporan</th>
-                <th>Pelapor</th>
-                <th>Verifikator</th>
-                <th>Sarana</th>
-                <th>Lokasi</th>
-                <th>Deskripsi Kerusakan</th>
-                <th>Status</th>
-                <th>Tanggal Laporan</th>
+                <th class="text-center">ID Laporan</th>
+                <th class="text-center">Tanggal</th>
+                <th class="text-center">Pelapor</th>
+                <th class="text-center">Sarana</th>
+                <th class="text-center">Lokasi</th>
+                <th class="text-center">Deskripsi</th>
+                <th class="text-center">Verifikator</th>
+                <th class="text-center">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -126,31 +127,37 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $l->laporan_id }}</td>
+                    <td>{{ \Carbon\Carbon::parse($l->tanggal_laporan)->format('d/m/Y') }}</td>
                     <td>{{ $l->kerusakan->pelapor->nama ?? '-' }}</td>
-                    <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td>{{ $l->kerusakan->item->nama }}</td>
                     <td>
                         @if($l->kerusakan->item->ruang)
-                            {{ $l->kerusakan->item->ruang->gedung->nama }}, {{ $l->kerusakan->item->ruang->nama }}
+                        {{ $l->kerusakan->item->ruang->gedung->nama }}, {{ $l->kerusakan->item->ruang->nama }}
                         @elseif($l->kerusakan->item->fasum)
-                            {{ $l->kerusakan->item->fasum->nama }}
+                        {{ $l->kerusakan->item->fasum->nama }}
                         @else
-                            -
+                        -
                         @endif
                     </td>
                     <td>{{ $l->kerusakan->deskripsi_kerusakan ?? '-' }}</td>
+                    <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td class="
                         @if($l->status_laporan == 'Selesai')
                             status-selesai
-                        @elseif($l->status_laporan == 'Prosess')
+                        @elseif(in_array($l->status_laporan, ['Diajukan', 'Disetujui', 'Dikerjakan']))
                             status-proses
                         @else
-                            status-pending
+                            status-ditolak
                         @endif
                     ">
-                        {{ ucfirst($l->status_laporan) }}
+                        @if($l->status_laporan == 'Selesai')
+                            Selesai
+                        @elseif(in_array($l->status_laporan, ['Diajukan', 'Disetujui', 'Dikerjakan']))
+                            Proses
+                        @else
+                            Ditolak
+                        @endif
                     </td>
-                    <td>{{ \Carbon\Carbon::parse($l->tanggal_laporan)->format('d/m/Y') }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -160,8 +167,8 @@
         <p><strong>Keterangan Status:</strong></p>
         <ul style="margin: 5px 0;">
             <li><span class="status-selesai">Selesai</span> - Laporan telah ditangani dan selesai</li>
-            <li><span class="status-proses">Proses</span> - Laporan sedang dalam proses perbaikan</li>
-            <li><span class="status-pending">Pending</span> - Laporan menunggu penanganan</li>
+            <li><span class="status-proses">Proses</span> - Laporan sedang dalam proses penanganan</li>
+            <li><span class="status-ditolak">Ditolak</span> - Laporan ditolak</li>
         </ul>
     </div>
 

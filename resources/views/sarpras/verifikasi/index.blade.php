@@ -48,7 +48,7 @@
                 @forelse($laporans as $laporan)
                 <tr>
                     <td>{{ $loop->iteration + ($laporans->firstItem() - 1) }}</td>
-                    <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d-m-Y') }}</td>
                     <td>{{ $laporan->kerusakan->item->nama ?? '-' }}</td>
                     <td>{{ $laporan->kerusakan->item->ruang
                         ? $laporan->kerusakan->item->ruang->nama . ', ' . $laporan->kerusakan->item->ruang->gedung->nama
