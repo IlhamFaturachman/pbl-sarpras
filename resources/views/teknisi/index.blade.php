@@ -20,8 +20,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Laporan Penugasan Perbaikan Fasilitas</h5>
-
-         <div class="position-relative" style="max-width: 300px; width: 100%;">
+        <div class="position-relative" style="max-width: 300px; width: 100%;">
             <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
             <input 
             type="text" 
@@ -48,7 +47,7 @@
                 @forelse($penugasans as $penugasan)
                     <tr>
                         <td>{{ $loop->iteration + ($penugasans->firstItem() - 1) }}</td>
-                        <td>{{ \Carbon\Carbon::parse($penugasan->laporan->tanggal_laporan)->format('d-m-y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($penugasan->laporan->tanggal_laporan)->format('d-m-Y') }}</td>
                         <td>{{ $penugasan->laporan->kerusakan->item->nama ?? '-' }}</td>
                         <td>{{ $penugasan->laporan->kerusakan->item->ruang
                             ? $penugasan->laporan->kerusakan->item->ruang->nama . ', ' . $penugasan->laporan->kerusakan->item->ruang->gedung->nama
@@ -183,6 +182,7 @@
                     $('#detail_item').text(kerusakan.item?.nama ?? '-');
                     $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                     $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                    $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
 
                     if(laporan.kerusakan.foto_kerusakan){
                         $('#detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);
@@ -208,13 +208,7 @@
                                 return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
                         }
                     }
-                    $('#status_penugasan').html(renderStatusPenugasanBadge(status_penugasan));
-
-                    function formatTanggalDMY(tanggal) {
-                        if (!tanggal) return '-';
-                        const [year, month, day] = tanggal.split('-');
-                        return `${day}-${month}-${year}`;
-                    }
+                    $('#status_penugasan').html(renderStatusPenugasanBadge(status_penugasan));                    
 
                     $('#detail_tanggal_mulai').text(formatTanggalDMY(penugasan.tanggal_mulai));
                     $('#detail_tanggal_selesai').text(formatTanggalDMY(penugasan.tanggal_selesai));
@@ -229,6 +223,17 @@
 
                     $('#detail_komentar').text(feedback.komentar ?? '-');
                     $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
+
+                    // tampilkan/hidden bagian perbaikan & feedback
+                    if (laporan.status_laporan === 'Dikerjakan') {
+                        $('#card_laporan_disetujui').show();
+                        $('#card_perbaikan').show();
+                        $('#card_feedback').hide();
+                    } else {
+                        $('#card_laporan_disetujui').show();
+                        $('#card_perbaikan').show();
+                        $('#card_feedback').show();
+                    }
 
                     // Tampilkan modal
                     $('#detailLaporan').modal('show');

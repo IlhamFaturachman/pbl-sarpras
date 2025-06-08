@@ -98,6 +98,12 @@
       </li>
       @endrole
       @role('sarpras')
+      <li class="menu-item {{ request()->routeIs('sarpras.item') ? 'active open' : '' }}">
+        <a href="{{ route('sarpras.item') }}" class="menu-link">
+          <i class="menu-icon tf-icons bx bx-buildings"></i>
+          <div class="text-truncate" data-i18n="CRM">Sarana</div>
+        </a>
+      </li>
       <li class="menu-item {{ request()->routeIs('laporan.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons bx bx-file"></i>

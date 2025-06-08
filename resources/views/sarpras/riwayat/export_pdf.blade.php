@@ -7,7 +7,7 @@
         body {
             font-family: "Times New Roman", Times, serif;
             margin: 6px 20px 5px 20px;
-            line-height: 15px;
+            line-height: 20px;
         }
 
         table {
@@ -22,6 +22,7 @@
 
         th {
             text-align: left;
+            background-color: #f2f2f2;
         }
 
         .d-block {
@@ -70,7 +71,7 @@
         .border-all,
         .border-all th,
         .border-all td {
-            border: 1px solid;
+            border: 1px solid black;
         }
 
         .status-selesai {
@@ -106,15 +107,15 @@
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>ID Laporan</th>
-                <th>Tanggal Laporan</th>
-                <th>Pelapor</th>
-                <th>Verifikator</th>
-                <th>Sarana</th>
-                <th>Lokasi</th>
-                <th>Deskripsi Kerusakan</th>
-                <th>Status</th>
-                <th>Teknisi</th>
+                <th class="text-center">ID Laporan</th>
+                <th class="text-center">Tanggal</th>
+                <th class="text-center">Pelapor</th>
+                <th class="text-center">Sarana</th>
+                <th class="text-center">Lokasi</th>
+                <th class="text-center">Deskripsi</th>
+                <th class="text-center">Verifikator</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Teknisi</th>
             </tr>
         </thead>
         <tbody>
@@ -124,7 +125,6 @@
                     <td>{{ $l->laporan_id }}</td>
                     <td>{{ \Carbon\Carbon::parse($l->tanggal_laporan)->format('d/m/Y') }}</td>
                     <td>{{ $l->kerusakan->pelapor->nama ?? '-' }}</td>
-                    <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td>{{ $l->kerusakan->item->nama }}</td>
                     <td>
                         @if($l->kerusakan->item->ruang)
@@ -136,14 +136,15 @@
                         @endif
                     </td>
                     <td>{{ $l->kerusakan->deskripsi_kerusakan ?? '-' }}</td>
+                    <td>{{ $l->verifikator->nama ?? '-' }}</td>
                     <td class="
-                    @if($l->status_laporan == 'Selesai')
-                    status-selesai
-                    @elseif($l->status_laporan == 'Ditolak')
-                    status-ditolak
-                    @else
-                    -
-                    @endif
+                        @if($l->status_laporan == 'Selesai')
+                            status-selesai
+                        @elseif($l->status_laporan == 'Ditolak')
+                            status-ditolak
+                        @else
+                            -
+                        @endif
                     ">
                     {{ ucfirst($l->status_laporan) }}
                     </td>

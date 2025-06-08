@@ -95,9 +95,9 @@
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>Nama Sarana</th>
-                <th>Lokasi Fasilitas</th>
-                <th>Deskripsi Kerusakan</th>
+                <th class="text-center">Nama Sarana</th>
+                <th class="text-center">Lokasi Fasilitas</th>
+                <th class="text-center">Deskripsi Kerusakan</th>
             </tr>
         </thead>
         <tbody>

@@ -305,11 +305,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 $('#detail_komentar').text(feedback.komentar ?? '-');
                 $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
 
+                // card laporan ditolak
+                $('#ditolak_detail_laporan_id').text(laporan.laporan_id);
+                $('#ditolak_detail_tanggal_laporan').text(formatTanggalDMY(laporan.tanggal_laporan));
+                $('#ditolak_detail_lokasi_fasilitas').text(lokasi);
+                $('#ditolak_detail_item').text(kerusakan.item?.nama ?? '-');
+                $('#ditolak_detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
+                $('#ditolak_detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
+                $('#ditolak_detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
+                $('#ditolak_detail_alasan_penolakan').text(laporan.alasan_penolakan ?? '-');
+                
+                if(laporan.kerusakan.foto_kerusakan){
+                    $('#ditolak_detail_foto_kerusakan').attr('src', '/storage/' + laporan.kerusakan.foto_kerusakan);
+                } else {
+                    $('#ditolak_detail_foto_kerusakan').attr('src', '');
+                }
+                
+                // Set status_laporan dengan badge warna
+                const status_laporan_ditolak = laporan.status_laporan ?? '-';
+                function renderStatusLaporanDitolakBadge(status_laporan) {
+                    const baseStyle = "padding: 4px 8px; border-radius: 5px; display: inline-block; width: 100px; text-align: center; font-weight: bold;";
+                    switch (status_laporan_ditolak) {
+                        case 'Ditolak':
+                            return `<span style="background-color: #ffe3e3; color: #f03e3e; ${baseStyle}">Ditolak</span>`;
+                        default:
+                            return `<span style="display: inline-block; width: 100px; text-align: center;">-</span>`;
+                    }
+                }
+                $('#status_laporan_ditolak').html(renderStatusLaporanDitolakBadge(status_laporan_ditolak));
+
                 // tampilkan/hidden bagian perbaikan & feedback
-                if (laporan.status_laporan === 'Ditolak' || laporan.status_laporan === 'Diajukan') {
+                if (laporan.status_laporan === 'Ditolak'){
+                    $('#card_laporan_ditolak').show();
+                    $('#card_laporan_disetujui').hide();
                     $('#card_perbaikan').hide();
                     $('#card_feedback').hide();
+                } else if (laporan.status_laporan === 'Diajukan' || laporan.status_laporan === 'Disetujui') {
+                    $('#card_laporan_disetujui').show();
+                    $('#card_laporan_ditolak').hide();
+                    $('#card_perbaikan').hide();
+                    $('#card_feedback').hide();
+                } else if (laporan.status_laporan === 'Dikerjakan') {
+                    $('#card_laporan_disetujui').show();
+                    $('#card_laporan_ditolak').hide();
+                    $('#card_perbaikan').show();
+                    $('#card_feedback').hide(); 
                 } else {
+                    $('#card_laporan_ditolak').hide();
+                    $('#card_laporan_disetujui').show();
                     $('#card_perbaikan').show();
                     $('#card_feedback').show();
                 }
