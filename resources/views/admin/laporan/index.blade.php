@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const penugasan = response.penugasan || {};
                 const kerusakan = laporan.kerusakan || {};
                 const teknisi = penugasan.teknisi || {};
+                const feedback = laporan.feedback || {};
 
                 // Function untuk format tanggal
                 function formatTanggalDMY(tanggal) {
@@ -241,6 +242,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('#detail_bukti_perbaikan').show();
                 } else {
                     $('#detail_bukti_perbaikan').hide();
+                }
+
+                
+                $('#detail_komentar').text(feedback.komentar ?? '-');
+                $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
+
+                if (laporan.status_laporan === 'Ditolak' || laporan.status_laporan === 'Diajukan') {
+                    $('#card_perbaikan').hide();
+                    $('#card_feedback').hide();
+                } else {
+                    $('#card_perbaikan').show();
+                    $('#card_feedback').show();
                 }
 
                 // Tampilkan modal - PASTIKAN ID MODAL BENAR

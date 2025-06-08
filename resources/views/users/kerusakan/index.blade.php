@@ -196,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const penugasan = response.penugasan || {};
                 const kerusakan = laporan.kerusakan || {};
                 const teknisi = penugasan.teknisi || {};
+                const feedback = laporan.feedback || {};
 
                 // Function untuk format tanggal
                 function formatTanggalDMY(tanggal) {
@@ -260,13 +261,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Fallback ke nama item saja
                     lokasi = kerusakan.item.nama;
                 }
-
+                
                 $('#detail_lokasi_fasilitas').text(lokasi);
                 
                 $('#detail_item').text(kerusakan.item?.nama ?? '-');
                 $('#detail_deskripsi_kerusakan').text(kerusakan.deskripsi_kerusakan ?? '-');
                 $('#detail_pelapor').text(kerusakan.pelapor?.nama_lengkap ?? '-');
                 $('#detail_verifikator').text(laporan.verifikator?.nama_lengkap ?? '-');
+                $('#detail_penolakan').text(laporan.alasan_penolakan ?? '-');
+
+                if (laporan.status_laporan != 'Ditolak') {
+                    $('#alasan_penolakan').hide();
+                } else {
+                    $('#alasan_penolakan').show();
+                }
 
                 // Set foto kerusakan
                 if(laporan.kerusakan?.foto_kerusakan) {
@@ -292,6 +300,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     $('#detail_bukti_perbaikan').show();
                 } else {
                     $('#detail_bukti_perbaikan').hide();
+                }
+
+                $('#detail_komentar').text(feedback.komentar ?? '-');
+                $('#detail_rating').html(feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating})` : '-');
+
+                // tampilkan/hidden bagian perbaikan & feedback
+                if (laporan.status_laporan === 'Ditolak' || laporan.status_laporan === 'Diajukan') {
+                    $('#card_perbaikan').hide();
+                    $('#card_feedback').hide();
+                } else {
+                    $('#card_perbaikan').show();
+                    $('#card_feedback').show();
                 }
 
                 // Tampilkan modal - PASTIKAN ID MODAL BENAR

@@ -40,6 +40,10 @@
                   <div class="fw-semibold">Nama Verifikator</div>
                   <div class="mt-1" id="detail_verifikator"></div>
                 </div>
+                <div class="mb-3" id="alasan_penolakan">
+                  <div class="fw-semibold">Alasan Penolakan</div>
+                  <div class="mt-1" id="detail_penolakan"></div>
+                </div>
               </div>
 
               <!-- Kanan -->
@@ -52,7 +56,7 @@
         </div>
 
         <!-- Detail Perbaikan -->
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-4" id="card_perbaikan">
         <div class="card-header border-bottom d-flex align-items-center gap-2">
             <h5 class="mb-0">Detail Perbaikan</h5>
             <span id="status_penugasan"></span>
@@ -83,6 +87,28 @@
               <div class="col-md-4">
                 <div class="fw-semibold mb-2">Bukti Perbaikan</div>
                 <img id="detail_bukti_perbaikan" class="img-fluid rounded shadow-sm" width="240px" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="card shadow-sm mb-4" id="card_feedback">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">Feedback</h5>
+          </div>
+          <div class="card-body pt-5">
+            <div class="row">
+              <!-- Komentar -->
+              <div class="col-md-8 mb-3">
+                <div class="fw-semibold">Komentar</div>
+                <div class="mt-1" id="detail_komentar"></div>
+              </div>
+
+              <!-- Rating -->
+              <div class="col-md-4">
+                <div class="fw-semibold mb-2">Rating</div>
+                <div id="detail_rating" class="mt-1"></div>
               </div>
             </div>
           </div>

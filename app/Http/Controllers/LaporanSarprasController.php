@@ -198,9 +198,15 @@ class LaporanSarprasController extends Controller
         ]);
     }
 
-    public function tolak($id) {
+    public function tolak($id, Request $request) {
         $laporan = LaporanModel::findOrFail($id);
 
+        // Validasi input
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:255',
+        ]);
+
+        $laporan->alasan_penolakan = $request->alasan_penolakan;
         $laporan->verifikator_id = auth()->user()->user_id;
         $laporan->status_laporan = 'Ditolak';
         $laporan->tanggal_update_status = Carbon::now();

@@ -24,7 +24,8 @@ class LaporanAdminController extends Controller
             'kerusakan.item.ruang.gedung', 
             'kerusakan.item.fasum',
             'kerusakan.pelapor',
-            'penugasan.teknisi'
+            'penugasan.teknisi',
+            'feedback'
         ])->find($id);
 
         if (!$laporan) {
