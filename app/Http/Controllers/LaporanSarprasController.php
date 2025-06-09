@@ -235,8 +235,13 @@ class LaporanSarprasController extends Controller
             ]
         );
 
+        $laporan = LaporanModel::findOrFail($id);
+        $laporan->status_laporan = 'Disetujui';
+        $laporan->tanggal_update_status = now();
+        $laporan->save();
+
         return response()->json([
-            'message' => 'Prioritas berhasil disimpan.',
+            'message' => 'Prioritas berhasil disimpan dan status laporan diperbarui.',
             'data' => $prioritas
         ]);
     }

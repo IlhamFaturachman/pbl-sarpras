@@ -10,9 +10,9 @@ class KerusakanModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_kerusakan'; 
+    protected $table = 'm_kerusakan';
 
-    protected $primaryKey = 'kerusakan_id'; 
+    protected $primaryKey = 'kerusakan_id';
 
     protected $fillable = [
         'item_id',
@@ -35,5 +35,10 @@ class KerusakanModel extends Model
     public function ruang(): BelongsTo
     {
         return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id');
+    }
+
+    public function laporan()
+    {
+        return $this->hasOne(LaporanModel::class, 'kerusakan_id', 'kerusakan_id');
     }
 }

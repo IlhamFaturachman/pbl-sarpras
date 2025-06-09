@@ -15,13 +15,19 @@ use App\Models\PeriodeModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade\Pdf; 
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KerusakanController extends Controller
 {
     public function index()
     {
-        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->paginate(10);
+        $userId = Auth::id();
+
+        $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum', 'laporan'])
+            ->whereHas('laporan', function ($query) use ($userId) {
+                $query->where('pelapor_id', $userId);
+            })
+            ->paginate(10);
 
         return view('users.kerusakan.index', [
             'kerusakans' => $kerusakans,
@@ -139,8 +145,8 @@ class KerusakanController extends Controller
         $kerusakans = KerusakanModel::with(['item', 'ruang.gedung', 'fasum'])->get();
 
         $pdf = Pdf::loadView('users.kerusakan.pdf', compact('kerusakans'))
-                  ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape');
 
-    return $pdf->stream('laporan-kerusakan.pdf');
+        return $pdf->stream('laporan-kerusakan.pdf');
     }
 }

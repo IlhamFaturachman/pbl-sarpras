@@ -239,8 +239,16 @@
                     ) / 5)
                 },
                 success: function(response) {
-                    Swal.fire('Berhasil', response.message, 'success');
-                    $('#prioritasModal').modal('hide');
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: response.message,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $('#prioritasModal').modal('hide');
+                        location.reload(); // ⬅️ Reload halaman setelah submit sukses
+                    });
                 },
                 error: function(xhr) {
                     Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan prioritas.', 'error');
