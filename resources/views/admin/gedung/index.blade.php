@@ -19,22 +19,36 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Gedung</h5>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#createGedung" class="btn btn-outline-primary">
-            <i class="bx bx-plus me-1"></i> Tambah
-        </button>
+
+        <div class="d-flex align-items-center gap-2" style="max-width: 100%;">
+            <div class="position-relative" style="max-width: 300px; width: 100%;">
+                <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control form-control-sm" 
+                    placeholder="Cari..." 
+                    style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
+            </div>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#createGedung" class="btn btn-outline-primary btn-sm"  style="height: 42px; align-items: center;">
+                <i class="bx bx-plus me-1"></i> Tambah
+            </button>
+        </div>
     </div>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
+                    <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Kode Gedung</th>
                     <th style="font-weight: bold;">Nama Gedung</th>
-                    <th style="font-weight: bold;" class="text-center">Actions</>
+                    <th style="font-weight: bold;" class="text-center">Aksi</>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($gedungs as $gedung)
+                @forelse($gedungs as $gedung)
                     <tr>
+                        <td>{{ $loop->iteration + ($gedungs->firstItem() - 1) }}</td>
                         <td>{{ $gedung->kode }}</td>
                         <td>{{ $gedung->nama }}</td>
                         <td class="text-center">
@@ -44,7 +58,11 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="4" class="text-center text-muted">Tidak ada data gedung</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
@@ -78,6 +96,22 @@
             icon: "error"
         });
     @endif
+
+    // Search input filtering
+    $('#searchInput').on('keyup', function () {
+        const keyword = $(this).val().toLowerCase().trim();
+        
+        $('table tbody tr').each(function () {
+            // Cek semua kolom di baris ini
+            const rowText = $(this).text().toLowerCase();
+            
+            if (rowText.indexOf(keyword) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
 });
 </script>
 @endsection

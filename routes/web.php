@@ -2,16 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PenugasanController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\FasumController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
-use App\Http\Controllers\Admin\LaporanAdminController;
-use App\Http\Controllers\User\KerusakanController;
-use App\Http\Controllers\PenugasanController;
+use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\LaporanSarprasController;
+use App\Http\Controllers\User\KerusakanController;
+use App\Http\Controllers\Admin\LaporanAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,7 @@ Route::get('/', function () {
 
 // admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
     Route::prefix('data')->group(function () {
         // user
         Route::get('/user', [UserController::class, 'index'])->name('data.user');
@@ -78,9 +77,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
         Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
         Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
+        Route::get('/item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
+
     });
     Route::get('/laporan', [LaporanAdminController::class, 'index'])->name('admin.data.laporan');
     Route::get('/laporan/{id}/show', [LaporanAdminController::class, 'show'])->name('admin.laporan.show');
+    Route::get('/laporan/export_pdf', [LaporanAdminController::class, 'export_pdf'])->name('admin.laporan.export_pdf');
 });
 
 Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->group(function () {
@@ -92,9 +94,12 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('users.kerusakan');
     Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
     Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+    Route::get('/kerusakan/{id}/show', [KerusakanController::class, 'show'])->name('kerusakan.show');
     Route::get('/kerusakan/ruang/{id}', [KerusakanController::class, 'getByGedung'])->name('kerusakan.getByGedung');
     Route::delete('/kerusakan/{id}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
     Route::get('/kerusakan/export_pdf', [KerusakanController::class, 'exportPdf'])->name('kerusakan.export_pdf');
+    Route::get('/kerusakan/item-by-ruang/{ruang_id}', [KerusakanController::class, 'getItemByRuang']);
+    Route::get('/kerusakan/item-by-fasum/{fasum_id}', [KerusakanController::class, 'getItemByFasum']);
 
 });
 
@@ -103,10 +108,22 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
     Route::get('/dashboard', function () {
         return view('sarpras.dashboard');
     })->name('sarpras.dashboard');
+
+    Route::prefix('sarpras')->group(function () {
+        // item
+        Route::get('/item', [ItemController::class, 'index'])->name('sarpras.item');
+        Route::post('/item', [ItemController::class, 'store'])->name('item.store');
+        Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
+        Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
+        Route::delete('/item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
+        Route::get('/item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
+    });
+
     Route::prefix('laporan')->group(function () {
         // verifikasi
         Route::get('/verifikasi', [LaporanSarprasController::class, 'indexVerifikasi'])->name('laporan.verifikasi');
         Route::get('/verifikasi/{id}/show', [LaporanSarprasController::class, 'showVerifikasi'])->name('laporan.show');
+        Route::get('/verifikasi/{id}', [LaporanSarprasController::class, 'tolak'])->name('laporan.tolak');
         Route::post('/verifikasi/{id}/prioritas', [LaporanSarprasController::class, 'simpanPrioritas'])->name('laporan.simpanPrioritas');
 
         // penugasan
@@ -120,6 +137,7 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
         // riwayat
         Route::get('/riwayat', [LaporanSarprasController::class, 'index'])->name('laporan.riwayat');
         Route::get('/riwayat/{id}/show', [LaporanSarprasController::class, 'show'])->name('riwayat.show');
+        Route::get('/riwayat/export_pdf', [LaporanSarprasController::class, 'export_pdf'])->name('riwayat.export_pdf');
     });
 });
 

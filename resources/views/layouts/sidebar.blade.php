@@ -52,7 +52,7 @@
         <ul class="menu-sub">
           <li class="menu-item {{ request()->routeIs('data.user') ? 'active' : '' }}">
             <a href="{{ route('data.user') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="Analytics">User</div>
+              <div class="text-truncate" data-i18n="Analytics">Pengguna</div>
             </a>
           </li>
           <li class="menu-item {{ request()->routeIs('data.fasum') ? 'active' : '' }}">
@@ -77,7 +77,7 @@
           </li>
           <li class="menu-item {{ request()->routeIs('data.item') ? 'active' : '' }}">
             <a href="{{ route('data.item') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="CRM">Item</div>
+              <div class="text-truncate" data-i18n="CRM">Sarana</div>
             </a>
           </li>
         </ul>
@@ -98,6 +98,12 @@
       </li>
       @endrole
       @role('sarpras')
+      <li class="menu-item {{ request()->routeIs('sarpras.item') ? 'active open' : '' }}">
+        <a href="{{ route('sarpras.item') }}" class="menu-link">
+          <i class="menu-icon tf-icons bx bx-buildings"></i>
+          <div class="text-truncate" data-i18n="CRM">Sarana</div>
+        </a>
+      </li>
       <li class="menu-item {{ request()->routeIs('laporan.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon tf-icons bx bx-file"></i>

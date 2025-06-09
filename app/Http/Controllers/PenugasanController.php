@@ -69,8 +69,8 @@ class PenugasanController extends Controller
         if (session()->has('detailLaporanId')) {
             $detailLaporan = LaporanModel::with([
                 'kerusakan.item',
-                'kerusakan.ruang.gedung',
-                'kerusakan.fasum',
+                'kerusakan.item.ruang.gedung',
+                'kerusakan.item.fasum',
                 'pelapor',
                 'feedback',
                 'penugasan'
@@ -120,6 +120,7 @@ class PenugasanController extends Controller
             // Simpan ke database
             $penugasan->bukti_perbaikan = $path;
             $penugasan->status_penugasan = "Menunggu";
+            $penugasan->tanggal_selesai = Carbon::now();
             $penugasan->save();
         }
 
@@ -129,9 +130,9 @@ class PenugasanController extends Controller
     public function show($id) {
         $laporan = LaporanModel::with([
             'kerusakan.item',
-            'kerusakan.ruang.gedung',
-            'kerusakan.fasum',
-            'pelapor',
+            'kerusakan.item.ruang.gedung',
+            'kerusakan.item.fasum',
+            'kerusakan.pelapor',
             'feedback',
             'penugasan.teknisi'
         ])->find($id);

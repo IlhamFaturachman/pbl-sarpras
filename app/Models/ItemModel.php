@@ -14,6 +14,17 @@ class ItemModel extends Model
     protected $primaryKey = 'item_id'; 
 
     protected $fillable = [
-        'nama',
+        'nama', 
+        'ruang_id', 
+        'fasum_id'
     ];
+
+    public function ruang()
+    {
+        return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id')->with('gedung');
+    }
+
+    public function fasum() {
+        return $this->belongsTo(FasumModel::class, 'fasum_id', 'fasum_id');
+    }
 }

@@ -28,11 +28,6 @@ class LaporanModel extends Model
         'periode_id'
     ];
 
-    public function pelapor(): BelongsTo
-    {
-        return $this->belongsTo(UserModel::class, 'pelapor_id', 'user_id');
-    }
-
     public function verifikator(): BelongsTo
     {
         return $this->belongsTo(UserModel::class, 'verifikator_id', 'user_id');

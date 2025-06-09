@@ -20,6 +20,7 @@ class UserModel extends Authenticatable
         'nama',
         'email',
         'password',
+        'identitas',
         'status',
         'foto_profile',
     ];

@@ -18,28 +18,59 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Data User</h5>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#createUser" class="btn btn-outline-primary">
-            <i class="bx bx-plus me-1"></i> Tambah
-        </button>
+        <h5 class="mb-0">Data Pengguna</h5>
+        
+        <div class="d-flex align-items-center gap-2" style="max-width: 100%;">
+            <div class="position-relative" style="max-width: 300px; width: 100%;">
+                <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control form-control-sm" 
+                    placeholder="Cari..." 
+                    style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
+            </div>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#createUser" class="btn btn-outline-primary btn-sm"  style="height: 42px; align-items: center;">
+                <i class="bx bx-plus me-1"></i> Tambah
+            </button>
+        </div>
     </div>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
-                    <th style="font-weight: bold;">Nama</th>
+                    <th style="font-weight: bold;">No</th>
                     <th style="font-weight: bold;">Nomor Induk</th>
+                    <th style="font-weight: bold;">Nama Lengkap</th>
+                    <th style="font-weight: bold;">Jenis Pengguna
+                        <div class="dropdown d-inline-block">
+                            <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-filter" style="font-size: 1.1rem;"></i>
+                            </a>
+                                <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="font-size: 0.85rem; padding: 0.25rem 0;">
+                                <li><a class="dropdown-item filter-role" data-value="">Semua</a></li>
+                                <li><a class="dropdown-item filter-role" data-value="Admin">Admin</a></li>
+                                <li><a class="dropdown-item filter-role" data-value="Dosen">Dosen</a></li>
+                                <li><a class="dropdown-item filter-role" data-value="Tendik">Tendik</a></li>
+                                <li><a class="dropdown-item filter-role" data-value="Mahasiswa">Mahasiswa</a></li>
+                                <li><a class="dropdown-item filter-role" data-value="Teknisi">Teknisi</a></li>
+                                <li><a class="dropdown-item filter-role" data-value="Sarpras">Sarpras</a></li>
+                            </ul>
+                        </div>
+                    </th>
                     <th style="font-weight: bold;">Username</th>
                     <th style="font-weight: bold;">Email</th>
                     <th style="font-weight: bold;">Status</th>
-                    <th style="font-weight: bold;" class="text-center">Actions</th>
+                    <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($users as $user)
+                @forelse($users as $user)
                     <tr>
-                        <td>{{ $user->nama_lengkap }}</td>
+                        <td>{{ $loop->iteration + ($users->firstItem() - 1) }}</td>
                         <td>{{ $user->nomor_induk }}</td>
+                        <td>{{ $user->nama_lengkap }}</td>
+                        <td>{{ \Illuminate\Support\Str::title($user->getRoleNames()->first()) }}</td>
                         <td>{{ $user->nama }}</td>
                         <td>{{ $user->email }}</td>
                         <td><span class="badge bg-label-{{ $user->status == 'Aktif' ? 'success' : 'danger' }} me-1">{{ $user->status }}</span></td>
@@ -51,14 +82,21 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Tidak ada data pengguna</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+
+    @php
+        $paginator = $users->appends(request()->query());
+    @endphp
+
     <div class="d-flex justify-content-end mt-3 me-3">
-        @if ($users->hasPages())
-            <x-pagination :paginator="$users" />
-        @endif
+        <x-pagination :paginator="$paginator" />
     </div>
     
 </div>
@@ -67,6 +105,14 @@
 @include('admin.user.edit')
 @include('admin.user.delete')
 @include('admin.user.show')
+
+<style>
+    /* Sembunyikan icon panah dropdown bawaan Bootstrap */
+    .dropdown-toggle::after {
+    display: none !important;
+    }
+
+</style>
 
 <!-- SweetAlert Script -->
 <script>
@@ -127,6 +173,12 @@
                         $('#detail_foto_profile').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
                     }
 
+                    if (user.identitas) {
+                        $('#detail_foto_identitas').attr('src', "{{ asset('storage') }}/" + user.identitas);
+                    } else {
+                        $('#detail_foto_identitas').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
+                    }
+
                     // Show the modal
                     $('#detailUser').modal('show');
                 },
@@ -181,6 +233,37 @@
                         text: "Gagal mengambil data user",
                         icon: "error"
                     });
+                }
+            });
+        });
+
+        $('.filter-role').on('click', function () {
+            const selectedRole = $(this).data('value').toLowerCase();
+
+            $('table tbody tr').each(function () {
+                const roleCell = $(this).find('td').eq(4); // kolom role
+                const roleText = roleCell.text().toLowerCase().trim();
+
+                if (!selectedRole || roleText.includes(selectedRole)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // Search input filtering
+        $('#searchInput').on('keyup', function () {
+            const keyword = $(this).val().toLowerCase().trim();
+            
+            $('table tbody tr').each(function () {
+                // Cek semua kolom di baris ini
+                const rowText = $(this).text().toLowerCase();
+                
+                if (rowText.indexOf(keyword) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
                 }
             });
         });

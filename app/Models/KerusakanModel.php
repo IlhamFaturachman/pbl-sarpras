@@ -37,8 +37,8 @@ class KerusakanModel extends Model
         return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id');
     }
 
-    public function laporan()
+    public function pelapor(): BelongsTo
     {
-        return $this->hasOne(LaporanModel::class, 'kerusakan_id', 'kerusakan_id');
+        return $this->belongsTo(UserModel::class, 'pelapor_id', 'user_id');
     }
 }

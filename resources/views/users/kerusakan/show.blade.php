@@ -1,4 +1,4 @@
-<div class="modal fade" id="detailLaporan" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="detailLaporanAdmin" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content text-white" style="background-color:rgba(235, 235, 235, 0.96);">
       <div class="modal-header border-bottom-0">
@@ -7,7 +7,7 @@
       <div class="modal-body">
 
         <!-- Detail Laporan Kerusakan Disetujui -->
-        <div class="card shadow-sm mb-4" id="card_laporan">
+        <div class="card shadow-sm mb-4" id="card_laporan_disetujui">
           <div class="card-header border-bottom d-flex align-items-center gap-2">
             <h5 class="mb-0">Detail Laporan Kerusakan</h5>
             <span id="status_laporan"></span>
@@ -39,16 +39,60 @@
                   <div class="fw-semibold">Nama Verifikator</div>
                   <div class="mt-1" id="detail_verifikator"></div>
                 </div>
-                <div class="mb-3">
-                  <div class="fw-semibold">Prioritas Laporan</div>
-                  <div class="mt-1" id="detail_prioritas"></div>
-                </div>
               </div>
               <div class="col-md-4">
                 <div class="fw-semibold mb-2">Bukti Kerusakan</div>
                 <img id="detail_foto_kerusakan" class="img-fluid rounded shadow-sm mb-3" width="240px" />
                 <div class="fw-semibold">Deskripsi Kerusakan</div>
                 <div class="mt-1" id="detail_deskripsi_kerusakan"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail Laporan Kerusakan Ditolak -->
+        <div class="card shadow-sm mb-4" id="card_laporan_ditolak">
+          <div class="card-header border-bottom d-flex align-items-center gap-2">
+            <h5 class="mb-0">Detail Laporan Kerusakan</h5>
+            <span id="status_laporan_ditolak"></span>
+          </div>
+          <div class="card-body pt-5">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <div class="fw-semibold">ID Laporan</div>
+                  <div class="mt-1" id="ditolak_detail_laporan_id"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Tanggal Laporan</div>
+                  <div class="mt-1" id="ditolak_detail_tanggal_laporan"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Nama Sarana</div>
+                  <div class="mt-1" id="ditolak_detail_item"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Lokasi Fasilitas</div>
+                  <div class="mt-1" id="ditolak_detail_lokasi_fasilitas"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Nama Pelapor</div>
+                  <div class="mt-1" id="ditolak_detail_pelapor"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Nama Verifikator</div>
+                  <div class="mt-1" id="ditolak_detail_verifikator"></div>
+                </div>
+                <div class="mb-3">
+                  <div class="fw-semibold">Alasan Penolakan</div>
+                  <div class="mt-1" id="ditolak_detail_alasan_penolakan"></div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="fw-semibold mb-2">Bukti Kerusakan</div>
+                <img id="ditolak_detail_foto_kerusakan" class="img-fluid rounded shadow-sm mb-3" width="240px" />
+                <div class="fw-semibold">Deskripsi Kerusakan</div>
+                <div class="mt-1" id="ditolak_detail_deskripsi_kerusakan"></div>
               </div>
             </div>
           </div>

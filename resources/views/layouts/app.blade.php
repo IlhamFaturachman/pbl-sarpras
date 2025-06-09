@@ -11,7 +11,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>PBL -  Sarpras</title>
+    <title>PBL -  Silaprak</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta name="description" content="" />
@@ -41,8 +41,10 @@
     <!-- endbuild -->
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <!-- Page CSS -->
+
 
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
@@ -51,6 +53,9 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 
     <script src="{{ asset('assets/js/config.js') }}"></script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   </head>
 
   <body>
@@ -116,6 +121,7 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- Page JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
 
     <!-- Place this tag before closing body tag for github widget button. -->

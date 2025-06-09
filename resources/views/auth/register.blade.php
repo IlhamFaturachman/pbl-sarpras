@@ -12,12 +12,12 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  <title>SARPRAS - REGISTER</title>
+  <title>Register | SiLaprak</title>
 
   <meta name="description" content="" />
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/logo-removebg.png') }}" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -70,13 +70,13 @@
                     <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="img-fluid d-block mx-auto" style="height: 50px; width: auto;">
                   </span>
                 </span>
-                <span class="app-brand-text demo text-heading fw-bold">Sarpras</span>
+                <span class="app-brand-text demo text-heading fw-bold">SiLaprak</span>
               </a>
             </div>
             <!-- /Logo -->
 
-            <h4 class="mb-1 text-center">Selamat Datang di Sarpras! 👋</h4>
-            <p class="mb-4 text-center">Masukkan data data yang diperlukan untuk memulai sesi Anda</p>
+            <h4 class="mb-1 text-center">Selamat Datang di SiLaprak! 👋</h4>
+            <p class="mb-4 text-center">Masukkan data data yang diperlukan untuk mendaftar</p>
 
             <form id="formAuthentication" class="mb-6" action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
               @csrf
@@ -206,9 +206,9 @@
             </form>
 
             <p class="text-center mt-4">
-              <span>Already have an account?</span>
+              <span>Sudah mempunyai akun?</span>
               <a href="{{ route('login') }}">
-                <span>Sign in instead</span>
+                <span>Masuk</span>
               </a>
             </p>
           </div>
