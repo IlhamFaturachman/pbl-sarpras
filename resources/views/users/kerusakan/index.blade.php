@@ -125,6 +125,11 @@
                                         data-id="{{ $laporan->laporan_id }}"> 
                                     Hapus
                                 </button>
+                                <button type="button" 
+                                        class="btn btn-sm btn-secondary btn-feedback" 
+                                        data-id="{{ $laporan->laporan_id }}">
+                                    Feedback
+                                </button>
                             </div>
                         </td>
                     </tr>
