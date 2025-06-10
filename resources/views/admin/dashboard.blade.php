@@ -57,9 +57,7 @@
                 </div>
                 <p class="mb-1">Total Laporan</p>
                 <h4 class="card-title mb-3">{{ array_sum($statusCounts) }}</h4>
-                <small class="text-success fw-medium"
-                  ><i class="icon-base bx bx-up-arrow-alt"></i> Tahun {{ $currentYear }}</small
-                >
+                <small class="text-success fw-medium"><i class="icon-base bx bx-up-arrow-alt"></i> Tahun {{ $currentYear }}</small>
               </div>
             </div>
           </div>
@@ -90,9 +88,7 @@
                 </div>
                 <p class="mb-1">Total Teknisi</p>
                 <h4 class="card-title mb-3">{{ $teknisi->count() }}</h4>
-                <small class="text-success fw-medium"
-                  ><i class="icon-base bx bx-user-plus"></i> Aktif</small
-                >
+                <small class="text-success fw-medium"><i class="icon-base bx bx-user-plus"></i> Aktif</small>
               </div>
             </div>
           </div>
@@ -133,9 +129,9 @@
     <div class="row">
       @php
       $cards = [
-        ['label' => 'Gedung', 'value' => $totalGedung, 'icon' => 'building', 'color' => 'primary'],
-        ['label' => 'Ruang', 'value' => $totalRuang, 'icon' => 'door-open', 'color' => 'info'],
-        ['label' => 'Fasum', 'value' => $totalFasum, 'icon' => 'map', 'color' => 'warning']
+      ['label' => 'Gedung', 'value' => $totalGedung, 'icon' => 'building', 'color' => 'primary'],
+      ['label' => 'Ruang', 'value' => $totalRuang, 'icon' => 'door-open', 'color' => 'info'],
+      ['label' => 'Fasum', 'value' => $totalFasum, 'icon' => 'map', 'color' => 'warning']
       ];
 
       @endphp
@@ -191,9 +187,7 @@
             <ul class="p-0 m-0">
               <li class="d-flex align-items-center mb-5">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-success"
-                    ><i class="icon-base bx bx-check-circle"></i
-                  ></span>
+                  <span class="avatar-initial rounded bg-label-success"><i class="icon-base bx bx-check-circle"></i></span>
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -207,9 +201,7 @@
               </li>
               <li class="d-flex align-items-center mb-5">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-warning"
-                    ><i class="icon-base bx bx-time"></i
-                  ></span>
+                  <span class="avatar-initial rounded bg-label-warning"><i class="icon-base bx bx-time"></i></span>
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -217,15 +209,17 @@
                     <small>Laporan dalam penanganan</small>
                   </div>
                   <div class="user-progress">
-                    <h6 class="mb-0">{{ ($statusCounts['Disetujui']+$statusCounts['Dikerjakan']) ?? 0 }}</h6>
+                    <h6 class="mb-0">
+                      {{
+                        ($statusCounts['Disetujui'] ?? 0) + ($statusCounts['Dikerjakan'] ?? 0)
+                      }}
+                    </h6>
                   </div>
                 </div>
               </li>
               <li class="d-flex align-items-center mb-5">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-info"
-                    ><i class="icon-base bx bx-error"></i
-                  ></span>
+                  <span class="avatar-initial rounded bg-label-info"><i class="icon-base bx bx-error"></i></span>
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -239,9 +233,7 @@
               </li>
               <li class="d-flex align-items-center">
                 <div class="avatar flex-shrink-0 me-3">
-                  <span class="avatar-initial rounded bg-label-danger"
-                    ><i class="icon-base bx bx-x-circle"></i
-                  ></span>
+                  <span class="avatar-initial rounded bg-label-danger"><i class="icon-base bx bx-x-circle"></i></span>
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
@@ -289,12 +281,22 @@
                 </div>
                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                   <div class="me-2">
-                    @if ($report->kerusakan->item->ruang == null)
-                      <small class="d-block">{{ $report->kerusakan->item->fasum->nama }} - {{ $report->kerusakan->item->nama }}</small>
+                    @if (optional($report->kerusakan->item)->ruang === null)
+                    <small class="d-block">
+                      {{ optional($report->kerusakan->item->fasum)->nama }} -
+                      {{ optional($report->kerusakan->item)->nama }}
+                    </small>
                     @else
-                      <small class="d-block">{{ $report->kerusakan->item->ruang->gedung->nama }} - {{ $report->kerusakan->item->ruang->nama }} - {{ $report->kerusakan->item->nama }}</small>
+                    <small class="d-block">
+                      {{ optional(optional($report->kerusakan->item->ruang)->gedung)->nama }} -
+                      {{ optional($report->kerusakan->item->ruang)->nama }} -
+                      {{ optional($report->kerusakan->item)->nama }}
+                    </small>
                     @endif
-                    <h6 class="fw-normal mb-0">{{ Str::limit($report->kerusakan->deskripsi_kerusakan, 40) }}</h6>
+
+                    <h6 class="fw-normal mb-0">
+                      {{ Str::limit(optional($report->kerusakan)->deskripsi_kerusakan, 40) }}
+                    </h6>
                   </div>
                   <div class="user-progress d-flex align-items-center gap-2">
                     <span class="badge bg-label-{{ $getStatusColor($report->status_laporan) }}">
@@ -314,11 +316,10 @@
 
 @push('scripts')
 <script>
-  
   // Chart Total Perbaikan
   document.addEventListener('DOMContentLoaded', function() {
     const monthlyData = @json(array_values($monthlyData));
-    
+
     const totalPerbaikanChart = new ApexCharts(document.getElementById("TotalPerbaikanChart"), {
       series: [{
         name: 'Total Perbaikan',
@@ -393,11 +394,31 @@
     align-items: center;
     justify-content: center;
   }
-  .bg-label-primary { background-color: rgba(115,103,240,.12); color: #7367F0; }
-  .bg-label-warning { background-color: rgba(255,159,67,.12); color: #FF9F43; }
-  .bg-label-danger { background-color: rgba(234,84,85,.12); color: #EA5455; }
-  .bg-label-info { background-color: rgba(0,207,232,.12); color: #00CFE8; }
-  .bg-label-success { background-color: rgba(40,199,111,.12); color: #28C76F; }
+
+  .bg-label-primary {
+    background-color: rgba(115, 103, 240, .12);
+    color: #7367F0;
+  }
+
+  .bg-label-warning {
+    background-color: rgba(255, 159, 67, .12);
+    color: #FF9F43;
+  }
+
+  .bg-label-danger {
+    background-color: rgba(234, 84, 85, .12);
+    color: #EA5455;
+  }
+
+  .bg-label-info {
+    background-color: rgba(0, 207, 232, .12);
+    color: #00CFE8;
+  }
+
+  .bg-label-success {
+    background-color: rgba(40, 199, 111, .12);
+    color: #28C76F;
+  }
 </style>
 @endpush
 
