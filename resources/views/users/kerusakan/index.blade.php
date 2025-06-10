@@ -116,14 +116,16 @@
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" 
-                                            @if ($laporan->status_laporan == "Selesai")
-                                            class="btn btn-sm btn-success btn-feedback"
-                                            @else 
-                                            class="btn btn-sm btn-secondary btn-feedback disabled"
-                                            @endif
-                                            data-id="{{ $laporan->laporan_id }}">
-                                        Feedback
-                                    </button>
+                                    @if ($laporan->status_laporan == "Selesai" && $laporan->feedback)
+                                        class="btn btn-sm btn-success btn-feedback disabled"
+                                    @elseif ($laporan->status_laporan == "Selesai")
+                                        class="btn btn-sm btn-success btn-feedback"
+                                    @else
+                                        class="btn btn-sm btn-secondary btn-feedback disabled"
+                                    @endif
+                                    data-id="{{ $laporan->laporan_id }}">
+                                    Feedback
+                                </button>
                                 <button type="button" 
                                         class="btn btn-sm btn-primary detail-laporan" 
                                         data-id="{{ $laporan->laporan_id }}">
@@ -380,38 +382,42 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     
-        $(document).ready(function () {
-            // Buka modal dan isi laporan_id secara dinamis
-            $('.btn-feedback').on('click', function () {
-                const laporanId = $(this).data('laporan-id');
-                $('#laporan_id').val(laporanId);
-                $('#feedbackModal').modal('show');
-            });
+    $(document).ready(function () {
+        // Buka modal dan isi laporan_id secara dinamis
+        $('.btn-feedback').on('click', function () {
+            const laporanId = $(this).data('id');
+            console.log('Laporan ID:', laporanId);
+            $('#laporan_id').val(laporanId);
+            $('#feedbackModal').modal('show');
         });
+        
+        // Kirim data feedback
+        // $('#feedbackForm').on('submit', function (e) {
+        //     e.preventDefault();
+            
+        //     // Ambil laporan_id dari input hidden dalam form
+        //     const laporanId = $('#laporan_id').val();
+        //     console.log('Laporan ID:', laporanId);
+            
+        //     // Validasi laporan_id
+        //     if (!laporanId) {
+        //         Swal.fire('Error', 'ID Laporan tidak ditemukan.', 'error');
+        //         return;
+        //     }
+            
+        //     // Kirim data via AJAX
+        //     $.ajax({
+        //         url: "{{ url('users/kerusakan') }}/" + laporanId + "/feedback",
+        //         type: 'POST',
+        //         data: $(this).serialize(), 
+        //     });
+        // });
+    });
 
-        // Tangani submit feedback dengan AJAX
-        $('#feedbackForm').on('submit', function (e) {
-            e.preventDefault();
-            const form = $(this);
-
-            $.ajax({
-                url: "{{ url('users/kerusakan') }}/" + idKerusakan + "/feedback",
-                type: 'POST',
-                data: form.serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire('Berhasil', response.message, 'success').then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire('Gagal', response.message, 'error');
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire('Error', 'Terjadi kesalahan saat mengirim feedback.', 'error');
-                }
-            });
-        });
+    function openFeedbackModal(laporanId) {
+        $('#laporan_id').val(laporanId);
+        $('#feedbackModal').modal('show');
+    }
 
     // Delete button
     $('.delete-kerusakan').on('click', function () {

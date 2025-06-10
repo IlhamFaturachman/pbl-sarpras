@@ -16,21 +16,18 @@ class FeedbackController extends Controller
 {
     public function store(Request $request)
     {
-        dd($request->all());
         try {
             DB::beginTransaction();
 
             // Validasi input
             $validated = $request->validate([
-                'laporan_id' => 'required|integer|exists:laporan,laporan_id',
-                'user_id' => 'required|integer|exists:users,id',
+                'laporan_id' => 'required|string|exists:m_laporan,laporan_id',
                 'rating' => 'required|integer|min:1|max:5',
                 'komentar' => 'required|string|max:1000',
             ]);
 
             $feedback = new FeedbackModel();
             $feedback->laporan_id = $validated['laporan_id'];
-            $feedback->user_id = $validated['user_id'];
             $feedback->rating = $validated['rating'];
             $feedback->komentar = $validated['komentar'];
             $feedback->tanggal_feedback = Carbon::now();
@@ -39,14 +36,12 @@ class FeedbackController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Feedback berhasil dikirim.',
-            ]);
+            return redirect()->back()->with('success', 'Feedback berhasil dikirim.');
+
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json(
+            return redirect()->back()->with(
                 [
                     'success' => false,
                     'message' => 'Gagal mengirim feedback: ' . $e->getMessage(),
