@@ -29,6 +29,7 @@ class KerusakanController extends Controller
             })
             ->paginate(10);
         $laporans = LaporanModel::join('m_kerusakan', 'm_laporan.kerusakan_id', '=', 'm_kerusakan.kerusakan_id')
+            ->with('feedback')
             ->where('m_kerusakan.pelapor_id', auth()->id())
             ->select('m_laporan.*') 
             ->paginate(10);
@@ -84,13 +85,11 @@ class KerusakanController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Simpan ke tabel m_kerusakan
             $kerusakan = new KerusakanModel();
-            $kerusakan->pelapor_id = auth()->id(); // Ambil ID user yang login
+            $kerusakan->pelapor_id = auth()->id(); 
             $kerusakan->item_id = $request->item_id;
             $kerusakan->deskripsi_kerusakan = $request->deskripsi_kerusakan;
 
-            // Simpan file foto kerusakan
             if ($request->hasFile('foto_kerusakan')) {
                 $file = $request->file('foto_kerusakan');
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -100,7 +99,6 @@ class KerusakanController extends Controller
 
             $kerusakan->save();
 
-            // 2. Simpan ke tabel m_laporan
             $periode = PeriodeModel::where('nama_periode', now()->year)->first();
 
             if (!$periode) {
@@ -112,11 +110,11 @@ class KerusakanController extends Controller
             }
 
             $laporan = new LaporanModel();
-            $laporan->laporan_id = 'LAP' . mt_rand(100000, 999999); // Generate random ID dengan prefix LAP
+            $laporan->laporan_id = 'LAP' . mt_rand(100000, 999999); 
             $laporan->kerusakan_id = $kerusakan->kerusakan_id;
             $laporan->verifikator_id = null;
             $laporan->status_laporan = 'Diajukan';
-            $laporan->tanggal_laporan = now()->toDateString(); // Hanya tanggal tanpa waktu
+            $laporan->tanggal_laporan = now()->toDateString(); 
             $laporan->periode_id = $periode->periode_id;
             $laporan->save();
 

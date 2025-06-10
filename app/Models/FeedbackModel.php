@@ -16,7 +16,6 @@ class FeedbackModel extends Model
 
     protected $fillable = [
         'laporan_id',
-        'user_id',
         'rating',
         'komentar',
         'tanggal_feedback',
@@ -25,10 +24,5 @@ class FeedbackModel extends Model
     public function laporan(): BelongsTo
     {
         return $this->belongsTo(LaporanModel::class, 'laporan_id', 'laporan_id');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }
