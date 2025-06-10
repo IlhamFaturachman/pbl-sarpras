@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\LaporanSarprasController;
+use App\Http\Controllers\User\FeedbackController;
 use App\Http\Controllers\User\KerusakanController;
 use App\Http\Controllers\Admin\LaporanAdminController;
 
@@ -100,6 +101,8 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::get('/kerusakan/export_pdf', [KerusakanController::class, 'exportPdf'])->name('kerusakan.export_pdf');
     Route::get('/kerusakan/item-by-ruang/{ruang_id}', [KerusakanController::class, 'getItemByRuang']);
     Route::get('/kerusakan/item-by-fasum/{fasum_id}', [KerusakanController::class, 'getItemByFasum']);
+    // feedback
+    Route::post('/kerusakan/{id}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
 });
 
