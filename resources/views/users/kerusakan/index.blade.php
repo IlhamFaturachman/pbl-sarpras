@@ -125,6 +125,11 @@
                                         data-id="{{ $laporan->laporan_id }}"> 
                                     Hapus
                                 </button>
+                                <button type="button" 
+                                        class="btn btn-sm btn-secondary btn-feedback" 
+                                        data-id="{{ $laporan->laporan_id }}">
+                                    Feedback
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -369,6 +374,49 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+    
+    // Buka modal dan isi action saat tombol diklik
+        $('.btn-feedback').on('click', function () {
+            const id = $(this).data('id');
+            console.log(id);
+            
+            $('#feedbackForm').attr('action', /users/kerusakan/${id}/feedback);
+
+            // Reset form jika ada
+            if ($('#feedbackForm')[0]) {
+                $('#feedbackForm')[0].reset();
+            }
+
+            // Tampilkan modal
+            const feedbackModalEl = document.getElementById('feedbackModal');
+            const feedbackModal = new bootstrap.Modal(feedbackModalEl); // tanpa .backdrop
+            feedbackModal.show();
+        });
+
+        // Tangani submit feedback dengan AJAX
+        $('#feedbackForm').on('submit', function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const actionUrl = form.attr('action');
+
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire('Berhasil', response.message, 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Gagal', response.message, 'error');
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire('Error', 'Terjadi kesalahan saat mengirim feedback.', 'error');
+                }
+            });
+        });
 
     // Delete button
     $('.delete-kerusakan').on('click', function () {
