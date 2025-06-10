@@ -37,38 +37,3 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Buka modal dan isi laporan_id secara dinamis
-        $('.btn-feedback').on('click', function () {
-            const laporanId = $(this).data('laporan-id');
-            $('#laporan_id').val(laporanId);
-            $('#feedbackModal').modal('show');
-        });
-
-        // Submit form feedback
-        $('#feedbackForm').on('submit', function (e) {
-            e.preventDefault();
-
-            let formData = $(this).serialize();
-
-            $.ajax({
-                url: "{{ route('feedback.store') }}", // sesuaikan dengan rute penyimpanan
-                method: "POST",
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        $('#feedbackModal').modal('hide');
-                        $('#feedbackForm')[0].reset();
-                    } else {
-                        alert("Terjadi kesalahan: " + response.message);
-                    }
-                },
-                error: function (xhr) {
-                    alert("Gagal mengirim feedback: " + xhr.responseJSON.message);
-                }
-            });
-        });
-    });
-</script>
