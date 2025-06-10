@@ -102,7 +102,7 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
     Route::get('/kerusakan/item-by-ruang/{ruang_id}', [KerusakanController::class, 'getItemByRuang']);
     Route::get('/kerusakan/item-by-fasum/{fasum_id}', [KerusakanController::class, 'getItemByFasum']);
     // feedback
-    Route::post('/kerusakan/{id}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+    Route::post('/kerusakan/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
 });
 
