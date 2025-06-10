@@ -20,6 +20,7 @@ class KerusakanModel extends Model
         'ruang_id',
         'deskripsi_kerusakan',
         'foto_kerusakan',
+        'pelapor_id',
     ];
 
     public function item(): BelongsTo
@@ -36,6 +37,12 @@ class KerusakanModel extends Model
     {
         return $this->belongsTo(RuangModel::class, 'ruang_id', 'ruang_id');
     }
+
+    public function laporan()
+    {
+        return $this->hasOne(LaporanModel::class, 'kerusakan_id', 'kerusakan_id');
+    }
+
 
     public function pelapor(): BelongsTo
     {
