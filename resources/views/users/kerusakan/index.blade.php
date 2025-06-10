@@ -116,6 +116,15 @@
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" 
+                                            @if ($laporan->status_laporan == "Selesai")
+                                            class="btn btn-sm btn-success btn-feedback"
+                                            @else 
+                                            class="btn btn-sm btn-secondary btn-feedback disabled"
+                                            @endif
+                                            data-id="{{ $laporan->laporan_id }}">
+                                        Feedback
+                                    </button>
+                                <button type="button" 
                                         class="btn btn-sm btn-primary detail-laporan" 
                                         data-id="{{ $laporan->laporan_id }}">
                                     Detail
@@ -124,11 +133,6 @@
                                         class="btn btn-sm btn-danger delete-kerusakan" 
                                         data-id="{{ $laporan->laporan_id }}"> 
                                     Hapus
-                                </button>
-                                <button type="button" 
-                                        class="btn btn-sm btn-secondary btn-feedback" 
-                                        data-id="{{ $laporan->laporan_id }}">
-                                    Feedback
                                 </button>
                             </div>
                         </td>
@@ -152,6 +156,7 @@
 
 @include('users.kerusakan.create')
 @include('users.kerusakan.show')
+@include('users.kerusakan.feedback')
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -375,32 +380,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     
-    // Buka modal dan isi action saat tombol diklik
-        $('.btn-feedback').on('click', function () {
-            const id = $(this).data('id');
-            console.log(id);
-            
-            $('#feedbackForm').attr('action', /users/kerusakan/${id}/feedback);
-
-            // Reset form jika ada
-            if ($('#feedbackForm')[0]) {
-                $('#feedbackForm')[0].reset();
-            }
-
-            // Tampilkan modal
-            const feedbackModalEl = document.getElementById('feedbackModal');
-            const feedbackModal = new bootstrap.Modal(feedbackModalEl); // tanpa .backdrop
-            feedbackModal.show();
+        $(document).ready(function () {
+            // Buka modal dan isi laporan_id secara dinamis
+            $('.btn-feedback').on('click', function () {
+                const laporanId = $(this).data('laporan-id');
+                $('#laporan_id').val(laporanId);
+                $('#feedbackModal').modal('show');
+            });
         });
 
         // Tangani submit feedback dengan AJAX
         $('#feedbackForm').on('submit', function (e) {
             e.preventDefault();
             const form = $(this);
-            const actionUrl = form.attr('action');
 
             $.ajax({
-                url: actionUrl,
+                url: "{{ url('users/kerusakan') }}/" + idKerusakan + "/feedback",
                 type: 'POST',
                 data: form.serialize(),
                 success: function (response) {
