@@ -64,7 +64,7 @@
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
-        appId: "894a9a7a-0bea-4bf6-95da-31f4ed8d2239",
+        appId: "d707fbd2-11e2-4951-92c5-f91a1338190a",
         notifyButton: {
           enable: true
         }
