@@ -507,13 +507,9 @@
 
                     <div class="row gy-4">
 
-                        <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up"
+                        <div class="col-lg-3 col-md-6 align-items-stretch" data-aos="fade-up"
                             data-aos-delay="100">
                             <div class="team-member">
-                                <div class="member-img">
-                                    <img src="{{ asset('/assets/img/Beryl.jpg') }}" class="img-fluid rounded"
-                                        alt="">
-                                </div>
                                 <div class="member-info">
                                     <h4>Alvanza Saputra</h4>
                                     <span>02/2341720182</span>
@@ -522,13 +518,9 @@
                             </div>
                         </div><!-- End Team Member -->
 
-                        <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up"
+                        <div class="col-lg-3 col-md-6  align-items-stretch" data-aos="fade-up"
                             data-aos-delay="200">
                             <div class="team-member">
-                                <div class="member-img">
-                                    <img src="{{ asset('/assets/img/Beryl.jpg') }}" class="img-fluid rounded"
-                                        alt="">
-                                </div>
                                 <div class="member-info">
                                     <h4>Anya Callissta Chriswantari</h4>
                                     <span>03/2341720234</span>
@@ -537,13 +529,9 @@
                             </div>
                         </div><!-- End Team Member -->
 
-                        <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up"
+                        <div class="col-lg-3 col-md-6  align-items-stretch" data-aos="fade-up"
                             data-aos-delay="300">
                             <div class="team-member">
-                                <div class="member-img">
-                                    <img src="{{ asset('/assets/img/Beryl.jpg') }}" class="img-fluid rounded"
-                                        alt="">
-                                </div>
                                 <div class="member-info">
                                     <h4>Beryl Funky Mubarok</h4>
                                     <span>04/2341720256</span>
@@ -552,13 +540,9 @@
                             </div>
                         </div><!-- End Team Member -->
 
-                        <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up"
+                        <div class="col-lg-3 col-md-6  align-items-stretch" data-aos="fade-up"
                             data-aos-delay="400">
                             <div class="team-member">
-                                <div class="member-img">
-                                    <img src="{{ asset('/assets/img/Beryl.jpg') }}" class="img-fluid rounded"
-                                        alt="">
-                                </div>
                                 <div class="member-info">
                                     <h4>Gwido Putra Wijaya</h4>
                                     <span>10/2341720103</span>
@@ -567,13 +551,9 @@
                             </div>
                         </div><!-- End Team Member -->
 
-                        <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up"
+                        <div class="col-lg-3 col-md-6  align-items-stretch" data-aos="fade-up"
                             data-aos-delay="400">
                             <div class="team-member">
-                                <div class="member-img">
-                                    <img src="{{ asset('/assets/img/Beryl.jpg') }}" class="img-fluid rounded"
-                                        alt="">
-                                </div>
                                 <div class="member-info">
                                     <h4>Ilham Faturachman</h4>
                                     <span>12/244107023001</span>
