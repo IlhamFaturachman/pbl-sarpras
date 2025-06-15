@@ -93,9 +93,9 @@
                     <div id="step-3" class="form-step" style="display: none;">
                         <h6 class="mb-3">Detail Kerusakan</h6>
                         <div class="mb-3">
-                            <label for="item_id" class="form-label">Item <span class="text-danger">*</span></label>
+                            <label for="item_id" class="form-label">Sarana <span class="text-danger">*</span></label>
                             <select class="form-select" id="item_id" name="item_id" required>
-                                <option value="">Pilih Item</option>
+                                <option value="">Pilih Sarana</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -321,14 +321,14 @@
         const ruangId = $(this).val();
         
         // Reset item dropdown
-        $('#item_id').empty().append('<option value="">Pilih Item</option>');
+        $('#item_id').empty().append('<option value="">Pilih Sarana</option>');
         
         if (ruangId) {
             $.ajax({
                 url: "{{ url('users/kerusakan/item-by-ruang') }}/" + ruangId,
                 type: 'GET',
                 success: function(response) {
-                    $('#item_id').empty().append('<option value="">Pilih Item</option>');
+                    $('#item_id').empty().append('<option value="">Pilih Sarana</option>');
                     
                     if (response.items && response.items.length > 0) {
                         response.items.forEach(function(item) {
@@ -337,11 +337,11 @@
                             );
                         });
                     } else {
-                        $('#item_id').append('<option value="" disabled>Tidak ada item tersedia untuk ruangan ini</option>');
+                        $('#item_id').append('<option value="" disabled>Tidak ada sarana tersedia untuk ruangan ini</option>');
                     }
                 },
                 error: function() {
-                    Swal.fire('Error', 'Gagal memuat data item.', 'error');
+                    Swal.fire('Error', 'Gagal memuat data sarana.', 'error');
                 }
             });
         }
@@ -352,14 +352,14 @@
         const fasumId = $(this).val();
         
         // Reset item dropdown
-        $('#item_id').empty().append('<option value="">Pilih Item</option>');
+        $('#item_id').empty().append('<option value="">Pilih Sarana</option>');
         
         if (fasumId) {
             $.ajax({
                 url: "{{ url('users/kerusakan/item-by-fasum') }}/" + fasumId,
                 type: 'GET',
                 success: function(response) {
-                    $('#item_id').empty().append('<option value="">Pilih Item</option>');
+                    $('#item_id').empty().append('<option value="">Pilih Sarana</option>');
                     
                     if (response.items && response.items.length > 0) {
                         response.items.forEach(function(item) {
@@ -368,11 +368,11 @@
                             );
                         });
                     } else {
-                        $('#item_id').append('<option value="" disabled>Tidak ada item tersedia untuk fasilitas ini</option>');
+                        $('#item_id').append('<option value="" disabled>Tidak ada sarana tersedia untuk fasilitas ini</option>');
                     }
                 },
                 error: function() {
-                    Swal.fire('Error', 'Gagal memuat data item.', 'error');
+                    Swal.fire('Error', 'Gagal memuat data sarana.', 'error');
                 }
             });
         }
@@ -479,7 +479,7 @@
             }
         } else if (currentStep === 3) {
             if (!$('#item_id').val()) {
-                Swal.fire('Perhatian', 'Pilih item terlebih dahulu.', 'warning');
+                Swal.fire('Perhatian', 'Pilih sarana terlebih dahulu.', 'warning');
                 return false;
             }
 

@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Edit Data Fasum</h5>
+                <h5 class="modal-title" id="exampleModalLabel1">Edit Data Fasilitas Umum</h5>
                 <button
                 type="button"
                 class="btn-close"

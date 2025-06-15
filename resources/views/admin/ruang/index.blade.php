@@ -44,6 +44,7 @@
                     <th style="font-weight: bold;">Nama Ruang</th>
                     <th style="font-weight: bold;">Kode Gedung</th>
                     <th style="font-weight: bold;">Nama Gedung</th>
+                    <th style="font-weight: bold;">Lantai</th>
                     <th style="font-weight: bold;" class="text-center">Aksi</th>
                 </tr>
             </thead>
@@ -55,9 +56,10 @@
                         <td>{{ $ruang->nama }}</td>
                         <td>{{ $ruang->gedung->kode }}</td>
                         <td>{{ $ruang->gedung->nama }}</td>
+                        <td>{{ $ruang->lantai }}</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="button" class="btn btn-sm btn-primary detail-ruang" data-id="{{ $ruang->ruang_id }}">Detail</button>
+                                <!-- <button type="button" class="btn btn-sm btn-primary detail-ruang" data-id="{{ $ruang->ruang_id }}">Detail</button> -->
                                 <button type="button" class="btn btn-sm btn-warning edit-ruang" data-id="{{ $ruang->ruang_id }}">Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $ruang->ruang_id }}', '{{ $ruang->nama }}')">Hapus</button>
                             </div>

@@ -53,8 +53,8 @@
                                 <div class="demo-inline-spacing text-center">
                                     <div class="btn-group text-center">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button type="button" class="btn btn-sm btn-primary detail-periode"
-                                                data-id="{{ $periode->periode_id }}">Detail</button>
+                                            <!-- <button type="button" class="btn btn-sm btn-primary detail-periode"
+                                                data-id="{{ $periode->periode_id }}">Detail</button> -->
                                             <button type="button" class="btn btn-sm btn-warning edit-periode"
                                                 data-id="{{ $periode->periode_id }}">Edit</button>
                                             <button type="button" class="btn btn-sm btn-danger"

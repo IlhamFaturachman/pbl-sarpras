@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\GedungController;
 use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\User\DashboardUserController;
+use App\Http\Controllers\Sarpras\DashboardSarprasController;
 use App\Http\Controllers\LaporanSarprasController;
 use App\Http\Controllers\User\FeedbackController;
 use App\Http\Controllers\User\KerusakanController;
@@ -120,7 +121,7 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
 
 // -------------------- SARPRAS --------------------
 Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function () {
-    Route::get('/dashboard', fn() => view('sarpras.dashboard'))->name('sarpras.dashboard');
+    Route::get('/dashboard', [DashboardSarprasController::class, 'index'])->name('sarpras.dashboard');
 
     Route::prefix('sarpras')->group(function () {
         Route::resource('item', ItemController::class)->except(['create', 'show'])->names([
