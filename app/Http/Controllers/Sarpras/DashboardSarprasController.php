@@ -28,7 +28,7 @@ class DashboardSarprasController extends Controller
 
         // Riwayat
         $riwayatSelesai = LaporanModel::where('status_laporan', 'selesai')->count();
-        $riwayatBatal = LaporanModel::where('status_laporan', 'dibatalkan')->count();
+        $riwayatTolak = LaporanModel::where('status_laporan', 'ditolak')->count();
 
         return view('sarpras.dashboard', [
             'verifikasiSudah' => $verifikasiSudah,
@@ -36,7 +36,7 @@ class DashboardSarprasController extends Controller
             'penugasanSudah' => $penugasanSudah,
             'penugasanBelum' => $penugasanBelum,
             'riwayatSelesai' => $riwayatSelesai,
-            'riwayatBatal' => $riwayatBatal,
+            'riwayatTolak' => $riwayatTolak,
             'teknisi' => $teknisi,
 
         ]);

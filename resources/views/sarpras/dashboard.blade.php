@@ -83,7 +83,7 @@
                     </div>
                     <h6 class="card-title">Riwayat Laporan</h6>
                     <p class="mb-1">Selesai: <strong>{{ $riwayatSelesai }}</strong></p>
-                    <p>Dibatalkan: <strong>{{ $riwayatBatal }}</strong></p>
+                    <p>Ditolak: <strong>{{ $riwayatTolak }}</strong></p>
                     <a href="{{ route('laporan.riwayat') }}" class="btn btn-sm btn-outline-primary">Lihat Riwayat</a>
                 </div>
             </div>
