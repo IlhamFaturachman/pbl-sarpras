@@ -1,7 +1,10 @@
+@php
+    $storeRoute = auth()->user()->hasRole('admin') ? 'data.item.store' : 'sarpras.item.store';
+@endphp
 <div class="modal fade" id="editItem" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="form-edit" method="POST" enctype="multipart/form-data">
+            <form id="form-edit" action="{{ route($storeRoute) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">

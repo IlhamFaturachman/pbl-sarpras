@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Events\LaporanDibuat;
 use App\Models\KerusakanModel;
 use App\Models\RuangModel;
 use App\Models\GedungModel;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class KerusakanController extends Controller
 {
@@ -117,6 +119,12 @@ class KerusakanController extends Controller
             $laporan->tanggal_laporan = now()->toDateString(); 
             $laporan->periode_id = $periode->periode_id;
             $laporan->save();
+
+            // Trigger event
+            event(new LaporanDibuat($laporan));
+
+            Log::info('Event LaporanDibuat telah dipanggil', ['laporan_id' => $laporan->laporan_id]);
+            
 
             DB::commit();
 

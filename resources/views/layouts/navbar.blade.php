@@ -21,34 +21,40 @@
       <li class="nav-item dropdown-notification navbar-dropdown dropdown me-3">
         <a class="nav-link dropdown-toggle hide-arrow position-relative d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="dropdown">
           <i class="bx bx-bell" style="font-size: 1.5rem;"></i>
+          @if ($unreadCount > 0)
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                style="font-size: 0.65rem; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
-            3
+            style="font-size: 0.65rem; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
+            {{ $unreadCount }}
           </span>
+          @endif
         </a>
+
         <ul class="dropdown-menu dropdown-menu-end py-0 shadow">
           <li class="dropdown-menu-header border-bottom">
             <div class="dropdown-header d-flex align-items-center py-3">
               <h6 class="mb-0 me-auto">Notifikasi</h6>
             </div>
           </li>
-          <li class="dropdown-notifications-list scrollable-container">
+          <li class="dropdown-notifications-list" style="max-height: 300px; overflow-y: auto;">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item list-group-item-action dropdown-item">
-                <div class="d-flex align-items-center gap-2">
-                  <i class="bx bx-message text-primary"></i>
+              @forelse($notifikasiList as $notif)
+              <li class="list-group-item list-group-item-action dropdown-item {{ !$notif->is_read ? 'bg-light' : '' }}">
+                <a href="{{ route('notifikasi.baca', $notif->id) }}" class="d-flex align-items-center gap-2 text-dark text-decoration-none">
+                  <i class="bx bx-bell text-primary"></i>
                   <div class="flex-grow-1">
-                    <h6 class="mb-0 fw-semibold">Pesan Baru</h6>
-                    <small class="text-muted">Kamu menerima pesan baru</small>
+                    <h6 class="mb-0 fw-semibold text-wrap text-break" style="max-width: 300px;">
+                      {{ $notif->isi_notifikasi }}
+                    </h6>
+                    <small class="text-muted">
+                      {{ optional($notif->created_at)->setTimezone('Asia/Jakarta')->diffForHumans() }}
+                    </small>
                   </div>
-                </div>
+                </a>
               </li>
+              @empty
+              <li class="list-group-item text-center text-muted">Tidak ada notifikasi</li>
+              @endforelse
             </ul>
-          </li>
-          <li class="dropdown-menu-footer border-top">
-            <a href="/notifikasi" class="dropdown-item d-flex justify-content-center text-primary p-2">
-              Lihat semua notifikasi
-            </a>
           </li>
         </ul>
       </li>
@@ -76,7 +82,9 @@
               </div>
             </a>
           </li>
-          <li><hr class="dropdown-divider"></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
           <li>
             <form action="{{ route('logout') }}" method="POST" id="logout-form">
               @csrf

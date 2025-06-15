@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TeknisiDitugaskan;
 use App\Http\Controllers\Controller;
 use App\Models\LaporanModel;
 use App\Models\PenugasanModel;
@@ -72,9 +73,9 @@ class LaporanSarprasController extends Controller
 
         try {
             DB::beginTransaction();
-
+        
             // Simpan data penugasan
-            PenugasanModel::create([
+            $penugasan = PenugasanModel::create([
                 'laporan_id' => $id,
                 'teknisi_id' => $request->teknisi,
                 'status_penugasan' => null,
@@ -82,18 +83,21 @@ class LaporanSarprasController extends Controller
                 'tanggal_selesai' => null,
                 'catatan_perbaikan' => null
             ]);
-
+        
             // Ubah status laporan menjadi "Dikerjakan"
             LaporanModel::where('laporan_id', $id)->update([
                 'status_laporan' => 'Dikerjakan',
                 'tanggal_update_status' => Carbon::now(),
             ]);
-
+        
+            // Trigger event dengan data penugasan yang baru disimpan
+            event(new TeknisiDitugaskan($penugasan));
+        
             DB::commit();
             return redirect()->back()->with('success', 'Teknisi berhasil ditugaskan dan status laporan diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal menyimpan penugasan: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menugaskan teknisi: ' . $e->getMessage());
         }
     }
 

@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
+use App\Models\NotifikasiModel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +51,16 @@ class AppServiceProvider extends ServiceProvider
                     default: echo 'help-circle';
                 }
             ?>";
+        });
+
+        View::composer('*', function ($view) {
+            if (Auth::check()) {
+                $userId = Auth::id();
+                $notifikasiList = NotifikasiModel::where('user_id', $userId)->latest()->take(5)->get();
+                $unreadCount = NotifikasiModel::where('user_id', $userId)->where('is_read', false)->count();
+    
+                $view->with('notifikasiList', $notifikasiList)->with('unreadCount', $unreadCount);
+            }
         });
     }
 }

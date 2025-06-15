@@ -1,4 +1,7 @@
-<form action="{{ route('item.store') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
+@php
+    $storeRoute = auth()->user()->hasRole('admin') ? 'data.item.store' : 'sarpras.item.store';
+@endphp
+<form action="{{ route($storeRoute) }}" method="POST" id="form-tambah" enctype="multipart/form-data">
     @csrf
     <div class="modal fade" id="createItem" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">

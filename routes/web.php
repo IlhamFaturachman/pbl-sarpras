@@ -16,6 +16,8 @@ use App\Http\Controllers\LaporanSarprasController;
 use App\Http\Controllers\User\FeedbackController;
 use App\Http\Controllers\User\KerusakanController;
 use App\Http\Controllers\Admin\LaporanAdminController;
+use App\Models\NotifikasiModel;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,10 +85,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         // Item
         Route::resource('item', ItemController::class)->except(['create', 'show'])->names([
             'index' => 'data.item',
-            'store' => 'item.store',
-            'edit' => 'item.edit',
-            'update' => 'item.update',
-            'destroy' => 'item.destroy'
+            'store' => 'data.item.store',
+            'edit' => 'data.item.edit',
+            'update' => 'data.item.update',
+            'destroy' => 'data.item.destroy'
         ]);
 
         Route::get('item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
@@ -126,10 +128,10 @@ Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function (
     Route::prefix('sarpras')->group(function () {
         Route::resource('item', ItemController::class)->except(['create', 'show'])->names([
             'index' => 'sarpras.item',
-            'store' => 'item.store',
-            'edit' => 'item.edit',
-            'update' => 'item.update',
-            'destroy' => 'item.destroy'
+            'store' => 'sarpras.item.store',
+            'edit' => 'sarpras.item.edit',
+            'update' => 'sarpras.item.update',
+            'destroy' => 'sarpras.item.destroy'
         ]);
 
         Route::get('/item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
@@ -173,6 +175,36 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profil', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 });
+
+// Menandai notifikasi sebagai sudah dibaca dan redirect ke laporan (atau kehalaman umum)
+Route::get('/notifikasi/baca/{id}', function ($id) {
+    $notif = NotifikasiModel::where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
+
+    $notif->is_read = true;
+    $notif->save();
+
+    // Cek role user dan redirect ke halaman sesuai role
+    $role = Auth::user()->getRoleNames()->first(); // Ambil role pertama user
+
+    switch ($role) {
+        case 'mahasiswa':
+            return redirect('/users/kerusakan');
+        case 'sarpras':
+            return redirect('/sarpras/laporan/verifikasi');
+        case 'admin':
+            return redirect('/admin/dashboard');
+        case 'teknisi':
+            return redirect('/teknisi/penugasan');
+        case 'dosen':
+            return redirect('/users/kerusakan');
+        case 'tendik':
+            return redirect('/users/kerusakan');
+        default:
+            return redirect('/dashboard'); // fallback jika role tidak dikenali
+    }
+})->name('notifikasi.baca');
 
 // Auth Routes
 require __DIR__ . '/auth.php';

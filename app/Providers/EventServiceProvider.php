@@ -6,6 +6,10 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Events\LaporanDibuat;
+use App\Listeners\KirimNotifKeSarpras;
+use App\Events\TeknisiDitugaskan;
+use App\Listeners\KirimNotifKeTeknisi;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,6 +19,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+        LaporanDibuat::class => [
+            KirimNotifKeSarpras::class,
+        ],
+        TeknisiDitugaskan::class => [
+            KirimNotifKeTeknisi::class,
+        ],
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],

@@ -24,6 +24,10 @@ class NotifikasiModel extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
+
     public function laporan(): BelongsTo
     {
         return $this->belongsTo(LaporanModel::class, 'laporan_id', 'laporan_id');
