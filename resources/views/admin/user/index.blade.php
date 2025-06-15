@@ -219,7 +219,7 @@
 
                     // Update profile image
                     if (user.foto_profile) {
-                        $('#edit-preview-image').attr('src', "{{ asset('storage/') }}/" + user.foto_profile);
+                        $('#edit-preview-image').attr('src', "{{ asset('storage/foto_profile') }}/" + user.foto_profile);
                     } else {
                         $('#edit-preview-image').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
                     }

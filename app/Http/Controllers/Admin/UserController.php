@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\UserActivatedMail;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         // Ambil semua role
         $roles = DB::table('m_role')->select('id', 'name')->get();
 
@@ -54,7 +57,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
             'nomor_induk' => 'required|string|max:255|unique:m_user,nomor_induk',
@@ -89,9 +93,9 @@ class UserController extends Controller
 
             if ($request->hasFile('foto_profile')) {
                 $file = $request->file('foto_profile');
-                $fileName = time().'_'.$file->getClientOriginalName();
+                $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/foto_profile', $fileName);
-                $data['foto_profile'] = 'foto_profile/'.$fileName;
+                $data['foto_profile'] = 'foto_profile/' . $fileName;
             }
 
             // Simpan user ke database
@@ -115,8 +119,9 @@ class UserController extends Controller
                 ->with('adding', true);
         }
     }
-    
-    public function show($id) {
+
+    public function show($id)
+    {
         $user = UserModel::with('roles')->find($id);
 
         if (!$user) {
@@ -129,45 +134,50 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $user = UserModel::findOrFail($id);
         $roles = DB::table('m_role')->select('id', 'name')->get();
         $userRole = $user->roles->first() ? $user->roles->first()->id : '';
-        
+
         return response()->json([
             'user' => $user,
             'userRole' => $userRole
         ]);
     }
-    
-    public function update(Request $request, $id) {
+
+    public function update(Request $request, $id)
+    {
         $user = UserModel::findOrFail($id);
-        
+
         // Validasi input
         $rules = [
             'nama_lengkap' => 'required|string|max:255',
-            'nomor_induk' => 'required|string|max:255|unique:m_user,nomor_induk,'.$id.',user_id',
+            'nomor_induk' => 'required|string|max:255|unique:m_user,nomor_induk,' . $id . ',user_id',
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:m_user,email,'.$id.',user_id',
+            'email' => 'required|email|max:255|unique:m_user,email,' . $id . ',user_id',
             'password' => 'nullable|min:6',
             'foto_profile' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
             'role' => 'required|exists:m_role,id', // Pastikan ini sesuai dengan tabel roles Anda
             'status' => 'required|in:Aktif,Tidak Aktif'
         ];
-    
+
         $validator = Validator::make($request->all(), $rules);
-    
-        if($validator->fails()){
+
+        if ($validator->fails()) {
             return redirect()->route('data.user')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('editing', true)
                 ->with('editUserId', $id);
         }
-    
+
         try {
             DB::beginTransaction();
-    
+
+            $previousStatus = $user->status; // Simpan status sebelum diupdate
+            
+
             $data = [
                 'nama_lengkap' => $request->nama_lengkap,
                 'nomor_induk' => $request->nomor_induk,
@@ -175,35 +185,45 @@ class UserController extends Controller
                 'email' => $request->email,
                 'status' => $request->status
             ];
-    
+
             // Update password jika diisi
             if (!empty($request->password)) {
                 $data['password'] = bcrypt($request->password);
             }
-    
+
             // Update foto profile jika ada
             if ($request->hasFile('foto_profile')) {
                 // Hapus foto lama jika ada
-                if ($user->foto_profile && Storage::exists('public/'.$user->foto_profile)) {
-                    Storage::delete('public/'.$user->foto_profile);
+                if ($user->foto_profile && Storage::exists('public/' . $user->foto_profile)) {
+                    Storage::delete('public/' . $user->foto_profile);
                 }
-                
+
                 $file = $request->file('foto_profile');
-                $fileName = time().'_'.$file->getClientOriginalName();
+                $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->storeAs('public/foto_profile', $fileName);
-                $data['foto_profile'] = 'foto_profile/'.$fileName; 
+                $data['foto_profile'] = 'foto_profile/' . $fileName;
             }
-    
+
             // Update user
             $user->update($data);
-            
+
             // $role = DB::table('m_role')->find($request->role);
             // $user->syncRoles([$role->name]); 
-            
+
             $user->roles()->sync([$request->role]);
-            
+
+            $user->update($data);
+
+            // Sync role
+            $user->roles()->sync([$request->role]);
+
+            // Kirim email jika status berubah jadi Aktif
+            if ($previousStatus !== 'Aktif' && $request->status === 'Aktif') {
+                Mail::to($user->email)->send(new UserActivatedMail($user));
+            }
+
             DB::commit();
-    
+
             return redirect()->route('data.user')->with('success', 'Data User berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -214,22 +234,23 @@ class UserController extends Controller
                 ->with('editUserId', $id);
         }
     }
-    
-    public function destroy($id) {
+
+    public function destroy($id)
+    {
         try {
             $user = UserModel::findOrFail($id);
-            
+
             // Hapus foto profile jika ada
-            if ($user->foto_profile && Storage::exists('public/'.$user->foto_profile)) {
-                Storage::delete('public/'.$user->foto_profile);
+            if ($user->foto_profile && Storage::exists('public/' . $user->foto_profile)) {
+                Storage::delete('public/' . $user->foto_profile);
             }
-            
+
             // Hapus roles terkait
             $user->syncRoles([]);
-            
+
             // Hapus user
             $user->delete();
-            
+
             return redirect()->route('data.user')->with('success', 'Data User berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->route('data.user')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

@@ -28,7 +28,12 @@
                         <!-- Foto Profil -->
                         <div class="col-md-12 text-center mb-4">
                             <label for="edit_foto_profile" style="cursor: pointer;">
-                                <img id="edit-preview-image" src="{{ $editUser->foto_profile ? asset('storage/'.$editUser->foto_profile) : asset('assets/img/avatars/default-avatar.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                                <img
+                                    class="img-thumbnail rounded-circle"
+                                    id="edit-preview-image"
+                                    style="width: 150px; height: 150px; object-fit: cover;"
+                                    src="{{ $editUser->foto_profile ? asset('storage/'.$editUser->foto_profile) : asset('assets/img/avatars/default-avatar.png') }}"
+                                    data-original="{{ $editUser->foto_profile ? asset('storage/'.$editUser->foto_profile) : asset('assets/img/avatars/default-avatar.png') }}">
                             </label>
                             <input type="file" class="d-none" id="edit_foto_profile" name="foto_profile" accept="image/*">
                             <small class="text-muted d-block">Klik untuk upload</small>
@@ -100,13 +105,19 @@
 </form>
 
 <script>
-    // Preview image before upload
-    $(document).on('change', '#edit_foto_profile', function() {
-        if (this.files && this.files[0]) {
+    $('body').on('change', '#edit_foto_profile', function() {
+        const input = this;
+        const preview = document.getElementById('edit-preview-image');
+
+        if (input.files && input.files[0]) {
             const reader = new FileReader();
-            reader.onload = e => $('#edit-preview-image').attr('src', e.target.result);
-            reader.readAsDataURL(this.files[0]);
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
         }
+
+        console.log('File dipilih:', input.files[0]);
     });
 
     // Auto-open modal if there are validation errors for edit form
