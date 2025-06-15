@@ -3,34 +3,34 @@
 @section('content')
 <!-- Flash Messages -->
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-success alert-dismissible" role="alert">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger alert-dismissible" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-danger alert-dismissible" role="alert">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Data Pengguna</h5>
-        
+
         <div class="d-flex align-items-center gap-2" style="max-width: 100%;">
             <div class="position-relative" style="max-width: 300px; width: 100%;">
                 <i class="bi bi-search position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    class="form-control form-control-sm" 
-                    placeholder="Cari..." 
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control form-control-sm"
+                    placeholder="Cari..."
                     style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-weight: 400; font-size: 1rem; height: 42px; padding-left: 2.5rem;" />
             </div>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#createUser" class="btn btn-outline-primary btn-sm"  style="height: 42px; align-items: center;">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#createUser" class="btn btn-outline-primary btn-sm" style="height: 42px; align-items: center;">
                 <i class="bx bx-plus me-1"></i> Tambah
             </button>
         </div>
@@ -47,7 +47,7 @@
                             <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-filter" style="font-size: 1.1rem;"></i>
                             </a>
-                                <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="font-size: 0.85rem; padding: 0.25rem 0;">
+                            <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="font-size: 0.85rem; padding: 0.25rem 0;">
                                 <li><a class="dropdown-item filter-role" data-value="">Semua</a></li>
                                 <li><a class="dropdown-item filter-role" data-value="Admin">Admin</a></li>
                                 <li><a class="dropdown-item filter-role" data-value="Dosen">Dosen</a></li>
@@ -66,22 +66,22 @@
             </thead>
             <tbody class="table-border-bottom-0">
                 @forelse($users as $user)
-                    <tr>
-                        <td>{{ $loop->iteration + ($users->firstItem() - 1) }}</td>
-                        <td>{{ $user->nomor_induk }}</td>
-                        <td>{{ $user->nama_lengkap }}</td>
-                        <td>{{ \Illuminate\Support\Str::title($user->getRoleNames()->first()) }}</td>
-                        <td>{{ $user->nama }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td><span class="badge bg-label-{{ $user->status == 'Aktif' ? 'success' : 'danger' }} me-1">{{ $user->status }}</span></td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <button type="button" class="btn btn-sm btn-primary detail-user" data-id="{{ $user->user_id }}">Detail</button>
-                                <button type="button" class="btn btn-sm btn-warning edit-user" data-id="{{ $user->user_id }}">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $user->user_id }}', '{{ $user->nama_lengkap }}')">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ $loop->iteration + ($users->firstItem() - 1) }}</td>
+                    <td>{{ $user->nomor_induk }}</td>
+                    <td>{{ $user->nama_lengkap }}</td>
+                    <td>{{ \Illuminate\Support\Str::title($user->getRoleNames()->first()) }}</td>
+                    <td>{{ $user->nama }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td><span class="badge bg-label-{{ $user->status == 'Aktif' ? 'success' : 'danger' }} me-1">{{ $user->status }}</span></td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" class="btn btn-sm btn-primary detail-user" data-id="{{ $user->user_id }}">Detail</button>
+                            <button type="button" class="btn btn-sm btn-warning edit-user" data-id="{{ $user->user_id }}">Edit</button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="showDeleteModal('{{ $user->user_id }}', '{{ $user->nama_lengkap }}')">Hapus</button>
+                        </div>
+                    </td>
+                </tr>
                 @empty
                 <tr>
                     <td colspan="7" class="text-center text-muted">Tidak ada data pengguna</td>
@@ -92,13 +92,13 @@
     </div>
 
     @php
-        $paginator = $users->appends(request()->query());
+    $paginator = $users->appends(request()->query());
     @endphp
 
     <div class="d-flex justify-content-end mt-3 me-3">
         <x-pagination :paginator="$paginator" />
     </div>
-    
+
 </div>
 
 @include('admin.user.create')
@@ -109,9 +109,8 @@
 <style>
     /* Sembunyikan icon panah dropdown bawaan Bootstrap */
     .dropdown-toggle::after {
-    display: none !important;
+        display: none !important;
     }
-
 </style>
 
 <!-- SweetAlert Script -->
@@ -119,45 +118,46 @@
     // Auto-trigger SweetAlert for success or error messages
     document.addEventListener('DOMContentLoaded', function() {
         @if(session('success'))
-            Swal.fire({
-                title: "Berhasil",
-                text: "{{ session('success') }}",
-                icon: "success",
-                timer: 3000
-            });
+        Swal.fire({
+            title: "Berhasil",
+            text: "{{ session('success') }}",
+            icon: "success",
+            timer: 3000
+        });
         @endif
 
         @if(session('error'))
-            Swal.fire({
-                title: "Gagal",
-                text: "{{ session('error') }}",
-                icon: "error"
-            });
+        Swal.fire({
+            title: "Gagal",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
         @endif
 
         @if(session('adding'))
-            // Buka modal tambah user otomatis setelah validasi gagal
-            var createUserModal = new bootstrap.Modal(document.getElementById('createUser'));
-            createUserModal.show();
+        // Buka modal tambah user otomatis setelah validasi gagal
+        var createUserModal = new bootstrap.Modal(document.getElementById('createUser'));
+        createUserModal.show();
         @endif
-        
+
         function toTitleCase(str) {
+            if (!str) return ''; // jika null, undefined, atau kosong, kembalikan string kosong
             return str.toLowerCase().split(' ').map(function(word) {
                 return word.charAt(0).toUpperCase() + word.slice(1);
             }).join(' ');
         }
-        
+
         // Handle detail button click
-        $('.detail-user').on('click', function () {
+        $('.detail-user').on('click', function() {
             const userId = $(this).data('id');
             $.ajax({
-                url: "{{ url('admin/data/user') }}/" + userId + "/show",
+                url: "{{ url('admin/data/user') }}/" + userId,
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     const user = response.user;
                     const userRole = response.userRole;
-                    
+
                     // Populate modal fields with user data
                     $('#detail_nama_lengkap').text(user.nama_lengkap);
                     $('#detail_user_id').text(user.user_id);
@@ -168,13 +168,13 @@
                     $('#detail_status').text(user.status);
 
                     if (user.foto_profile) {
-                        $('#detail_foto_profile').attr('src', "{{ asset('storage') }}/" + user.foto_profile);
+                        $('#detail_foto_profile').attr('src', "{{ asset('storage/foto_profile') }}/" + user.foto_profile);
                     } else {
                         $('#detail_foto_profile').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
                     }
 
                     if (user.identitas) {
-                        $('#detail_foto_identitas').attr('src', "{{ asset('storage') }}/" + user.identitas);
+                        $('#detail_foto_identitas').attr('src', "{{ asset('storage/identitas') }}/" + user.identitas);
                     } else {
                         $('#detail_foto_identitas').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
                     }
@@ -195,7 +195,7 @@
         // Handle edit button click
         $('.edit-user').on('click', function() {
             const userId = $(this).data('id');
-            
+
             // Fetch user data
             $.ajax({
                 url: "{{ url('admin/data/user') }}/" + userId + "/edit",
@@ -204,7 +204,7 @@
                 success: function(response) {
                     const user = response.user;
                     const userRole = response.userRole;
-                    
+
                     // Populate form fields
                     $('#edit_nama_lengkap').val(user.nama_lengkap);
                     $('#edit_nomor_induk').val(user.nomor_induk);
@@ -213,17 +213,17 @@
                     $('#edit_password').val(''); // Clear password field
                     $('#edit_role').val(userRole);
                     $('#edit_status').val(user.status);
-                    
+
                     // Update form action
                     $('#form-edit').attr('action', "{{ url('admin/data/user') }}/" + userId);
-                    
+
                     // Update profile image
                     if (user.foto_profile) {
-                        $('#edit-preview-image').attr('src', "{{ asset('storage') }}/" + user.foto_profile);
+                        $('#edit-preview-image').attr('src', "{{ asset('storage/') }}/" + user.foto_profile);
                     } else {
                         $('#edit-preview-image').attr('src', "{{ asset('assets/img/avatars/default-avatar.png') }}");
                     }
-                    
+
                     // Show modal
                     $('#editUser').modal('show');
                 },
@@ -237,10 +237,10 @@
             });
         });
 
-        $('.filter-role').on('click', function () {
+        $('.filter-role').on('click', function() {
             const selectedRole = $(this).data('value').toLowerCase();
 
-            $('table tbody tr').each(function () {
+            $('table tbody tr').each(function() {
                 const roleCell = $(this).find('td').eq(4); // kolom role
                 const roleText = roleCell.text().toLowerCase().trim();
 
@@ -253,13 +253,13 @@
         });
 
         // Search input filtering
-        $('#searchInput').on('keyup', function () {
+        $('#searchInput').on('keyup', function() {
             const keyword = $(this).val().toLowerCase().trim();
-            
-            $('table tbody tr').each(function () {
+
+            $('table tbody tr').each(function() {
                 // Cek semua kolom di baris ini
                 const rowText = $(this).text().toLowerCase();
-                
+
                 if (rowText.indexOf(keyword) > -1) {
                     $(this).show();
                 } else {

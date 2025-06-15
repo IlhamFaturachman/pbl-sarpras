@@ -171,10 +171,6 @@
                   <i class="bx bx-log-in me-1"></i>
                   Ke Halaman Login
                 </a>
-                <a href="{{ route('register') }}" class="btn btn-outline-primary">
-                  <i class="bx bx-user-plus me-1"></i>
-                  Daftar Lagi
-                </a>
               </div>
 
               <!-- Additional Info -->

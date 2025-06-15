@@ -7,23 +7,23 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel1">Edit Data User</h5>
                     <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Error handling dari Laravel validation -->
                     @if ($errors->any() && session('editing'))
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
-                    
+
                     <div class="row">
                         <!-- Foto Profil -->
                         <div class="col-md-12 text-center mb-4">
@@ -71,9 +71,9 @@
                             <select id="edit_role" name="role" class="form-select" required>
                                 <option value="">-- Pilih Role --</option>
                                 @foreach($roles as $role)
-                                    <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
-                                        {{ ucwords(strtolower($role->name)) }}
-                                    </option>
+                                <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
+                                    {{ ucwords(strtolower($role->name)) }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
-                    Batal
+                        Batal
                     </button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
@@ -101,18 +101,18 @@
 
 <script>
     // Preview image before upload
-    $('#edit_foto_profile').on('change', function() {
+    $(document).on('change', '#edit_foto_profile', function() {
         if (this.files && this.files[0]) {
             const reader = new FileReader();
             reader.onload = e => $('#edit-preview-image').attr('src', e.target.result);
             reader.readAsDataURL(this.files[0]);
         }
     });
-    
+
     // Auto-open modal if there are validation errors for edit form
     @if($errors->any() && session('editing'))
-        $(document).ready(function() {
-            $('#editUser').modal('show');
-        });
+    $(document).ready(function() {
+        $('#editUser').modal('show');
+    });
     @endif
 </script>

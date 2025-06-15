@@ -92,6 +92,8 @@
                       name="nama_lengkap"
                       placeholder="Masukkan Nama Lengkap"
                       value="{{ old('nama_lengkap') }}"
+                      minlength="3"
+                      maxlength="50"
                       required />
                     @error('nama_lengkap')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -106,6 +108,8 @@
                       name="nomor_induk"
                       placeholder="Masukkan NIM"
                       value="{{ old('nomor_induk') }}"
+                      minlength="10"
+                      maxlength="20"
                       required pattern="\d+"
                       title="NIM harus berupa angka" />
                     @error('nomor_induk')
@@ -113,14 +117,16 @@
                     @enderror
                   </div>
                   <div class="col-md-4 mb-3">
-                    <label for="nama" class="form-label">Nama</label>
+                    <label for="nama" class="form-label">Username</label>
                     <input
                       type="text"
                       class="form-control @error('nama') is-invalid @enderror"
                       id="nama"
                       name="nama"
-                      placeholder="Masukkan Nama"
+                      placeholder="Masukkan Username"
                       value="{{ old('nama') }}"
+                      minlength="3"
+                      maxlength="50"
                       required />
                     @error('nama')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -139,6 +145,8 @@
                       name="email"
                       placeholder="Masukkan Email"
                       value="{{ old('email') }}"
+                      minlength="5"
+                      maxlength="50"
                       required />
                     @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -153,6 +161,8 @@
                       class="form-control @error('password') is-invalid @enderror"
                       name="password"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      minlength="8"
+                      maxlength="50"
                       aria-describedby="password" />
                     <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
                     @error('password')
@@ -174,8 +184,7 @@
                       id="foto_profile"
                       name="foto_profile"
                       accept="image/*"
-                      onchange="previewImage(this, 'preview_foto_profile')"
-                      required />
+                      onchange="previewImage(this, 'preview_foto_profile')" />
                     <div class="preview-box" id="preview_foto_profile"></div>
                     @error('foto_profile')
                     <div class="text-danger mt-1">{{ $message }}</div>
@@ -193,8 +202,7 @@
                       id="identitas"
                       name="identitas"
                       accept="image/*"
-                      onchange="previewImage(this, 'preview_identitas')"
-                      required />
+                      onchange="previewImage(this, 'preview_identitas')" />
                     <div class="preview-box" id="preview_identitas"></div>
                     @error('identitas')
                     <div class="text-danger mt-1">{{ $message }}</div>
