@@ -4,7 +4,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Item</h5>
+                    <h5 class="modal-title" id="exampleModalLabel1">Tambah Data Sarana</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -38,7 +38,7 @@
                     <!-- Step 2a: Form untuk Gedung/Ruang -->
                     <div id="step2-gedung" class="step-content" style="display: none;">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="mb-0">Tambah Item di Gedung/Ruang</h6>
+                            <h6 class="mb-0">Tambah Sarana di Gedung/Ruang</h6>
                             <button type="button" class="btn btn-sm btn-label-secondary back-to-step1">
                                 <i class="bx bx-chevron-left me-1"></i> Kembali
                             </button>
@@ -69,8 +69,8 @@
                         
                         <div class="row">
                             <div class="col mb-3">
-                                <label for="nama_item_ruang" class="form-label">Nama Item</label>
-                                <input type="text" id="nama_item_ruang" name="nama_item_ruang" class="form-control" placeholder="Masukkan Nama Item" value="{{ old('nama') }}">
+                                <label for="nama_item_ruang" class="form-label">Nama Sarana</label>
+                                <input type="text" id="nama_item_ruang" name="nama_item_ruang" class="form-control" placeholder="Masukkan Nama Sarana" value="{{ old('nama') }}">
                             </div>
                         </div>
                         <input type="hidden" name="location_type" value="gedung">
@@ -79,7 +79,7 @@
                     <!-- Step 2b: Form untuk Fasilitas Umum -->
                     <div id="step2-fasum" class="step-content" style="display: none;">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="mb-0">Tambah Item di Fasilitas Umum</h6>
+                            <h6 class="mb-0">Tambah Sarana di Fasilitas Umum</h6>
                             <button type="button" class="btn btn-sm btn-label-secondary back-to-step1">
                                 <i class="bx bx-chevron-left me-1"></i> Kembali
                             </button>
@@ -101,8 +101,8 @@
                         
                         <div class="row">
                             <div class="col mb-3">
-                                <label for="nama_item_fasum" class="form-label">Nama Item</label>
-                                <input type="text" id="nama_item_fasum" name="nama_item_fasum" class="form-control" placeholder="Masukkan Nama Item" value="{{ old('nama') }}">
+                                <label for="nama_item_fasum" class="form-label">Nama Sarana</label>
+                                <input type="text" id="nama_item_fasum" name="nama_item_fasum" class="form-control" placeholder="Masukkan Nama Sarana" value="{{ old('nama') }}">
                             </div>
                         </div>
                         <input type="hidden" name="location_type" value="fasum">

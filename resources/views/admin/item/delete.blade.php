@@ -11,7 +11,7 @@
                 ></button>
             </div>
             <div class="modal-body">
-                <p>Anda yakin ingin menghapus item <strong id="delete-user-name"></strong>?</p>
+                <p>Anda yakin ingin menghapus sarana <strong id="delete-user-name"></strong>?</p>
                 <p class="text-danger">Tindakan ini tidak dapat dibatalkan.</p>
             </div>
             <div class="modal-footer">

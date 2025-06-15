@@ -5,7 +5,7 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Data Item</h5>
+                    <h5 class="modal-title">Edit Data Sarana</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -41,8 +41,8 @@
                         
                         <div class="row">
                             <div class="col mb-3">
-                                <label for="edit_nama_item_ruang" class="form-label">Nama Item</label>
-                                <input type="text" id="edit_nama_item_ruang" name="nama_item_ruang" class="form-control" placeholder="Masukkan Nama Item">
+                                <label for="edit_nama_item_ruang" class="form-label">Nama Sarana</label>
+                                <input type="text" id="edit_nama_item_ruang" name="nama_item_ruang" class="form-control" placeholder="Masukkan Nama Sarana">
                             </div>
                         </div>
                         <input type="hidden" name="location_type" value="gedung">
