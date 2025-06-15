@@ -129,6 +129,7 @@ class PenugasanController extends Controller
 
     public function show($id) {
         $laporan = LaporanModel::with([
+            'verifikator',
             'kerusakan.item',
             'kerusakan.item.ruang.gedung',
             'kerusakan.item.fasum',
