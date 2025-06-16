@@ -97,7 +97,7 @@
     </div>
 
     <!-- Chart Total Perbaikan -->
-    <div class="row mb-4">
+    <!-- <div class="row mb-4">
       <div class="col-12">
         <div class="card">
           <div class="card-header d-flex align-items-center justify-content-between">
@@ -123,7 +123,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Card Growth -->
     <div class="row">
