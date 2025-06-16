@@ -239,19 +239,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('#detail_foto_kerusakan').hide();
                 }
                 
-                // const skor = laporan.prioritas?.skor_laporan;
-                // let label = '-';
-                // if (skor === null || skor === undefined) {
-                //     label = '-';
-                // } else if (skor <= 40) {
-                //     label = Rendah (${skor});
-                // } else if (skor <= 70) {
-                //     label = Sedang (${skor});
-                // } else {
-                //     label = Tinggi (${skor});
-                // }
+                const skor = laporan.prioritas?.skor_laporan;
+                let label = '-';
+                if (skor === null || skor === undefined) {
+                    label = '-';
+                } else if (skor <= 40) {
+                    label = `Rendah (${skor})`;
+                } else if (skor <= 70) {
+                    label = `Sedang (${skor})`;
+                } else {
+                    label = `Tinggi (${skor})`;
+                }
 
-                // $('#detail_prioritas').text(label);
+                $('#detail_prioritas').text(label);
 
                 // Set status penugasan
                 const status_perbaikan = penugasan.status_penugasan ?? '-';
