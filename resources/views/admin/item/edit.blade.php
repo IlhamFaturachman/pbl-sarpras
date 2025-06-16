@@ -1,5 +1,5 @@
 @php
-    $storeRoute = auth()->user()->hasRole('admin') ? 'data.item.store' : 'sarpras.item.store';
+    $storeRoute = auth()->user()->hasRole('admin') ? 'data.item.store' : 'sarana.item.store';
 @endphp
 <div class="modal fade" id="editItem" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">

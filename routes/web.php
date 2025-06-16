@@ -125,16 +125,16 @@ Route::middleware(['auth', 'role:mahasiswa|dosen|tendik'])->prefix('users')->gro
 Route::middleware(['auth', 'role:sarpras'])->prefix('sarpras')->group(function () {
     Route::get('/dashboard', [DashboardSarprasController::class, 'index'])->name('sarpras.dashboard');
 
-    Route::prefix('sarpras')->group(function () {
+    Route::prefix('sarana')->group(function () {
         Route::resource('item', ItemController::class)->except(['create', 'show'])->names([
-            'index' => 'sarpras.item',
-            'store' => 'sarpras.item.store',
-            'edit' => 'sarpras.item.edit',
-            'update' => 'sarpras.item.update',
-            'destroy' => 'sarpras.item.destroy'
+            'index' => 'sarana.item',
+            'store' => 'sarana.item.store',
+            'edit' => 'sarana.item.edit',
+            'update' => 'sarana.item.update',
+            'destroy' => 'sarana.item.destroy'
         ]);
 
-        Route::get('/item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
+        Route::get('item/get-ruang/{gedung_id}', [ItemController::class, 'getRuangByGedung'])->name('item.get-ruang');
     });
 
     Route::prefix('laporan')->group(function () {

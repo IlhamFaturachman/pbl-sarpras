@@ -10,6 +10,7 @@ use App\Models\GedungModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
@@ -34,9 +35,10 @@ class ItemController extends Controller
         }
     }
 
-    public function store(Request $request) {
-        
-        if (request()->location_type == 'gedung') {
+    public function store(Request $request)
+    {
+        // Validasi rules
+        if ($request->location_type == 'gedung') {
             $rules = [
                 'ruang_id' => 'required|exists:m_ruang,ruang_id',
                 'nama_item_ruang' => 'required|string|max:255',
@@ -47,7 +49,7 @@ class ItemController extends Controller
                 'nama_item_fasum' => 'required|string|max:255',
             ];
         }
-
+    
         $messages = [
             'location_type.required' => 'Jenis lokasi harus dipilih',
             'location_type.in' => 'Jenis lokasi tidak valid',
@@ -60,40 +62,42 @@ class ItemController extends Controller
             'nama.required' => 'Nama item harus diisi',
             'nama.max' => 'Nama item maksimal 255 karakter',
         ];
-
+    
         $validator = Validator::make($request->all(), $rules, $messages);
-
+    
+        // Tentukan redirect route berdasarkan role
+        $role = Auth::user()->getRoleNames()->first();
+        $routeName = $role === 'sarpras' ? 'sarana.item' : 'data.item';
+    
         if ($validator->fails()) {
-            return redirect()->route('data.item')
+            return redirect()->route($routeName)
                 ->withErrors($validator)
                 ->withInput()
                 ->with('adding', true);
         }
-
-        // dd($request->all());
-
+    
         try {
-            // Set data berdasarkan jenis lokasi
             if ($request->location_type == 'gedung') {
                 $data['nama'] = $request->nama_item_ruang;
                 $data['ruang_id'] = $request->ruang_id;
-                $data['fasum_id'] = null; 
+                $data['fasum_id'] = null;
             } else {
                 $data['nama'] = $request->nama_item_fasum;
                 $data['fasum_id'] = $request->fasum_id;
-                $data['ruang_id'] = null; 
+                $data['ruang_id'] = null;
             }
-            
+    
             ItemModel::create($data);
-
-            return redirect()->route('data.item')->with('success', 'Data item berhasil disimpan');
+    
+            return redirect()->route($routeName)->with('success', 'Data item berhasil disimpan');
         } catch (\Exception $e) {
-            return redirect()->route('data.item')
+            return redirect()->route($routeName)
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput()
                 ->with('adding', true);
         }
     }
+    
 
     public function edit($id) {
         $item = ItemModel::with('ruang.gedung', 'fasum')->findOrFail($id);

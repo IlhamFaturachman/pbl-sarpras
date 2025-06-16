@@ -1,5 +1,5 @@
 @php
-    $storeRoute = auth()->user()->hasRole('admin') ? 'data.item.store' : 'sarpras.item.store';
+$storeRoute = auth()->user()->hasRole('admin') ? 'data.item.store' : 'sarana.item.store';
 @endphp
 <form action="{{ route($storeRoute) }}" method="POST" id="form-tambah" enctype="multipart/form-data">
     @csrf
@@ -12,13 +12,13 @@
                 </div>
                 <div class="modal-body">
                     @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
 
                     <!-- Step 1: Pilih Jenis Lokasi -->
@@ -46,21 +46,21 @@
                                 <i class="bx bx-chevron-left me-1"></i> Kembali
                             </button>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="gedung_id" class="form-label">Pilih Gedung</label>
                                 <select id="gedung_id" name="gedung_id" class="form-select">
                                     <option value="">-- Pilih Gedung --</option>
                                     @foreach($gedungs as $gedung)
-                                        <option value="{{ $gedung->gedung_id }}" {{ old('gedung_id') == $gedung->gedung_id ? 'selected' : '' }}>
-                                            {{ $gedung->nama }}
-                                        </option>
+                                    <option value="{{ $gedung->gedung_id }}" {{ old('gedung_id') == $gedung->gedung_id ? 'selected' : '' }}>
+                                        {{ $gedung->nama }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="ruang_id" class="form-label">Pilih Ruang</label>
@@ -69,7 +69,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="nama_item_ruang" class="form-label">Nama Sarana</label>
@@ -87,21 +87,21 @@
                                 <i class="bx bx-chevron-left me-1"></i> Kembali
                             </button>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="fasum_id" class="form-label">Pilih Fasilitas Umum</label>
                                 <select id="fasum_id" name="fasum_id" class="form-select">
                                     <option value="">-- Pilih Fasilitas Umum --</option>
                                     @foreach($fasums as $fasum)
-                                        <option value="{{ $fasum->fasum_id }}" {{ old('fasum_id') == $fasum->fasum_id ? 'selected' : '' }}>
-                                            {{ $fasum->nama }}
-                                        </option>
+                                    <option value="{{ $fasum->fasum_id }}" {{ old('fasum_id') == $fasum->fasum_id ? 'selected' : '' }}>
+                                        {{ $fasum->nama }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="nama_item_fasum" class="form-label">Nama Sarana</label>
@@ -126,142 +126,155 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-jQuery(document).ready(function($) {
-    // Setup CSRF token untuk AJAX
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    // Handle klik tombol jenis lokasi
-    $('.location-type').on('click', function() {
-        const type = $(this).data('type');
-
-        // Update nilai input hidden
-        $('input[name="location_type"]').val(type);
-        
-        // Sembunyikan semua step content
-        $('.step-content').hide();
-        
-        // Tampilkan step 2 sesuai pilihan
-        $('#step2-' + type).show();
-        
-        // Tampilkan tombol submit
-        $('#submit-button').show();
-    });
-
-    // Handle tombol kembali ke step 1
-    $('.back-to-step1').on('click', function() {
-        $('.step-content').hide();
-        $('#step1').show();
-        $('#submit-button').hide();
-    });
-
-    // Event handler untuk perubahan gedung
-    $('#gedung_id').on('change', function() {
-        const gedungId = $(this).val();
-        
-        if (gedungId) {
-            loadRuangByGedung(gedungId);
-        } else {
-            $('#ruang_id').prop('disabled', true)
-                         .html('<option value="">-- Pilih Ruang --</option>');
-        }
-    });
-
-        // DEBUG: Tambahkan event listener untuk form submit
-    $('#form-tambah').on('submit', function(e) {
-        const locationType = $('input[name="location_type"]').val();
-        let isValid = true;
-        
-        if (locationType === 'fasum') {
-            if (!$('#fasum_id').val()) {
-                alert('Pilih fasilitas umum terlebih dahulu');
-                isValid = false;
-            }
-            if (!$('#nama_item_fasum').val()) {
-                alert('Isi nama item terlebih dahulu');
-                isValid = false;
-            }
-        } else if (locationType === 'gedung') {
-            if (!$('#gedung_id').val() || !$('#ruang_id').val()) {
-                alert('Pilih gedung dan ruang terlebih dahulu');
-                isValid = false;
-            }
-            if (!$('#nama_item_ruang').val()) {
-                alert('Isi nama item terlebih dahulu');
-                isValid = false;
-            }
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-            // Tampilkan step yang sesuai jika validasi gagal
-            if (locationType) {
-                $('.step-content').hide();
-                $('#step2-' + locationType).show();
-            }
-        }
-    });
-
-    function loadRuangByGedung(gedungId, selectedRuangId = null) {
-        const ruangSelect = $('#ruang_id');
-        
-        $.ajax({
-            url: '/admin/data/item/get-ruang/' + gedungId,
-            type: 'GET',
-            dataType: 'json',
-            beforeSend: function() {
-                ruangSelect.prop('disabled', true)
-                           .html('<option value="">Loading...</option>');
-            },
-            success: function(response) {
-                let options = '<option value="">-- Pilih Ruang --</option>';
-                
-                if (response && response.length > 0) {
-                    $.each(response, function(index, ruang) {
-                        const selected = (selectedRuangId && selectedRuangId == ruang.ruang_id) ? 
-                                       'selected' : '';
-                        options += `<option value="${ruang.ruang_id}" ${selected}>${ruang.nama}</option>`;
-                    });
-                    ruangSelect.prop('disabled', false);
-                } else {
-                    options = '<option value="">Tidak ada ruang tersedia</option>';
-                }
-                
-                ruangSelect.html(options);
-            },
-            error: function(xhr, status, error) {
-                console.error("Error AJAX:", status, error);
-                console.error("Response:", xhr.responseText);
-                ruangSelect.html('<option value="">Error loading ruang</option>');
+    jQuery(document).ready(function($) {
+        // Setup CSRF token untuk AJAX
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    }
 
-    // Debug untuk error handling
-    @if($errors->any())
+        // Handle klik tombol jenis lokasi
+        $('.location-type').on('click', function() {
+            const type = $(this).data('type');
+
+            // Update nilai input hidden
+            $('input[name="location_type"]').val(type);
+
+            // Sembunyikan semua step content
+            $('.step-content').hide();
+
+            // Tampilkan step 2 sesuai pilihan
+            $('#step2-' + type).show();
+
+            // Tampilkan tombol submit
+            $('#submit-button').show();
+        });
+
+        // Handle tombol kembali ke step 1
+        $('.back-to-step1').on('click', function() {
+            $('.step-content').hide();
+            $('#step1').show();
+            $('#submit-button').hide();
+        });
+
+        // Event handler untuk perubahan gedung
+        $('#gedung_id').on('change', function() {
+            const gedungId = $(this).val();
+
+            if (gedungId) {
+                loadRuangByGedung(gedungId);
+            } else {
+                $('#ruang_id').prop('disabled', true)
+                    .html('<option value="">-- Pilih Ruang --</option>');
+            }
+        });
+
+        // DEBUG: Tambahkan event listener untuk form submit
+        $('#form-tambah').on('submit', function(e) {
+            const locationType = $('input[name="location_type"]').val();
+            let isValid = true;
+
+            if (locationType === 'fasum') {
+                if (!$('#fasum_id').val()) {
+                    alert('Pilih fasilitas umum terlebih dahulu');
+                    isValid = false;
+                }
+                if (!$('#nama_item_fasum').val()) {
+                    alert('Isi nama item terlebih dahulu');
+                    isValid = false;
+                }
+            } else if (locationType === 'gedung') {
+                if (!$('#gedung_id').val() || !$('#ruang_id').val()) {
+                    alert('Pilih gedung dan ruang terlebih dahulu');
+                    isValid = false;
+                }
+                if (!$('#nama_item_ruang').val()) {
+                    alert('Isi nama item terlebih dahulu');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                // Tampilkan step yang sesuai jika validasi gagal
+                if (locationType) {
+                    $('.step-content').hide();
+                    $('#step2-' + locationType).show();
+                }
+            }
+        });
+
+        function loadRuangByGedung(gedungId, selectedRuangId = null) {
+            const ruangSelect = $('#ruang_id');
+
+            const userRole = "{{ Auth::user()->getRoleNames()->first() }}";
+            const baseUrl = userRole === 'sarpras' ?
+                '/sarpras/sarana/item/get-ruang/' :
+                '/admin/data/item/get-ruang/';
+
+            $.ajax({
+                url: baseUrl + gedungId,
+                type: 'GET',
+                dataType: 'json',
+                beforeSend: function() {
+                    ruangSelect.prop('disabled', true)
+                        .html('<option value="">Loading...</option>');
+                },
+                success: function(response) {
+                    let options = '<option value="">-- Pilih Ruang --</option>';
+
+                    if (response && response.length > 0) {
+                        $.each(response, function(index, ruang) {
+                            const selected = (selectedRuangId && selectedRuangId == ruang.ruang_id) ?
+                                'selected' : '';
+                            options += `<option value="${ruang.ruang_id}" ${selected}>${ruang.nama}</option>`;
+                        });
+                        ruangSelect.prop('disabled', false);
+                    } else {
+                        options = '<option value="">Tidak ada ruang tersedia</option>';
+                    }
+
+                    ruangSelect.html(options);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error AJAX:", status, error);
+                    console.error("Response:", xhr.responseText);
+                    ruangSelect.html('<option value="">Error loading ruang</option>');
+                }
+            });
+        }
+
+        // Debug untuk error handling
+        @if($errors->any())
         console.log('Ada errors:', @json($errors->all()));
         @if(old('location_type') == 'gedung')
-            console.log('Restoring gedung form state');
-            $('#step1').hide();
-            $('#step2-gedung').show();
-            $('#submit-button').show();
-            @if(old('gedung_id'))
-                loadRuangByGedung({{ old('gedung_id') }}, {{ old('ruang_id', 0) }});
-            @endif
-        @elseif(old('location_type') == 'fasum')
-            console.log('Restoring fasum form state');
-            $('#step1').hide();
-            $('#step2-fasum').show();
-            $('#submit-button').show();
+        console.log('Restoring gedung form state');
+        $('#step1').hide();
+        $('#step2-gedung').show();
+        $('#submit-button').show();
+        @if(old('gedung_id'))
+        loadRuangByGedung({
+            {
+                old('gedung_id')
+            }
+        }, {
+            {
+                old('ruang_id', 0)
+            }
+        });
         @endif
-        
+        @elseif(old('location_type') == 'fasum')
+        console.log('Restoring fasum form state');
+        $('#step1').hide();
+        $('#step2-fasum').show();
+        $('#submit-button').show();
+        @endif
+
         // Scroll ke modal untuk melihat error
         $('html, body').animate({
             scrollTop: $('#createItem').offset().top
         }, 500);
-    @endif
-});
+        @endif
+    });
 </script>
