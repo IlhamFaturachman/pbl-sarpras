@@ -14,7 +14,7 @@
                 @method('PUT')
                 <div class="modal-body">
                     <!-- Error handling dari Laravel validation -->
-                    @if ($errors->any() && session('editing_gedung'))
+                    @if ($errors->any() && session('editing'))
                         <div class="alert alert-danger">
                             <ul>
                                 @foreach ($errors->all() as $error)
@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col mb-3">
                             <label for="edit_kode_gedung" class="form-label">Kode Gedung</label>
-                            <input type="text" id="edit_kode_gedung" kode="kode" class="form-control" placeholder="Masukkan Kode Gedung" required>
+                            <input type="text" id="edit_kode_gedung" name="kode" class="form-control" placeholder="Masukkan Kode Gedung" required>
                         </div>
                     </div>
                     <div class="row">
